@@ -7,7 +7,5 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        - CORE_REPO_URL=https://github.com/lagysha/onlinestore
     ports:
       - 8080:8080
