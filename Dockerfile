@@ -6,7 +6,7 @@ RUN git clone -b main https://github.com/lagysha/onlinestore
 FROM jelastic/maven:3.9.5-openjdk-21 as build
 WORKDIR /app
 COPY --from=clone /app/onlinestore/ /app/
-EXPOSE 8080
+EXPOSE 80
 RUN mvn package -DskipTests
 
 FROM eclipse-temurin:21
