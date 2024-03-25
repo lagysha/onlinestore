@@ -1,9 +1,16 @@
-FROM eclipse-temurin:21
-
+FROM alpine/git as clone
 WORKDIR /app
 
-EXPOSE 8080
+RUN git clone -b main https://github.com/lagysha/onlinestore
 
-COPY target/onlinestore-0.0.1-SNAPSHOT.jar /app/onlinestore.jar
+FROM jelastic/maven:3.9.5-openjdk-21 as build
+WORKDIR /app
+COPY --from=clone /app/onlinestore/ /app/
+EXPOSE 80
+RUN mvn package -DskipTests
 
-ENTRYPOINT ["java", "-jar", "onlinestore.jar"]
+FROM eclipse-temurin:21
+WORKDIR /app
+COPY --from=build /app/target/*.jar /app/
+ENTRYPOINT ["sh", "-c"]
+CMD ["java -jar *.jar"]
