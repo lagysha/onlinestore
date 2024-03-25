@@ -1,0 +1,13 @@
+version: '3.1'
+services:
+  core-service:
+    container_name: store-core-service
+    hostname: core
+    image: store-core-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - CORE_REPO_URL=https://github.com/lagysha/onlinestore
+    ports:
+      - 8080:8080
