@@ -7,11 +7,14 @@
         <artifactId>onlinestore</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <groupId>io.teamchallenge</groupId>
     <artifactId>dao</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>dao</name>
     <description>dao</description>
+    <properties>
+        <liquibase.version>4.26.0</liquibase.version>
+        <postgresql.version>42.7.3</postgresql.version>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -32,6 +35,17 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>4.26.0</version>
             <scope>runtime</scope>
         </dependency>
     </dependencies>
