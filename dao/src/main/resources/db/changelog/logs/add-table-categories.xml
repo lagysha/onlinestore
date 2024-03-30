@@ -4,7 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
     <changeSet id="create_categories_table" author="Nikita Malov">
-        <createTable tableName="Categories">
+        <createTable tableName="categories">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints nullable="false"/>
             </column>
@@ -15,8 +15,8 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <addUniqueConstraint tableName="Categories" columnNames="name"
+        <addUniqueConstraint tableName="categories" columnNames="name"
                              constraintName="UQ_categories_name"/>
-        <addPrimaryKey tableName="Categories" columnNames="id" constraintName="PK_categories" />
+        <addPrimaryKey tableName="categories" columnNames="id" constraintName="PK_categories" />
     </changeSet>
 </databaseChangeLog>

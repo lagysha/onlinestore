@@ -4,7 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
     <changeSet id="create_products_table" author="Denys Liubchenko">
-        <createTable tableName="Products">
+        <createTable tableName="products">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints nullable="false"/>
             </column>
@@ -31,12 +31,15 @@
             </column>
             <column name="created_at" type="timestamp" defaultValue="now()"/>
         </createTable>
-        <addForeignKeyConstraint baseTableName="Products" baseColumnNames="category_id"
+        <addForeignKeyConstraint baseTableName="products" baseColumnNames="category_id"
                                  constraintName="FK_products_categories"
-                                 referencedTableName="Categories" referencedColumnNames="id"
+                                 referencedTableName="categories" referencedColumnNames="id"
                                  onDelete="CASCADE"/>
-        <addUniqueConstraint tableName="Products" columnNames="name"
+        <addUniqueConstraint tableName="products" columnNames="name"
                              constraintName="UQ_products_name"/>
-        <addPrimaryKey tableName="Products" columnNames="id" constraintName="PK_products" />
+        <addPrimaryKey tableName="products" columnNames="id" constraintName="PK_products" />
+        <createIndex tableName="products" indexName="FK_products_categories">
+            <column name="category_id"/>
+        </createIndex>
     </changeSet>
 </databaseChangeLog>
