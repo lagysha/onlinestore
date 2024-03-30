@@ -3,6 +3,8 @@ package io.teamchallenge.entity;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -29,6 +31,10 @@ public class Product {
     @JoinColumn(name = "category_id")
     private Category category;
 
+    @OneToMany(mappedBy = "product")
+    @Setter(AccessLevel.PRIVATE)
+    private List<Image> images = new ArrayList<>();
+
     @Column(nullable = false)
     @JdbcTypeCode(SqlTypes.JSON)
     private Map<String, String> characteristics;
@@ -48,4 +54,24 @@ public class Product {
     @Column(name = "created_at")
     @Setter(AccessLevel.PRIVATE)
     private Instant createdAt;
+
+    /**
+     * Adds an image to the product and sets the product for the image.
+     *
+     * @param image The image to add to the product.
+     */
+    public void addImage(Image image) {
+        images.add(image);
+        image.setProduct(this);
+    }
+
+    /**
+     * Removes an image from the product and sets the product of the image to null.
+     *
+     * @param image The image to remove from the product.
+     */
+    public void removeImage(Image image) {
+        images.remove(image);
+        image.setProduct(null);
+    }
 }

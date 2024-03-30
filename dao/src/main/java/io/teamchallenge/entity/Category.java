@@ -29,11 +29,21 @@ public class Category {
     @Setter(AccessLevel.PRIVATE)
     private List<Product> products = new ArrayList<>();
 
+    /**
+     * Adds a product to the category and sets the category for the product.
+     *
+     * @param product The product to add to the category.
+     */
     public void addProduct(Product product) {
         products.add(product);
         product.setCategory(this);
     }
 
+    /**
+     * Removes a product from the category and sets the category of the product to null.
+     *
+     * @param product The product to remove from the category.
+     */
     public void removeProduct(Product product) {
         products.remove(product);
         product.setCategory(null);
