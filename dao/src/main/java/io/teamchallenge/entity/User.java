@@ -2,6 +2,8 @@ package io.teamchallenge.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -33,6 +35,10 @@ public class User {
 
     @Column(nullable = false, unique = true)
     private String telephone;
+
+    @Setter(AccessLevel.PRIVATE)
+    @OneToMany(mappedBy = "user")
+    private List<Order> orders = new ArrayList<>();
 
     @Setter(AccessLevel.PRIVATE)
     @Column(name = "created_at", nullable = false, updatable = false)
