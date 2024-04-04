@@ -3,10 +3,12 @@ package io.teamchallenge.entity;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -51,9 +53,10 @@ public class Product {
     @Column(nullable = false)
     private Integer quantity;
 
-    @Column(name = "created_at")
     @Setter(AccessLevel.PRIVATE)
-    private Instant createdAt;
+    @Column(name = "created_at", updatable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
     /**
      * Adds an image to the product and sets the product for the image.

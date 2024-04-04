@@ -29,7 +29,7 @@
             <column name="quantity" type="int">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_at" type="timestamp" defaultValue="now()"/>
+            <column name="created_at" type="timestamp"/>
         </createTable>
         <addForeignKeyConstraint baseTableName="products" baseColumnNames="category_id"
                                  constraintName="FK_products_categories"
