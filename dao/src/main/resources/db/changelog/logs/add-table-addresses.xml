@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet id="create-table-addresses" author="Denys Liubchenko">
+        <createTable tableName="addresses">
+            <column name="user_id" type="bigint"/>
+            <column name="address_line" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="postal_code" type="varchar(15)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="addresses" columnNames="user_id" constraintName="PK_addresses"/>
+
+        <addForeignKeyConstraint baseTableName="addresses" baseColumnNames="user_id" constraintName="FK_addresses_users"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="addresses" baseColumnNames="country_id"
+                                 constraintName="FK_addresses_countries"
+                                 referencedTableName="countries"
+                                 referencedColumnNames="id"/>
+
+        <createIndex tableName="addresses" indexName="FK_addresses_countries">
+            <column name="country_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

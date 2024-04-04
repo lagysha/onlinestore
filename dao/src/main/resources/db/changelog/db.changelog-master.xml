@@ -7,4 +7,10 @@
     <include file="db/changelog/logs/add-table-categories.xml" relativeToChangelogFile="false" />
     <include file="db/changelog/logs/add-table-products.xml" relativeToChangelogFile="false" />
     <include file="db/changelog/logs/add-table-images.xml" relativeToChangelogFile="false" />
+    <include file="db/changelog/logs/add-table-users.xml" relativeToChangelogFile="false" />
+    <include file="db/changelog/logs/add-table-countries.xml" relativeToChangelogFile="false" />
+    <include file="db/changelog/logs/insert_into_countries.xml" relativeToChangelogFile="false" />
+    <include file="db/changelog/logs/add-table-addresses.xml" relativeToChangelogFile="false" />
+    <include file="db/changelog/logs/add-table-orders.xml" relativeToChangelogFile="false" />
+    <include file="db/changelog/logs/add-table-order_items.xml" relativeToChangelogFile="false" />
 </databaseChangeLog>
