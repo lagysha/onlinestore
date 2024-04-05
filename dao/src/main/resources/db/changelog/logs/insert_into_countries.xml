@@ -50,9 +50,6 @@
             <column name="name">Barbados</column>
         </insert>
         <insert tableName="countries">
-            <column name="name">Belarus</column>
-        </insert>
-        <insert tableName="countries">
             <column name="name">Belgium</column>
         </insert>
         <insert tableName="countries">
@@ -164,9 +161,6 @@
             <column name="name">Equatorial Guinea</column>
         </insert>
         <insert tableName="countries">
-            <column name="name">Eritrea</column>
-        </insert>
-        <insert tableName="countries">
             <column name="name">Estonia</column>
         </insert>
         <insert tableName="countries">
@@ -238,9 +232,6 @@
         </insert>
         <insert tableName="countries">
             <column name="name">Indonesia</column>
-        </insert>
-        <insert tableName="countries">
-            <column name="name">Iran</column>
         </insert>
         <insert tableName="countries">
             <column name="name">Iraq</column>
@@ -432,9 +423,6 @@
             <column name="name">Romania</column>
         </insert>
         <insert tableName="countries">
-            <column name="name">Russia</column>
-        </insert>
-        <insert tableName="countries">
             <column name="name">Rwanda</column>
         </insert>
         <insert tableName="countries">
@@ -487,9 +475,6 @@
         </insert>
         <insert tableName="countries">
             <column name="name">South Africa</column>
-        </insert>
-        <insert tableName="countries">
-            <column name="name">South Korea</column>
         </insert>
         <insert tableName="countries">
             <column name="name">South Sudan</column>
@@ -571,9 +556,6 @@
         </insert>
         <insert tableName="countries">
             <column name="name">Vanuatu</column>
-        </insert>
-        <insert tableName="countries">
-            <column name="name">Venezuela</column>
         </insert>
         <insert tableName="countries">
             <column name="name">Vietnam</column>
