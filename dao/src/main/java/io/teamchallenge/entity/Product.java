@@ -1,5 +1,6 @@
 package io.teamchallenge.entity;
 
+import io.teamchallenge.entity.cartitem.CartItem;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -18,9 +19,9 @@ import org.hibernate.type.SqlTypes;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"category"})
+@ToString(exclude = {"category","images","cartItems"})
 @Builder
-@EqualsAndHashCode(exclude = {"category"})
+@EqualsAndHashCode(exclude = {"category","images","cartItems"})
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +37,10 @@ public class Product {
     @OneToMany(mappedBy = "product")
     @Setter(AccessLevel.PRIVATE)
     private List<Image> images = new ArrayList<>();
+
+    @OneToMany(mappedBy = "product")
+    @Setter(AccessLevel.PRIVATE)
+    private List<CartItem> cartItems = new ArrayList<>();
 
     @Column(nullable = false)
     @JdbcTypeCode(SqlTypes.JSON)
@@ -76,5 +81,27 @@ public class Product {
     public void removeImage(Image image) {
         images.remove(image);
         image.setProduct(null);
+    }
+
+    /**
+     * Adds a cart item to the user's list of cart items.
+     * Also sets this product as the product associated with the added cart item.
+     *
+     * @param cartItem The cart item to be added.
+     */
+    public void addCartItem(CartItem cartItem) {
+        cartItems.add(cartItem);
+        cartItem.setProduct(this);
+    }
+
+    /**
+     * Removes a cart item from the user's list of cart items.
+     * Also removes the association of this product from the removed cart item.
+     *
+     * @param cartItem The cart item to be removed.
+     */
+    public void removeCartItem(CartItem cartItem) {
+        cartItems.remove(cartItem);
+        cartItem.setProduct(null);
     }
 }

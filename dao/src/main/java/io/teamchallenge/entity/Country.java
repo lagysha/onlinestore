@@ -10,8 +10,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString()
-@EqualsAndHashCode()
+@ToString
+@EqualsAndHashCode
 public class Country {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
