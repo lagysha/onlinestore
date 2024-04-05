@@ -13,4 +13,5 @@
     <include file="db/changelog/logs/add-table-addresses.xml" relativeToChangelogFile="false" />
     <include file="db/changelog/logs/add-table-orders.xml" relativeToChangelogFile="false" />
     <include file="db/changelog/logs/add-table-order_items.xml" relativeToChangelogFile="false" />
+    <include file="/db/changelog/logs/add-table-cart_items.xml" relativeToChangelogFile="false" />
 </databaseChangeLog>

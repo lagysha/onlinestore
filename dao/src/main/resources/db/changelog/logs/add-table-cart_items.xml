@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="create-table-cart-items" author="Denys Liubchenko">
+        <createTable tableName="cart_items">
+            <column name="user_id" type="bigint"/>
+            <column name="product_id" type="bigint"/>
+            <column name="quantity" type="int" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="cart_items" columnNames="user_id,product_id" constraintName="PK_cart_items"/>
+
+        <addForeignKeyConstraint baseTableName="cart_items" baseColumnNames="user_id"
+                                 constraintName="FK_cart_items_users"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="cart_items" baseColumnNames="product_id"
+                                 constraintName="FK_cart_items_products"
+                                 referencedTableName="products"
+                                 referencedColumnNames="id"/>
+
+        <createIndex tableName="cart_items" indexName="FK_cart_items_users">
+            <column name="user_id"/>
+        </createIndex>
+
+        <createIndex tableName="cart_items" indexName="FK_cart_items_products">
+            <column name="product_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>
