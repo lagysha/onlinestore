@@ -24,6 +24,9 @@
             <column name="created_at" type="timestamp">
                 <constraints nullable="false"/>
             </column>
+            <column name="role" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
 
         <addPrimaryKey tableName="users" columnNames="id" constraintName="PK_users"/>

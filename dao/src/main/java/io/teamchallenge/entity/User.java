@@ -1,6 +1,7 @@
 package io.teamchallenge.entity;
 
 import io.teamchallenge.entity.cartitem.CartItem;
+import io.teamchallenge.enumerated.Role;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -52,6 +53,10 @@ public class User {
 
     @OneToOne(mappedBy = "user", optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
     private Address address;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
 
     /**
      * Sets the address for this user and updates the user reference in the address object.
