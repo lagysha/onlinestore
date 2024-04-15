@@ -1,10 +1,10 @@
 package io.teamchallenge.service;
 
-import io.teamchallenge.constant.ErrorMessage;
+import io.teamchallenge.constant.ExceptionMessage;
 import io.teamchallenge.dto.PageableDto;
 import io.teamchallenge.dto.ProductResponseDto;
 import io.teamchallenge.entity.Product;
-import io.teamchallenge.exception.ProductNotFoundException;
+import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -45,25 +45,25 @@ public class ProductService {
      *
      * @param id The unique identifier of the product to retrieve.
      * @return ProductResponseDto representing the retrieved product.
-     * @throws ProductNotFoundException if the product with the specified id is not found.
+     * @throws NotFoundException if the product with the specified id is not found.
      */
     public ProductResponseDto getById(Long id) {
         return productRepository
             .findById(id)
             .map(product -> modelMapper.map(product, ProductResponseDto.class))
-            .orElseThrow(() -> new ProductNotFoundException(ErrorMessage.PRODUCT_NOT_FOUND_BY_ID.formatted(id)));
+            .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID.formatted(id)));
     }
 
     /**
      * Deletes a product by its unique identifier.
      *
      * @param id The unique identifier of the product to delete.
-     * @throws ProductNotFoundException if the product with the specified id is not found.
+     * @throws NotFoundException if the product with the specified id is not found.
      */
     public void deleteById(Long id) {
         productRepository
             .findById(id)
-            .orElseThrow(() -> new ProductNotFoundException(ErrorMessage.PRODUCT_NOT_FOUND_BY_ID.formatted(id)));
+            .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID.formatted(id)));
         productRepository.deleteById(id);
     }
 }
