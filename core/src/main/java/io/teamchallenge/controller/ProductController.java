@@ -1,9 +1,9 @@
-package io.teamchallenge.controllers;
+package io.teamchallenge.controller;
 
-import io.teamchallenge.annatations.AllowedSortFields;
+import io.teamchallenge.annatation.AllowedSortFields;
 import io.teamchallenge.dto.PageableDto;
 import io.teamchallenge.dto.ProductResponseDto;
-import io.teamchallenge.exception.ProductNotFoundException;
+import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -44,7 +44,7 @@ public class ProductController {
      *
      * @param id The unique identifier of the product to retrieve.
      * @return ResponseEntity containing a ProductResponseDto representing the retrieved product.
-     * @throws ProductNotFoundException if the product with the specified id is not found.
+     * @throws NotFoundException if the product with the specified id is not found.
      */
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDto> getById(@PathVariable Long id){
@@ -66,7 +66,7 @@ public class ProductController {
      *
      * @param id The unique identifier of the product to delete.
      * @return ResponseEntity with HTTP status 204 (NO_CONTENT) indicating successful deletion.
-     * @throws ProductNotFoundException if the product with the specified id is not found.
+     * @throws NotFoundException if the product with the specified id is not found.
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<ProductResponseDto> delete(@PathVariable Long id){

@@ -1,6 +1,6 @@
-package io.teamchallenge.validators;
+package io.teamchallenge.validator;
 
-import io.teamchallenge.annatations.AllowedSortFields;
+import io.teamchallenge.annatation.AllowedSortFields;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.util.Arrays;
@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.util.CollectionUtils;
 
 public class AllowedSortFieldsValidator implements ConstraintValidator<AllowedSortFields, Pageable> {
 
