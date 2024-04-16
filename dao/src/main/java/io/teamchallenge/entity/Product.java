@@ -19,9 +19,9 @@ import org.hibernate.type.SqlTypes;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"category","images","cartItems"})
+@ToString(exclude = {"category","brand","images","cartItems"})
 @Builder
-@EqualsAndHashCode(exclude = {"category","images","cartItems"})
+@EqualsAndHashCode(exclude = {"category","brand","images","cartItems"})
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +33,10 @@ public class Product {
     @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "brand_id")
+    private Brand brand;
 
     @OneToMany(mappedBy = "product")
     @Setter(AccessLevel.PRIVATE)

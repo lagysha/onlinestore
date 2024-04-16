@@ -2,10 +2,8 @@ package io.teamchallenge.exception;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Map;
-import lombok.Builder;
 import lombok.Data;
 
-@Builder
 @Data
 public class ExceptionResponse {
     private String message;
