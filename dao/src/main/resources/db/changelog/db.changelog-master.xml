@@ -18,5 +18,7 @@
     <include file="/db/changelog/logs/add-table-category-attributes.xml" relativeToChangelogFile="false" />
     <include file="/db/changelog/logs/add-table-brands.xml" relativeToChangelogFile="false" />
     <include file="/db/changelog/logs/change-table-products.xml" relativeToChangelogFile="false" />
+    <include file="/db/changelog/logs/add-table-attribute_values.xml" relativeToChangelogFile="false" />
+    <include file="/db/changelog/logs/add-table-product_attributes.xml" relativeToChangelogFile="false" />
 
 </databaseChangeLog>

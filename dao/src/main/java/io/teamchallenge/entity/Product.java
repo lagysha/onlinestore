@@ -1,5 +1,6 @@
 package io.teamchallenge.entity;
 
+import io.teamchallenge.entity.attributes.ProductAttribute;
 import io.teamchallenge.entity.cartitem.CartItem;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
@@ -30,25 +31,9 @@ public class Product {
     @Column(name = "short_desc", nullable = false)
     private String shortDesc;
 
-    @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
-
     @ManyToOne
     @JoinColumn(name = "brand_id")
     private Brand brand;
-
-    @OneToMany(mappedBy = "product")
-    @Setter(AccessLevel.PRIVATE)
-    private List<Image> images = new ArrayList<>();
-
-    @OneToMany(mappedBy = "product")
-    @Setter(AccessLevel.PRIVATE)
-    private List<CartItem> cartItems = new ArrayList<>();
-
-    @Column(nullable = false)
-    @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, String> characteristics;
 
     @Column(unique = true, nullable = false)
     private String name;
@@ -66,6 +51,22 @@ public class Product {
     @Column(name = "created_at", updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "product")
+    @Setter(AccessLevel.PRIVATE)
+    private List<Image> images = new ArrayList<>();
+
+    @OneToMany(mappedBy = "product")
+    @Setter(AccessLevel.PRIVATE)
+    private List<CartItem> cartItems = new ArrayList<>();
+
+    @OneToMany(mappedBy = "product")
+    @Setter(AccessLevel.PRIVATE)
+    private List<ProductAttribute> productAttributes;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     /**
      * Adds an image to the product and sets the product for the image.
@@ -108,4 +109,27 @@ public class Product {
         cartItems.remove(cartItem);
         cartItem.setProduct(null);
     }
+
+    /**
+     * Adds a product attribute to the list of attributes associated with this product.
+     * This method also sets the product reference in the added attribute.
+     *
+     * @param productAttribute The product attribute to add.
+     */
+    public void addProductAttribute(ProductAttribute productAttribute) {
+        productAttributes.add(productAttribute);
+        productAttribute.setProduct(this);
+    }
+
+    /**
+     * Removes a product attribute from the list of attributes associated with this product.
+     * This method also removes the product reference from the removed attribute.
+     *
+     * @param productAttribute The product attribute to remove.
+     */
+    public void removeProductAttribute(ProductAttribute productAttribute) {
+        productAttributes.remove(productAttribute);
+        productAttribute.setProduct(null);
+    }
+
 }

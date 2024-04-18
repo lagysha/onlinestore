@@ -1,8 +1,10 @@
 package io.teamchallenge.mapper;
 
 import io.teamchallenge.dto.CategoryResponseDto;
+import io.teamchallenge.dto.ProductAttributeResponseDto;
 import io.teamchallenge.dto.ProductResponseDto;
 import io.teamchallenge.entity.Product;
+import java.util.stream.Collectors;
 import org.modelmapper.AbstractConverter;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +26,12 @@ public class ProductResponseDtoMapper extends AbstractConverter<Product,ProductR
                     .desc(product.getCategory().getDesc())
                     .name(product.getCategory().getName())
                     .build())
-            .characteristics(product.getCharacteristics())
+            .productAttributeResponseDtos(product.getProductAttributes()
+                .stream()
+                .map((pa) -> new ProductAttributeResponseDto(
+                    pa.getAttributeValue().getAttribute().getName(),
+                    pa.getAttributeValue().getValue())).collect(Collectors.toList()))
+            .brand(product.getBrand().getName())
             .name(product.getName())
             .desc(product.getDesc())
             .price(product.getPrice())

@@ -1,5 +1,7 @@
-package io.teamchallenge.entity;
+package io.teamchallenge.entity.attributes;
 
+import io.teamchallenge.entity.Category;
+import io.teamchallenge.entity.attributes.Attribute;
 import jakarta.persistence.*;
 import lombok.*;
 

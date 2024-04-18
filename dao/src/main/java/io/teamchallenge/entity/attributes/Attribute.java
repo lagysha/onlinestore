@@ -1,4 +1,4 @@
-package io.teamchallenge.entity;
+package io.teamchallenge.entity.attributes;
 
 import jakarta.persistence.*;
 import java.util.ArrayList;
@@ -26,6 +26,10 @@ public class Attribute {
     @Setter(AccessLevel.PRIVATE)
     private List<CategoryAttribute> categoryAttributes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "attribute")
+    @Setter(AccessLevel.PRIVATE)
+    private List<AttributeValue> attributeValues = new ArrayList<>();
+
 
     /**
      * Adds a category attribute to the category.
@@ -46,4 +50,27 @@ public class Attribute {
         categoryAttributes.remove(categoryAttribute);
         categoryAttribute.setAttribute(null);
     }
+
+    /**
+     * Adds an attribute value to the list of values associated with this attribute.
+     * This method also sets the attribute reference in the added value.
+     *
+     * @param attributeValue The attribute value to add.
+     */
+    public void addAttributeValue(AttributeValue attributeValue) {
+        attributeValues.add(attributeValue);
+        attributeValue.setAttribute(this);
+    }
+
+    /**
+     * Removes an attribute value from the list of values associated with this attribute.
+     * This method also removes the attribute reference from the removed value.
+     *
+     * @param attributeValue The attribute value to remove.
+     */
+    public void removeCategoryAttribute(AttributeValue attributeValue) {
+        attributeValues.remove(attributeValue);
+        attributeValue.setAttribute(null);
+    }
+
 }

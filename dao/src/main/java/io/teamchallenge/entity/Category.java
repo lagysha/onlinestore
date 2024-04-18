@@ -1,5 +1,6 @@
 package io.teamchallenge.entity;
 
+import io.teamchallenge.entity.attributes.CategoryAttribute;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
