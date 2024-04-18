@@ -31,10 +31,6 @@ public class Product {
     @Column(name = "short_desc", nullable = false)
     private String shortDesc;
 
-    @ManyToOne
-    @JoinColumn(name = "brand_id")
-    private Brand brand;
-
     @Column(unique = true, nullable = false)
     private String name;
 
@@ -67,6 +63,11 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "brand_id")
+    private Brand brand;
+
 
     /**
      * Adds an image to the product and sets the product for the image.

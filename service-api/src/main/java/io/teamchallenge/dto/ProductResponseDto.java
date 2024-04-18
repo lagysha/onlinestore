@@ -16,7 +16,6 @@ import lombok.*;
 public class ProductResponseDto {
     private String shortDesc;
     private CategoryResponseDto categoryResponseDto;
-    private Map<String, String> characteristics;
     private List<ProductAttributeResponseDto> productAttributeResponseDtos;
     private String brand;
     private String name;

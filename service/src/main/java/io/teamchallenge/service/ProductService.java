@@ -6,6 +6,8 @@ import io.teamchallenge.dto.ProductResponseDto;
 import io.teamchallenge.entity.Product;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.repository.ProductRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -29,12 +31,14 @@ public class ProductService {
      * @return PageableDto containing a list of ProductResponseDto representing the paginated list of products.
      */
     public PageableDto<ProductResponseDto> getAll(Pageable pageable, String name) {
-        Page<Product> retrievedProducts = productRepository.findAllBy(pageable, name);
-
+        Page<Long> retrievedProducts = productRepository.findAllProductsIdByName(pageable, name);
+        List<ProductResponseDto> content = productRepository
+            .findAllByIdWithCategoryAndBrandAndProductAttribute(retrievedProducts.getContent())
+            .stream()
+            .map(product -> modelMapper.map(product,ProductResponseDto.class))
+            .collect(Collectors.toList());
         return new PageableDto<>(
-            retrievedProducts.getContent().stream()
-                .map(o -> modelMapper.map(o, ProductResponseDto.class))
-                .toList(),
+            content,
             retrievedProducts.getTotalElements(),
             retrievedProducts.getPageable().getPageNumber(),
             retrievedProducts.getTotalPages());
@@ -49,8 +53,10 @@ public class ProductService {
      */
     public ProductResponseDto getById(Long id) {
         return productRepository
-            .findById(id)
-            .map(product -> modelMapper.map(product, ProductResponseDto.class))
+            .findAllByIdWithCategoryAndBrandAndProductAttribute(List.of(id))
+            .stream()
+            .map(product -> modelMapper.map(product,ProductResponseDto.class))
+            .findAny()
             .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID.formatted(id)));
     }
 
