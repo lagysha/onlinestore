@@ -3,6 +3,7 @@ package io.teamchallenge.mapper;
 import io.teamchallenge.dto.CategoryResponseDto;
 import io.teamchallenge.dto.ProductAttributeResponseDto;
 import io.teamchallenge.dto.ProductResponseDto;
+import io.teamchallenge.entity.Image;
 import io.teamchallenge.entity.Product;
 import java.util.stream.Collectors;
 import org.modelmapper.AbstractConverter;
@@ -20,6 +21,7 @@ public class ProductResponseDtoMapper extends AbstractConverter<Product,ProductR
     @Override
     protected ProductResponseDto convert(Product product) {
         return ProductResponseDto.builder()
+            .id(product.getId())
             .shortDesc(product.getShortDesc())
             .categoryResponseDto(
                 CategoryResponseDto.builder()
@@ -30,7 +32,12 @@ public class ProductResponseDtoMapper extends AbstractConverter<Product,ProductR
                 .stream()
                 .map((pa) -> new ProductAttributeResponseDto(
                     pa.getAttributeValue().getAttribute().getName(),
-                    pa.getAttributeValue().getValue())).collect(Collectors.toList()))
+                    pa.getAttributeValue().getValue()))
+                .collect(Collectors.toList()))
+            .images(product.getImages()
+                .stream()
+                .map(Image::getLink)
+                .collect(Collectors.toList()))
             .brand(product.getBrand().getName())
             .name(product.getName())
             .desc(product.getDesc())

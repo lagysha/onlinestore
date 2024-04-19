@@ -3,7 +3,7 @@ package io.teamchallenge.service;
 import io.teamchallenge.constant.ExceptionMessage;
 import io.teamchallenge.dto.PageableDto;
 import io.teamchallenge.dto.ProductResponseDto;
-import io.teamchallenge.entity.Product;
+import io.teamchallenge.dto.ShortProductResponseDto;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.repository.ProductRepository;
 import java.util.List;
@@ -30,12 +30,12 @@ public class ProductService {
      * @param name     Optional parameter for filtering products by name.
      * @return PageableDto containing a list of ProductResponseDto representing the paginated list of products.
      */
-    public PageableDto<ProductResponseDto> getAll(Pageable pageable, String name) {
+    public PageableDto<ShortProductResponseDto> getAll(Pageable pageable, String name) {
         Page<Long> retrievedProducts = productRepository.findAllProductsIdByName(pageable, name);
-        List<ProductResponseDto> content = productRepository
-            .findAllByIdWithCategoryAndBrandAndProductAttribute(retrievedProducts.getContent())
+        List<ShortProductResponseDto> content = productRepository
+            .findAllByIdWithImages(retrievedProducts.getContent())
             .stream()
-            .map(product -> modelMapper.map(product,ProductResponseDto.class))
+            .map(product -> modelMapper.map(product,ShortProductResponseDto.class))
             .collect(Collectors.toList());
         return new PageableDto<>(
             content,
@@ -44,32 +44,21 @@ public class ProductService {
             retrievedProducts.getTotalPages());
     }
 
-    /**
-     * Retrieves a product by its unique identifier.
-     *
-     * @param id The unique identifier of the product to retrieve.
-     * @return ProductResponseDto representing the retrieved product.
-     * @throws NotFoundException if the product with the specified id is not found.
-     */
     public ProductResponseDto getById(Long id) {
-        return productRepository
-            .findAllByIdWithCategoryAndBrandAndProductAttribute(List.of(id))
+        var retrievedProduct = productRepository
+            .findByIdWithCategoryAndBrandAndProductAttribute(id)
+            .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID.formatted(id)));
+        return productRepository.findByNameWithImages(retrievedProduct.getId())
             .stream()
             .map(product -> modelMapper.map(product,ProductResponseDto.class))
             .findAny()
-            .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID.formatted(id)));
+            .get();
     }
 
-    /**
-     * Deletes a product by its unique identifier.
-     *
-     * @param id The unique identifier of the product to delete.
-     * @throws NotFoundException if the product with the specified id is not found.
-     */
     public void deleteById(Long id) {
-        productRepository
+        var retrievedProduct = productRepository
             .findById(id)
             .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID.formatted(id)));
-        productRepository.deleteById(id);
+        productRepository.deleteById(retrievedProduct.getId());
     }
 }
