@@ -48,7 +48,7 @@ public class Product {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product",cascade = CascadeType.PERSIST)
     @Setter(AccessLevel.PRIVATE)
     private List<Image> images = new ArrayList<>();
 
@@ -56,7 +56,7 @@ public class Product {
     @Setter(AccessLevel.PRIVATE)
     private List<CartItem> cartItems = new ArrayList<>();
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product",cascade = CascadeType.PERSIST)
     @Setter(AccessLevel.PRIVATE)
     private List<ProductAttribute> productAttributes;
 

@@ -2,6 +2,7 @@ package io.teamchallenge.controller;
 
 import io.teamchallenge.annatation.AllowedSortFields;
 import io.teamchallenge.dto.PageableDto;
+import io.teamchallenge.dto.ProductCreateRequestDto;
 import io.teamchallenge.dto.ProductResponseDto;
 import io.teamchallenge.dto.ShortProductResponseDto;
 import io.teamchallenge.service.ProductService;
@@ -45,8 +46,9 @@ public class ProductController {
     }
 
     @PostMapping
-    public PageableDto<ProductResponseDto> create(){
-        return null;
+    public ResponseEntity<ProductResponseDto> create(ProductCreateRequestDto productCreateRequestDto){
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(productService.create(productCreateRequestDto));
     }
 
     @PutMapping("/{id}")
