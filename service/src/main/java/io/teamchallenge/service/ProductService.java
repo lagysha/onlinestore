@@ -41,17 +41,17 @@ public class ProductService {
      * @return PageableDto containing a list of ProductResponseDto representing the paginated list of products.
      */
     public PageableDto<ShortProductResponseDto> getAll(Pageable pageable, String name) {
-        Page<Long> retrievedProducts = productRepository.findAllProductsIdByName(pageable, name);
+        Page<Long> retrievedProductsIds = productRepository.findAllProductsIdByName(pageable, name);
         List<ShortProductResponseDto> content = productRepository
-            .findAllByIdWithImages(retrievedProducts.getContent())
+            .findAllByIdWithImages(retrievedProductsIds.getContent())
             .stream()
             .map(product -> modelMapper.map(product,ShortProductResponseDto.class))
             .collect(Collectors.toList());
         return new PageableDto<>(
             content,
-            retrievedProducts.getTotalElements(),
-            retrievedProducts.getPageable().getPageNumber(),
-            retrievedProducts.getTotalPages());
+            retrievedProductsIds.getTotalElements(),
+            retrievedProductsIds.getPageable().getPageNumber(),
+            retrievedProductsIds.getTotalPages());
     }
 
     public ProductResponseDto getById(Long id) {
