@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ProductResponseDtoMapper extends AbstractConverter<Product,ProductResponseDto> {
-
     /**
      * Converts a Product entity to a corresponding ProductResponseDto object.
      *

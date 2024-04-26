@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Validated
 public class ProductController {
-
     private final ProductService productService;
 
     /**
@@ -31,22 +30,35 @@ public class ProductController {
      * @param pageable Pageable object specifying pagination and sorting parameters.
      *                 Defaults to sorting by creation date in descending order if not specified.
      * @return ResponseEntity containing a PageableDto of ProductResponseDto,
-     * representing the paginated list of products.
+     *         representing the paginated list of products.
      */
     @GetMapping
     public ResponseEntity<PageableDto<ShortProductResponseDto>> getAll(@RequestParam(required = false) String name,
                                                                        @AllowedSortFields(values = {"name", "quantity",
                                                                            "price", "createdAt"})
-                                                                       @PageableDefault(sort = "createdAt", direction = DESC)
+                                                                       @PageableDefault(sort = "createdAt",
+                                                                           direction = DESC)
                                                                        Pageable pageable) {
         return ResponseEntity.ok(productService.getAll(pageable, name));
     }
 
+    /**
+     * Retrieves a product by its unique identifier.
+     *
+     * @param id The identifier of the product to retrieve.
+     * @return ResponseEntity containing the ProductResponseDto representing the retrieved product, with status OK.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDto> getById(@PathVariable Long id) {
         return ResponseEntity.ok(productService.getById(id));
     }
 
+    /**
+     * Creates a new product based on the provided ProductRequestDto.
+     *
+     * @param productRequestDto The ProductRequestDto containing the details of the product to create.
+     * @return ResponseEntity containing the ProductResponseDto representing the created product, with status CREATED.
+     */
     @PostMapping
     public ResponseEntity<ProductResponseDto> create(
         @RequestBody @Valid ProductRequestDto productRequestDto) {
@@ -54,17 +66,29 @@ public class ProductController {
             .body(productService.create(productRequestDto));
     }
 
+    /**
+     * Updates an existing product with the provided ID using the details from the ProductRequestDto.
+     *
+     * @param id                The identifier of the product to update.
+     * @param productRequestDto The ProductRequestDto containing the updated details of the product.
+     * @return ResponseEntity containing the ProductResponseDto representing the updated product, with status OK.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponseDto> update(@PathVariable Long id,
-                                                  @RequestBody @Valid ProductRequestDto productRequestDto) {
+                                                     @RequestBody @Valid ProductRequestDto productRequestDto) {
         return ResponseEntity.status(HttpStatus.OK)
-            .body(productService.update(id,productRequestDto));
+            .body(productService.update(id, productRequestDto));
     }
 
+    /**
+     * Deletes a product by its unique identifier.
+     *
+     * @param id The identifier of the product to delete.
+     * @return ResponseEntity with status NO_CONTENT.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<ProductResponseDto> delete(@PathVariable Long id) {
         productService.deleteById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-
 }

@@ -30,12 +30,11 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ProductService {
-
     private final ProductRepository productRepository;
     private final BrandRepository brandRepository;
     private final AttributeValueRepository attributeValueRepository;
     private final ProductAttributeRepository productAttributeRepository;
-    private final CategoryRepostiory categoryRepostiory;
+    private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
 
     /**
@@ -59,6 +58,13 @@ public class ProductService {
             retrievedProducts.getTotalPages());
     }
 
+    /**
+     * Retrieves a product by its unique identifier.
+     *
+     * @param id The identifier of the product to retrieve.
+     * @return The ProductResponseDto object representing the retrieved product.
+     * @throws NotFoundException if the product with the given ID is not found.
+     */
     public ProductResponseDto getById(Long id) {
         return productRepository
             .findByIdWithCollections(id)
@@ -68,6 +74,13 @@ public class ProductService {
             .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID.formatted(id)));
     }
 
+
+    /**
+     * Deletes a product by its unique identifier.
+     *
+     * @param id The identifier of the product to delete.
+     * @throws NotFoundException if the product with the given ID is not found.
+     */
     public void deleteById(Long id) {
         var retrievedProduct = productRepository
             .findById(id)
@@ -75,6 +88,16 @@ public class ProductService {
         productRepository.deleteById(retrievedProduct.getId());
     }
 
+
+    /**
+     * Creates a new product based on the provided ProductRequestDto.
+     *
+     * @param productRequestDto The ProductRequestDto containing the details of the product to create.
+     * @return The ProductResponseDto representing the created product.
+     * @throws CreationException      if there is an issue creating the product.
+     * @throws NotFoundException      if the brand or category specified in the request is not found.
+     * @throws AlreadyExistsException if the product name is invalid.
+     */
     @Transactional
     public ProductResponseDto create(ProductRequestDto productRequestDto) {
         var brand = getBrandById(productRequestDto);
@@ -116,16 +139,17 @@ public class ProductService {
         }
     }
 
-    private Brand getBrandById(ProductRequestDto productRequestDto) {
-        return brandRepository.findById(productRequestDto.getBrandId()).orElseThrow(
-            () -> new NotFoundException(BRAND_NOT_FOUND_BY_ID.formatted(productRequestDto.getBrandId())));
-    }
 
-    private Category getCategoryById(ProductRequestDto productRequestDto) {
-        return categoryRepostiory.findById(productRequestDto.getCategoryId()).orElseThrow(
-            () -> new NotFoundException(CATEGORY_NOT_FOUND_BY_ID.formatted(productRequestDto.getCategoryId())));
-    }
-
+    /**
+     * Updates an existing product with the provided ID using the details from the ProductRequestDto.
+     *
+     * @param id                The identifier of the product to update.
+     * @param productRequestDto The ProductRequestDto containing the updated details of the product.
+     * @return The ProductResponseDto representing the updated product.
+     * @throws CreationException      if there is an issue creating the product.
+     * @throws NotFoundException      if the brand or category specified in the request is not found.
+     * @throws AlreadyExistsException if the product name is invalid.
+     */
     @Transactional
     public ProductResponseDto update(Long id, ProductRequestDto productRequestDto) {
         var brand = getBrandById(productRequestDto);
@@ -139,19 +163,19 @@ public class ProductService {
         product.setCategory(category);
         product.setDescription(productRequestDto.getDescription());
         product.setName(productRequestDto.getName());
-        product.setQuantity(product.getQuantity());
-        product.setShortDesc(product.getShortDesc());
-        product.setPrice(product.getPrice());
+        product.setQuantity(productRequestDto.getQuantity());
+        product.setShortDesc(productRequestDto.getShortDesc());
+        product.setPrice(productRequestDto.getPrice());
 
 
-        //TODO: add here service to store those images and retrieve links
+        //TODO: add service here to store images and retrieve links
         product.clearAllImages();
         productRequestDto.getImageLinks()
             .forEach(link -> product
                 .addImage(Image.builder().link(link).build()));
 
         try {
-            //TODO: Also add batch insert And batch delete if needed
+            //TODO: Also add batch insert and batch delete if needed
             List<Long> idsToFetch = updateProductAttributes(productRequestDto, product);
             attributeValueRepository.findAllByIdIn(idsToFetch);
             return modelMapper.map(product, ProductResponseDto.class);
@@ -159,6 +183,7 @@ public class ProductService {
             throw new CreationException(PRODUCT_CREATION_EXCEPTION, e);
         }
     }
+
 
     private List<Long> updateProductAttributes(ProductRequestDto productRequestDto, Product product) {
         product.getProductAttributes()
@@ -199,5 +224,15 @@ public class ProductService {
             throw new AlreadyExistsException(
                 PRODUCT_WITH_NAME_ALREADY_EXISTS.formatted(productRequestDto.getName()));
         }
+    }
+
+    private Brand getBrandById(ProductRequestDto productRequestDto) {
+        return brandRepository.findById(productRequestDto.getBrandId()).orElseThrow(
+            () -> new NotFoundException(BRAND_NOT_FOUND_BY_ID.formatted(productRequestDto.getBrandId())));
+    }
+
+    private Category getCategoryById(ProductRequestDto productRequestDto) {
+        return categoryRepository.findById(productRequestDto.getCategoryId()).orElseThrow(
+            () -> new NotFoundException(CATEGORY_NOT_FOUND_BY_ID.formatted(productRequestDto.getCategoryId())));
     }
 }

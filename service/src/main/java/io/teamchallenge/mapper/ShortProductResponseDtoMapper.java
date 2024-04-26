@@ -1,6 +1,5 @@
 package io.teamchallenge.mapper;
 
-
 import io.teamchallenge.dto.ShortProductResponseDto;
 import io.teamchallenge.entity.Image;
 import io.teamchallenge.entity.Product;
@@ -10,6 +9,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ShortProductResponseDtoMapper extends AbstractConverter<Product, ShortProductResponseDto> {
+    /**
+     * Converts a Product entity to a ShortProductResponseDto.
+     *
+     * @param product The Product entity to be converted.
+     * @return A ShortProductResponseDto representing the converted product.
+     */
     @Override
     protected ShortProductResponseDto convert(Product product) {
         return ShortProductResponseDto.builder()

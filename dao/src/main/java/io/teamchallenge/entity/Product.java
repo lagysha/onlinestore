@@ -129,10 +129,12 @@ public class Product {
         productAttribute.setProduct(null);
     }
 
-    public void clearAllImages(){
-        images
-            .forEach(image -> image.setProduct(null));
-        images
-            .clear();
+    /**
+     * Clears all images associated with the product.
+     * This method removes the association of each image with the product and clears the list of images.
+     */
+    public void clearAllImages() {
+        images.forEach(image -> image.setProduct(null));
+        images.clear();
     }
 }

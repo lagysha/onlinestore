@@ -26,8 +26,8 @@ public class ProductRequestDto {
     private String name;
     @NotBlank
     private String description;
-    @Digits(integer = 10, fraction = 2,message = "Price must have an integer part less than 10 " +
-        "and a fraction part less than 2")
+    @Digits(integer = 10, fraction = 2,message = "Price must have an integer part less than 10 "
+        + "and a fraction part less than 2")
     private BigDecimal price;
     private Integer quantity;
 }

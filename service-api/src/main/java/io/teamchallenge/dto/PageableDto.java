@@ -10,10 +10,7 @@ import lombok.Data;
 @Builder
 public class PageableDto<T> {
     private List<T> page;
-
     private long totalElements;
-
     private int currentPage;
-
     private int totalPages;
 }
