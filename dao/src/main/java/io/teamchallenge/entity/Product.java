@@ -4,15 +4,11 @@ import io.teamchallenge.entity.attributes.ProductAttribute;
 import io.teamchallenge.entity.cartitem.CartItem;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "products")
@@ -35,7 +31,7 @@ public class Product {
     private String name;
 
     @Column(nullable = false)
-    private String desc;
+    private String description;
 
     @Column(nullable = false)
     private BigDecimal price;
@@ -48,7 +44,7 @@ public class Product {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "product",cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true)
     @Setter(AccessLevel.PRIVATE)
     private List<Image> images = new ArrayList<>();
 
@@ -56,9 +52,9 @@ public class Product {
     @Setter(AccessLevel.PRIVATE)
     private List<CartItem> cartItems = new ArrayList<>();
 
-    @OneToMany(mappedBy = "product",cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, orphanRemoval = true)
     @Setter(AccessLevel.PRIVATE)
-    private List<ProductAttribute> productAttributes;
+    private List<ProductAttribute> productAttributes = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
@@ -133,4 +129,10 @@ public class Product {
         productAttribute.setProduct(null);
     }
 
+    public void clearAllImages(){
+        images
+            .forEach(image -> image.setProduct(null));
+        images
+            .clear();
+    }
 }

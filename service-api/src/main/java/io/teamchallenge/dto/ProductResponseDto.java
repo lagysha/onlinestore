@@ -3,7 +3,6 @@ package io.teamchallenge.dto;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import lombok.*;
 
 @Getter
@@ -21,7 +20,7 @@ public class ProductResponseDto {
     private List<String> images;
     private String brand;
     private String name;
-    private String desc;
+    private String description;
     private BigDecimal price;
     private Integer quantity;
     private LocalDateTime createdAt;

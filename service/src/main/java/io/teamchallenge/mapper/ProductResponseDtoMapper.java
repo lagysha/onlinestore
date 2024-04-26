@@ -40,7 +40,7 @@ public class ProductResponseDtoMapper extends AbstractConverter<Product,ProductR
                 .collect(Collectors.toList()))
             .brand(product.getBrand().getName())
             .name(product.getName())
-            .desc(product.getDesc())
+            .description(product.getDescription())
             .price(product.getPrice())
             .quantity(product.getQuantity())
             .createdAt(product.getCreatedAt())
