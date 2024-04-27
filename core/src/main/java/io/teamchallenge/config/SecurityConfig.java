@@ -36,6 +36,14 @@ public class SecurityConfig {
     private final JwtService jwtService;
     private final UserAuthorisationService userAuthorisationService;
 
+    /**
+     * Constructor for SecurityConfig.
+     *
+     * @param allowedOrigins              Array of allowed origins.
+     * @param authenticationConfiguration Authentication configuration.
+     * @param jwtService                  JWT service.
+     * @param userAuthorisationService    User authorisation service.
+     */
     @Autowired
     public SecurityConfig(@Value("${ALLOWED_ORIGINS}") String[] allowedOrigins,
                           AuthenticationConfiguration authenticationConfiguration, JwtService jwtService,
@@ -46,9 +54,17 @@ public class SecurityConfig {
         this.userAuthorisationService = userAuthorisationService;
     }
 
+    /**
+     * Configures the security filter chain.
+     *
+     * @param http HttpSecurity object.
+     * @return SecurityFilterChain object.
+     * @throws Exception If an error occurs during configuration.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.cors(cors -> cors.configurationSource(configSource -> {
+        return http.cors(cors -> cors
+                .configurationSource(configSource -> {
                     CorsConfiguration config = new CorsConfiguration();
                     config.setAllowedOrigins(allowedOrigins);
                     config.setAllowedMethods(Collections.singletonList("*"));
@@ -57,8 +73,7 @@ public class SecurityConfig {
                     config.setAllowCredentials(true);
                     config.setMaxAge(3600L);
                     return config;
-                }
-            ))
+                }))
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterAfter(
@@ -75,20 +90,31 @@ public class SecurityConfig {
                 .permitAll()
                 .requestMatchers(HttpMethod.POST,
                     "/signUp"
-                    )
+                )
                 .permitAll()
                 .requestMatchers(HttpMethod.GET,
                     "/hello"
-                    )
+                )
                 .hasRole(USER)
             ).build();
     }
 
+    /**
+     * Provides an AuthenticationManager bean.
+     *
+     * @return AuthenticationManager object.
+     * @throws Exception If an error occurs while obtaining the authentication manager.
+     */
     @Bean
     public AuthenticationManager authenticationManager() throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+    /**
+     * Provides a PasswordEncoder bean.
+     *
+     * @return BCryptPasswordEncoder object.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

@@ -15,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service class for handling JWT (JSON Web Token) operations.
+ */
 @Service
 public class JwtService {
     @Getter
@@ -22,6 +25,13 @@ public class JwtService {
     private final int accessTokenValidTimeInMinutes;
     private final int refreshTokenValidTimeInMinutes;
 
+    /**
+     * Constructor for JwtService.
+     *
+     * @param secretKey                      Secret key used for signing JWTs.
+     * @param accessTokenValidTimeInMinutes  Valid time for access tokens in minutes.
+     * @param refreshTokenValidTimeInMinutes Valid time for refresh tokens in minutes.
+     */
     @Autowired
     public JwtService(@Value("${JWT_TOKEN_KEY}") String secretKey,
                       @Value("${accessTokenValidTimeMin}") int accessTokenValidTimeInMinutes,
@@ -31,6 +41,12 @@ public class JwtService {
         this.refreshTokenValidTimeInMinutes = refreshTokenValidTimeInMinutes;
     }
 
+    /**
+     * Retrieves the JWT token from the HTTP request.
+     *
+     * @param request The HTTP request.
+     * @return An optional string containing the JWT token if found in the request.
+     */
     public Optional<String> getTokenFromRequest(HttpServletRequest request) {
         return Optional
             .ofNullable(request.getHeader("Authorization"))
@@ -38,6 +54,14 @@ public class JwtService {
             .map(token -> token.substring(7));
     }
 
+    /**
+     * Generates an access token.
+     *
+     * @param id    The user ID.
+     * @param email The user email.
+     * @param role  The user role.
+     * @return The generated access token.
+     */
     public String generateAccessToken(Long id, String email, Role role) {
         Date now = new Date();
         Calendar calendar = Calendar.getInstance();
@@ -54,6 +78,12 @@ public class JwtService {
             .compact();
     }
 
+    /**
+     * Generates a refresh token.
+     *
+     * @param user The user for whom the refresh token is generated.
+     * @return The generated refresh token.
+     */
     public String generateRefreshToken(User user) {
         Date now = new Date();
         Calendar calendar = Calendar.getInstance();
@@ -70,6 +100,11 @@ public class JwtService {
             .compact();
     }
 
+    /**
+     * Generates a unique token key.
+     *
+     * @return The generated token key.
+     */
     public String generateTokenKey() {
         return UUID.randomUUID().toString();
     }

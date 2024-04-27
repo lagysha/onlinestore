@@ -19,11 +19,23 @@ import org.springframework.stereotype.Component;
 public class JwtAuthenticationProvider implements AuthenticationProvider {
     private final JwtService jwtService;
 
+    /**
+     * Constructor for JwtAuthenticationProvider.
+     *
+     * @param jwtService JwtService instance for JWT operations.
+     */
     @Autowired
     public JwtAuthenticationProvider(JwtService jwtService) {
         this.jwtService = jwtService;
     }
 
+    /**
+     * Authenticates the given authentication token.
+     *
+     * @param authentication Authentication object containing JWT token.
+     * @return Authentication object representing the authenticated user.
+     * @throws AuthenticationException If authentication fails.
+     */
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         SecretKey secretKey = Keys.hmacShaKeyFor(jwtService.getSecretKey().getBytes(StandardCharsets.UTF_8));
@@ -40,6 +52,12 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
             Collections.singleton(new SimpleGrantedAuthority(role)));
     }
 
+    /**
+     * Checks if this AuthenticationProvider supports the provided authentication token.
+     *
+     * @param authentication The authentication token to check.
+     * @return True if the token is supported, false otherwise.
+     */
     @Override
     public boolean supports(Class<?> authentication) {
         return authentication.isAssignableFrom(UsernamePasswordAuthenticationToken.class);
