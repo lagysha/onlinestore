@@ -1,17 +1,14 @@
 package io.teamchallenge.entity;
 
+import io.teamchallenge.entity.attributes.ProductAttribute;
 import io.teamchallenge.entity.cartitem.CartItem;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "products")
@@ -19,9 +16,9 @@ import org.hibernate.type.SqlTypes;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"category","images","cartItems"})
+@ToString(exclude = {"category","brand","images","cartItems"})
 @Builder
-@EqualsAndHashCode(exclude = {"category","images","cartItems"})
+@EqualsAndHashCode(exclude = {"category","brand","images","cartItems"})
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,27 +27,11 @@ public class Product {
     @Column(name = "short_desc", nullable = false)
     private String shortDesc;
 
-    @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
-
-    @OneToMany(mappedBy = "product")
-    @Setter(AccessLevel.PRIVATE)
-    private List<Image> images = new ArrayList<>();
-
-    @OneToMany(mappedBy = "product")
-    @Setter(AccessLevel.PRIVATE)
-    private List<CartItem> cartItems = new ArrayList<>();
-
-    @Column(nullable = false)
-    @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, String> characteristics;
-
     @Column(unique = true, nullable = false)
     private String name;
 
     @Column(nullable = false)
-    private String desc;
+    private String description;
 
     @Column(nullable = false)
     private BigDecimal price;
@@ -62,6 +43,27 @@ public class Product {
     @Column(name = "created_at", updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true)
+    @Setter(AccessLevel.PRIVATE)
+    private List<Image> images = new ArrayList<>();
+
+    @OneToMany(mappedBy = "product")
+    @Setter(AccessLevel.PRIVATE)
+    private List<CartItem> cartItems = new ArrayList<>();
+
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, orphanRemoval = true)
+    @Setter(AccessLevel.PRIVATE)
+    private List<ProductAttribute> productAttributes = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "brand_id")
+    private Brand brand;
+
 
     /**
      * Adds an image to the product and sets the product for the image.
@@ -103,5 +105,36 @@ public class Product {
     public void removeCartItem(CartItem cartItem) {
         cartItems.remove(cartItem);
         cartItem.setProduct(null);
+    }
+
+    /**
+     * Adds a product attribute to the list of attributes associated with this product.
+     * This method also sets the product reference in the added attribute.
+     *
+     * @param productAttribute The product attribute to add.
+     */
+    public void addProductAttribute(ProductAttribute productAttribute) {
+        productAttributes.add(productAttribute);
+        productAttribute.setProduct(this);
+    }
+
+    /**
+     * Removes a product attribute from the list of attributes associated with this product.
+     * This method also removes the product reference from the removed attribute.
+     *
+     * @param productAttribute The product attribute to remove.
+     */
+    public void removeProductAttribute(ProductAttribute productAttribute) {
+        productAttributes.remove(productAttribute);
+        productAttribute.setProduct(null);
+    }
+
+    /**
+     * Clears all images associated with the product.
+     * This method removes the association of each image with the product and clears the list of images.
+     */
+    public void clearAllImages() {
+        images.forEach(image -> image.setProduct(null));
+        images.clear();
     }
 }

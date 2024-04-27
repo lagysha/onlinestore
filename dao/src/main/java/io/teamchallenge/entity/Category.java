@@ -1,5 +1,6 @@
 package io.teamchallenge.entity;
 
+import io.teamchallenge.entity.attributes.CategoryAttribute;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +13,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"products"})
-@EqualsAndHashCode(exclude = {"products"})
+@ToString(exclude = {"products","categoryAttributes"})
+@EqualsAndHashCode(exclude = {"products","categoryAttributes"})
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +29,10 @@ public class Category {
     @OneToMany(mappedBy = "category")
     @Setter(AccessLevel.PRIVATE)
     private List<Product> products = new ArrayList<>();
+
+    @OneToMany(mappedBy = "category")
+    @Setter(AccessLevel.PRIVATE)
+    private List<CategoryAttribute> categoryAttributes = new ArrayList<>();
 
     /**
      * Adds a product to the category and sets the category for the product.
@@ -47,5 +52,25 @@ public class Category {
     public void removeProduct(Product product) {
         products.remove(product);
         product.setCategory(null);
+    }
+
+    /**
+     * Adds a category attribute to the category.
+     *
+     * @param categoryAttribute The category attribute to be added.
+     */
+    public void addCategoryAttribute(CategoryAttribute categoryAttribute) {
+        categoryAttributes.add(categoryAttribute);
+        categoryAttribute.setCategory(this);
+    }
+
+    /**
+     * Removes a category attribute from the category.
+     *
+     * @param categoryAttribute The category attribute to be removed.
+     */
+    public void removeCategoryAttribute(CategoryAttribute categoryAttribute) {
+        categoryAttributes.remove(categoryAttribute);
+        categoryAttribute.setCategory(null);
     }
 }

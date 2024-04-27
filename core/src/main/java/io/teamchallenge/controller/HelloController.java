@@ -1,4 +1,4 @@
-package io.teamchallenge.controllers;
+package io.teamchallenge.controller;
 
 import java.util.Optional;
 import org.springframework.web.bind.annotation.GetMapping;

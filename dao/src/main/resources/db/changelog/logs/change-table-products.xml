@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet id="change_products_table" author="Malov Nikita">
+        <addColumn tableName="products">
+            <column name="brand_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="products" baseColumnNames="brand_id"
+                                 constraintName="FK_products_brands"
+                                 referencedTableName="brands" referencedColumnNames="id"/>
+        <createIndex tableName="products" indexName="FK_products_brands">
+            <column name="brand_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

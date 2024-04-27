@@ -1,4 +1,4 @@
-package io.teamchallenge.controllers;
+package io.teamchallenge.controller;
 
 import io.teamchallenge.dto.security.SignInRequestDto;
 import io.teamchallenge.dto.security.SignInResponseDto;

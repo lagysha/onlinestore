@@ -1,0 +1,42 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+    <changeSet id="create_category_attributes" author="Malov Nikita">
+        <createTable tableName="category_attributes">
+            <column name="id" type="bigint" autoIncrement="true"/>
+            <column name="category_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="attribute_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="category_attributes" columnNames="id" constraintName="PK_category_attributes"/>
+
+        <addUniqueConstraint tableName="category_attributes"
+                             columnNames="attribute_id,category_id"
+                             constraintName="UQ_category_attributes_attribute_id_category_id"/>
+
+        <addForeignKeyConstraint baseTableName="category_attributes"
+                                 baseColumnNames="category_id"
+                                 constraintName="FK_category_attributes_categories"
+                                 referencedTableName="categories"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint baseTableName="category_attributes"
+                                 baseColumnNames="attribute_id"
+                                 constraintName="FK_category_attributes_attributes"
+                                 referencedTableName="attributes"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+
+        <createIndex tableName="category_attributes" indexName="FK_category_attributes_categories">
+            <column name="category_id"/>
+        </createIndex>
+        <createIndex tableName="category_attributes" indexName="FK_category_attributes_attributes">
+            <column name="attribute_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="create_table_product_attributes" author="Malov Nikita">
+        <createTable tableName="product_attributes">
+            <column name="id" type="bigint" autoIncrement="true"/>
+            <column name="product_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="attribute_value_id" type="bigint">
+                <constraints nullable="false"/>
+             </column>
+        </createTable>
+
+        <addPrimaryKey tableName="product_attributes" columnNames="id" constraintName="PK_product_attributes"/>
+
+        <addForeignKeyConstraint baseTableName="product_attributes" baseColumnNames="product_id"
+                                 constraintName="FK_product_attributes_products"
+                                 referencedTableName="products"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="product_attributes" baseColumnNames="attribute_value_id"
+                                 constraintName="FK_product_attributes_attribute_values"
+                                 referencedTableName="attribute_values"
+                                 referencedColumnNames="id"/>
+
+        <createIndex tableName="product_attributes" indexName="FK_product_attributes_products">
+            <column name="product_id"/>
+        </createIndex>
+
+        <createIndex tableName="product_attributes" indexName="FK_product_attributes_attribute_values">
+            <column name="attribute_value_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>
