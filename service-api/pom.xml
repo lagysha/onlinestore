@@ -12,4 +12,10 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>service-api</name>
     <description>service-api</description>
+    <dependencies>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+    </dependencies>
 </project>
