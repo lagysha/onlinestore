@@ -35,7 +35,7 @@ public class User {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Column(nullable = false, unique = true,name = "phone_number")
+    @Column(nullable = false, unique = true, name = "phone_number")
     private String phoneNumber;
 
     @Setter(AccessLevel.PRIVATE)
@@ -57,6 +57,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @Column(name = "refresh_token_key", nullable = false)
+    private String refreshTokenKey;
 
     /**
      * Sets the address for this user and updates the user reference in the address object.
