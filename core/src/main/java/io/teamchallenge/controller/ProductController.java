@@ -87,7 +87,7 @@ public class ProductController {
      * @return ResponseEntity with status NO_CONTENT.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<ProductResponseDto> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         productService.deleteById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

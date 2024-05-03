@@ -1,9 +1,11 @@
 package io.teamchallenge.handler;
 
 import io.teamchallenge.exception.AlreadyExistsException;
-import io.teamchallenge.exception.CreationException;
+import io.teamchallenge.exception.PersistenceException;
 import io.teamchallenge.exception.ExceptionResponse;
 import io.teamchallenge.exception.NotFoundException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,8 +70,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
      * @param webRequest The WebRequest associated with the request.
      * @return A ResponseEntity containing the ExceptionResponse with HttpStatus.BAD_REQUEST.
      */
-    @ExceptionHandler(CreationException.class)
-    public ResponseEntity<ExceptionResponse> handleCreationException(CreationException e, WebRequest webRequest) {
+    @ExceptionHandler(PersistenceException.class)
+    public ResponseEntity<ExceptionResponse> handleCreationException(PersistenceException e, WebRequest webRequest) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(webRequest));
         log.trace(e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -100,6 +102,26 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         }));
 
         return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Method intercept exception {@link ConstraintViolationException}.
+     *
+     * @param ex      Exception witch should be intercepted.
+     * @param request contain detail about occur exception
+     * @return ResponseEntity witch contain http status and body with message of
+     *         exception.
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public final ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex,
+                                                                           WebRequest request) {
+        log.warn(ex.getMessage());
+        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(request));
+        String detailedMessage = ex.getConstraintViolations().stream()
+            .map(ConstraintViolation::getMessage)
+            .collect(Collectors.joining(" "));
+        exceptionResponse.setMessage(detailedMessage);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse);
     }
 
     private Map<String, Object> getErrorAttributes(WebRequest webRequest) {

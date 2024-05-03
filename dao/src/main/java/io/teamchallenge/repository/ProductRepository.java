@@ -34,7 +34,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      */
     @Query("select p.id from Product p "
         + "where (:name is NULL or p.name like %:name%)")
-    Page<Long> findAllProductsIdByName(Pageable pageable, String name);
+    Page<Long> findAllIdsByName(Pageable pageable, String name);
 
     /**
      * Retrieves all Products by their IDs with associated images eagerly fetched.

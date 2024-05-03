@@ -12,7 +12,7 @@ import io.teamchallenge.entity.Image;
 import io.teamchallenge.entity.Product;
 import io.teamchallenge.entity.attributes.ProductAttribute;
 import io.teamchallenge.exception.AlreadyExistsException;
-import io.teamchallenge.exception.CreationException;
+import io.teamchallenge.exception.PersistenceException;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.repository.*;
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class ProductService {
      * @return PageableDto containing a list of ProductResponseDto representing the paginated list of products.
      */
     public PageableDto<ShortProductResponseDto> getAll(Pageable pageable, String name) {
-        Page<Long> retrievedProducts = productRepository.findAllProductsIdByName(pageable, name);
+        Page<Long> retrievedProducts = productRepository.findAllIdsByName(pageable, name);
         List<ShortProductResponseDto> content = productRepository
             .findAllByIdWithImages(retrievedProducts.getContent())
             .stream()
@@ -94,7 +94,7 @@ public class ProductService {
      *
      * @param productRequestDto The ProductRequestDto containing the details of the product to create.
      * @return The ProductResponseDto representing the created product.
-     * @throws CreationException      if there is an issue creating the product.
+     * @throws PersistenceException      if there is an issue creating the product.
      * @throws NotFoundException      if the brand or category specified in the request is not found.
      * @throws AlreadyExistsException if the product name is invalid.
      */
@@ -135,7 +135,7 @@ public class ProductService {
 
             return modelMapper.map(savedProduct, ProductResponseDto.class);
         } catch (DataIntegrityViolationException e) {
-            throw new CreationException(PRODUCT_CREATION_EXCEPTION, e);
+            throw new PersistenceException(PRODUCT_PERSISTENCE_EXCEPTION, e);
         }
     }
 
@@ -146,18 +146,18 @@ public class ProductService {
      * @param id                The identifier of the product to update.
      * @param productRequestDto The ProductRequestDto containing the updated details of the product.
      * @return The ProductResponseDto representing the updated product.
-     * @throws CreationException      if there is an issue creating the product.
+     * @throws PersistenceException      if there is an issue creating the product.
      * @throws NotFoundException      if the brand or category specified in the request is not found.
      * @throws AlreadyExistsException if the product name is invalid.
      */
     @Transactional
     public ProductResponseDto update(Long id, ProductRequestDto productRequestDto) {
-        var brand = getBrandById(productRequestDto);
-        var category = getCategoryById(productRequestDto);
-        validateProductNameWhereIdNotEquals(productRequestDto, id);
         var product = productRepository
             .findByIdWithCollections(id)
             .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID.formatted(id)));
+        var brand = getBrandById(productRequestDto);
+        var category = getCategoryById(productRequestDto);
+        validateProductNameWhereIdNotEquals(productRequestDto, id);
 
         product.setBrand(brand);
         product.setCategory(category);
@@ -180,7 +180,7 @@ public class ProductService {
             attributeValueRepository.findAllByIdIn(idsToFetch);
             return modelMapper.map(product, ProductResponseDto.class);
         } catch (DataIntegrityViolationException e) {
-            throw new CreationException(PRODUCT_CREATION_EXCEPTION, e);
+            throw new PersistenceException(PRODUCT_PERSISTENCE_EXCEPTION, e);
         }
     }
 
@@ -192,12 +192,12 @@ public class ProductService {
                     .contains(productAttribute.getAttributeValue().getId()))
             .toList()
             .forEach(product::removeProductAttribute);
-        List<Long> productProductAttributesId = product.getProductAttributes()
+        List<Long> productAttributeAttributeValueIds = product.getProductAttributes()
             .stream().map(productAttribute -> productAttribute.getAttributeValue().getId())
             .toList();
         List<Long> idsToFetch = new ArrayList<>();
         for (Long attributeId : productRequestDto.getAttributeValueId()) {
-            if (!productProductAttributesId.contains(attributeId)) {
+            if (!productAttributeAttributeValueIds.contains(attributeId)) {
                 product.addProductAttribute(ProductAttribute
                     .builder()
                     .attributeValue(attributeValueRepository
