@@ -6,6 +6,8 @@ import io.teamchallenge.entity.User;
 import io.teamchallenge.enumerated.Role;
 import jakarta.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
@@ -63,7 +65,8 @@ public class JwtService {
      * @return The generated access token.
      */
     public String generateAccessToken(Long id, String email, Role role) {
-        Date now = new Date();
+        LocalDateTime localDateTime = LocalDateTime.now();
+        Date now = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(now);
         calendar.add(Calendar.MINUTE, accessTokenValidTimeInMinutes);
@@ -85,7 +88,8 @@ public class JwtService {
      * @return The generated refresh token.
      */
     public String generateRefreshToken(User user) {
-        Date now = new Date();
+        LocalDateTime localDateTime = LocalDateTime.now();
+        Date now = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(now);
         calendar.add(Calendar.MINUTE, refreshTokenValidTimeInMinutes);

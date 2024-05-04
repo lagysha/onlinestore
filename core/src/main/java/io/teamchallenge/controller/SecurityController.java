@@ -7,16 +7,18 @@ import io.teamchallenge.dto.security.SignUpResponseDto;
 import io.teamchallenge.service.SecurityService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
+@RequestMapping("/api/v1")
 @Validated
 public class SecurityController {
     private final SecurityService securityService;
@@ -38,9 +40,8 @@ public class SecurityController {
      * @return SignUpResponseDto containing sign-up result.
      */
     @PostMapping("/signUp")
-    @ResponseStatus(CREATED)
-    public SignUpResponseDto signUpUser(@Valid @RequestBody SignUpRequestDto signUpRequestDto) {
-        return securityService.signUpUser(signUpRequestDto);
+    public ResponseEntity<SignUpResponseDto> signUpUser(@Valid @RequestBody SignUpRequestDto signUpRequestDto) {
+        return ResponseEntity.status(CREATED).body(securityService.signUpUser(signUpRequestDto));
     }
 
     /**
@@ -49,8 +50,8 @@ public class SecurityController {
      * @param signInRequestDto Request body containing sign-in information.
      * @return SignInResponseDto containing sign-in result.
      */
-    @GetMapping("/signIn")
-    public SignInResponseDto signInUser(@Valid @RequestBody SignInRequestDto signInRequestDto) {
-        return securityService.signInUser(signInRequestDto);
+    @PostMapping("/signIn")
+    public ResponseEntity<SignInResponseDto> signInUser(@Valid @RequestBody SignInRequestDto signInRequestDto) {
+        return ResponseEntity.status(OK).body(securityService.signInUser(signInRequestDto));
     }
 }

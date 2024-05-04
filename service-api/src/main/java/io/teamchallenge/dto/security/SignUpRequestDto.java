@@ -1,11 +1,16 @@
 package io.teamchallenge.dto.security;
 
-import io.teamchallenge.dto.address.AddressDto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,5 +33,4 @@ public class SignUpRequestDto {
     private String lastName;
     @NotBlank
     private String phoneNumber;
-    private AddressDto address;
 }

@@ -1,9 +1,13 @@
 package io.teamchallenge.constant;
 
 public final class ExceptionMessage {
-    public static final String USER_NOT_FOUND_BY_EMAIL = "There is no user with email: ";
-    public static final String COUNTRY_NOT_FOUND_BY_NAME = "There is no country with name: ";
+    public static final String USER_NOT_FOUND_BY_EMAIL = "There is no user with email: %s";
+    public static final String COUNTRY_NOT_FOUND_BY_NAME = "There is no country with name: %s";
     public static final String PASSWORD_DOES_NOT_MATCH = "Password does not match.";
+    public static final String USER_WITH_EMAIL_ALREADY_EXISTS =
+        "There is already registered user with same email address: %s";
+    public static final String USER_WITH_PHONE_NUMBER_ALREADY_EXISTS =
+        "There is already registered user with same phone number: %s";
     public static final String PRODUCT_NOT_FOUND_BY_ID = "The product with id: %s is not present in database";
     public static final String BRAND_NOT_FOUND_BY_ID = "The brand with id: %s is not present in database";
     public static final String CATEGORY_NOT_FOUND_BY_ID = "The category with id: %s is not present in database";

@@ -15,21 +15,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class SignUpRequestDtoToUserMapper extends AbstractConverter<SignUpRequestDto, User> {
     private final PasswordEncoder passwordEncoder;
-    private final AddressDtoToAddressMapper addressDtoToAddressMapper;
     private final JwtService jwtService;
 
     /**
      * Constructor to autowire dependencies.
      *
      * @param passwordEncoder {@link PasswordEncoder} bean used for password hashing.
-     * @param addressDtoToAddressMapper {@link AddressDtoToAddressMapper} bean used to convert address.
      * @param jwtService {@link JwtService} bean used for generating refresh token key.
      */
     @Autowired
-    public SignUpRequestDtoToUserMapper(PasswordEncoder passwordEncoder,
-                                        AddressDtoToAddressMapper addressDtoToAddressMapper, JwtService jwtService) {
+    public SignUpRequestDtoToUserMapper(PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.passwordEncoder = passwordEncoder;
-        this.addressDtoToAddressMapper = addressDtoToAddressMapper;
         this.jwtService = jwtService;
     }
 
@@ -47,7 +43,6 @@ public class SignUpRequestDtoToUserMapper extends AbstractConverter<SignUpReques
             .firstName(signUpRequestDto.getFirstName())
             .lastName(signUpRequestDto.getLastName())
             .role(Role.ROLE_USER)
-            .address(addressDtoToAddressMapper.convert(signUpRequestDto.getAddress()))
             .refreshTokenKey(jwtService.generateTokenKey())
             .build();
     }

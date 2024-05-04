@@ -85,11 +85,9 @@ public class SecurityConfig {
                 .accessDeniedHandler((req, resp, exc) ->
                     resp.sendError(SC_FORBIDDEN, "You don't have authorities.")))
             .authorizeHttpRequests(req -> req
-                .requestMatchers(HttpMethod.GET,
-                    "/signIn")
-                .permitAll()
                 .requestMatchers(HttpMethod.POST,
-                    "/signUp"
+                    "/api/v1/signUp",
+                    "/api/v1/signIn"
                 )
                 .permitAll()
                 .requestMatchers(HttpMethod.GET,

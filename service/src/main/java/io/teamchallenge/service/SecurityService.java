@@ -6,6 +6,7 @@ import io.teamchallenge.dto.security.SignInResponseDto;
 import io.teamchallenge.dto.security.SignUpRequestDto;
 import io.teamchallenge.dto.security.SignUpResponseDto;
 import io.teamchallenge.entity.User;
+import io.teamchallenge.exception.AlreadyExistsException;
 import io.teamchallenge.exception.BadCredentialsException;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.repository.UserRepository;
@@ -53,8 +54,15 @@ public class SecurityService {
      */
     public SignUpResponseDto signUpUser(SignUpRequestDto signUpRequestDto) {
         log.info("User tries to sign up {}", signUpRequestDto);
+        if (userRepository.existsByEmail(signUpRequestDto.getEmail())) {
+            throw new AlreadyExistsException(
+                ExceptionMessage.USER_WITH_EMAIL_ALREADY_EXISTS.formatted(signUpRequestDto.getEmail()));
+        }
+        if (userRepository.existsByPhoneNumber(signUpRequestDto.getPhoneNumber())) {
+            throw new AlreadyExistsException(
+                ExceptionMessage.USER_WITH_PHONE_NUMBER_ALREADY_EXISTS.formatted(signUpRequestDto.getPhoneNumber()));
+        }
         User user = modelMapper.map(signUpRequestDto, User.class);
-        user.getAddress().setUser(user);
         return modelMapper.map(userRepository.save(user), SignUpResponseDto.class);
     }
 
