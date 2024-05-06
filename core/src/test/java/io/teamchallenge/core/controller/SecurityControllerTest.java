@@ -36,6 +36,10 @@ public class SecurityControllerTest {
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
     private final String REQUEST_MAPPING = "/api/v1";
+    private final SignInResponseDto signInResponseDto = SignInResponseDto.builder()
+        .accessToken("accessToken")
+        .refreshToken("refreshToken")
+        .build();
 
     @BeforeEach
     public void setUp() {
@@ -63,7 +67,7 @@ public class SecurityControllerTest {
             .build();
         when(securityService.signUpUser(signUpRequestDto)).thenReturn(signUpResponseDto);
 
-        String response = mockMvc.perform(post(REQUEST_MAPPING+"/signUp")
+        String response = mockMvc.perform(post(REQUEST_MAPPING + "/signUp")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(signUpRequestDto)))
             .andExpect(status().isCreated())
@@ -83,13 +87,10 @@ public class SecurityControllerTest {
             .email("test@mail.com")
             .password("Password1234!")
             .build();
-        SignInResponseDto signInResponseDto = SignInResponseDto.builder()
-            .accessToken("accessToken")
-            .refreshToken("refreshToken")
-            .build();
+
         when(securityService.signInUser(signInRequestDto)).thenReturn(signInResponseDto);
 
-        String response = mockMvc.perform(post(REQUEST_MAPPING+"/signIn")
+        String response = mockMvc.perform(post(REQUEST_MAPPING + "/signIn")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(signInRequestDto)))
             .andExpect(status().isOk())
@@ -100,6 +101,25 @@ public class SecurityControllerTest {
         SignInResponseDto responseDto = objectMapper.readValue(response, SignInResponseDto.class);
 
         verify(securityService).signInUser(eq(signInRequestDto));
+        assertEquals(signInResponseDto, responseDto);
+    }
+
+    @Test
+    void updateAccessTokenTest() throws Exception {
+        String refreshToken = "refreshTokenTest";
+
+        when(securityService.updateAccessToken(refreshToken)).thenReturn(signInResponseDto);
+
+        String response = mockMvc.perform(post(REQUEST_MAPPING + "/updateAccessToken")
+                    .param("refreshToken", refreshToken))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        SignInResponseDto responseDto = objectMapper.readValue(response, SignInResponseDto.class);
+
+        verify(securityService).updateAccessToken(eq(refreshToken));
         assertEquals(signInResponseDto, responseDto);
     }
 }

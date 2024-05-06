@@ -87,7 +87,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(req -> req
                 .requestMatchers(HttpMethod.POST,
                     "/api/v1/signUp",
-                    "/api/v1/signIn"
+                    "/api/v1/signIn",
+                    "/api/v1/updateAccessToken"
                 )
                 .permitAll()
                 .requestMatchers(HttpMethod.GET,

@@ -8,6 +8,7 @@ import io.teamchallenge.dto.security.SignUpResponseDto;
 import io.teamchallenge.entity.User;
 import io.teamchallenge.exception.AlreadyExistsException;
 import io.teamchallenge.exception.BadCredentialsException;
+import io.teamchallenge.exception.BadTokenException;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -77,13 +78,40 @@ public class SecurityService {
     @Transactional(readOnly = true)
     public SignInResponseDto signInUser(SignInRequestDto signInRequestDto) {
         log.info("User tries to sign in {}", signInRequestDto);
-        User user = userRepository.findUserByEmail(signInRequestDto.getEmail()).orElseThrow(() -> new NotFoundException(
-            ExceptionMessage.USER_NOT_FOUND_BY_EMAIL + signInRequestDto.getEmail()));
+        User user = userRepository.findUserByEmail(signInRequestDto.getEmail())
+            .orElseThrow(() -> new NotFoundException(
+                ExceptionMessage.USER_NOT_FOUND_BY_EMAIL.formatted(signInRequestDto.getEmail())));
         if (!passwordEncoder.matches(signInRequestDto.getPassword(), user.getPassword())) {
             throw new BadCredentialsException(ExceptionMessage.PASSWORD_DOES_NOT_MATCH);
         }
         String accessToken = jwtService.generateAccessToken(user.getId(), user.getEmail(), user.getRole());
         String refreshToken = jwtService.generateRefreshToken(user);
-        return new SignInResponseDto(accessToken, refreshToken);
+        return SignInResponseDto.builder()
+            .accessToken(accessToken)
+            .refreshToken(refreshToken)
+            .build();
+    }
+
+    /**
+     * Updates access tokens for a user based on the provided refresh token.
+     *
+     * @param refreshToken The refresh token used to generate new access and refresh tokens.
+     * @return A {@link SignInResponseDto} containing the updated access and refresh tokens.
+     * @throws BadTokenException If the provided refresh token does not contain a subject.
+     * @throws NotFoundException If a user with the email extracted from the refresh token is not found.
+     */
+    public SignInResponseDto updateAccessToken(String refreshToken) {
+        String email = jwtService.getSubjectFromToken(refreshToken)
+            .orElseThrow(() -> new BadTokenException(ExceptionMessage.TOKEN_DOES_NOT_CONTAIN_SUBJECT));
+        User user = userRepository.findUserByEmail(email)
+            .orElseThrow(() -> new NotFoundException(ExceptionMessage.USER_NOT_FOUND_BY_EMAIL.formatted(email)));
+        jwtService.verifyToken(refreshToken, user.getRefreshTokenKey());
+
+        String accessToken = jwtService.generateAccessToken(user.getId(), user.getEmail(), user.getRole());
+        String newRefreshToken = jwtService.generateRefreshToken(user);
+        return SignInResponseDto.builder()
+            .accessToken(accessToken)
+            .refreshToken(newRefreshToken)
+            .build();
     }
 }

@@ -6,13 +6,11 @@ import io.teamchallenge.dto.security.SignUpRequestDto;
 import io.teamchallenge.dto.security.SignUpResponseDto;
 import io.teamchallenge.service.SecurityService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
@@ -53,5 +51,16 @@ public class SecurityController {
     @PostMapping("/signIn")
     public ResponseEntity<SignInResponseDto> signInUser(@Valid @RequestBody SignInRequestDto signInRequestDto) {
         return ResponseEntity.status(OK).body(securityService.signInUser(signInRequestDto));
+    }
+
+    /**
+     * Method for refresh access token.
+     *
+     * @param refreshToken - {@link String} this is refresh token.
+     * @return {@link ResponseEntity} - with new access token.
+     */
+    @PostMapping("/updateAccessToken")
+    public ResponseEntity<SignInResponseDto> updateAccessToken(@RequestParam @NotBlank String refreshToken) {
+        return ResponseEntity.ok().body(securityService.updateAccessToken(refreshToken));
     }
 }

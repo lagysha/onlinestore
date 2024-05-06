@@ -8,6 +8,7 @@ import io.teamchallenge.entity.User;
 import io.teamchallenge.enumerated.Role;
 import io.teamchallenge.exception.AlreadyExistsException;
 import io.teamchallenge.exception.BadCredentialsException;
+import io.teamchallenge.exception.BadTokenException;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.repository.UserRepository;
 import io.teamchallenge.service.JwtService;
@@ -142,5 +143,44 @@ public class SecurityServiceTest {
         when(passwordEncoder.matches(signInRequestDto.getPassword(), user.getPassword())).thenReturn(false);
 
         assertThrows(BadCredentialsException.class, ()->securityService.signInUser(signInRequestDto));
+    }
+
+    @Test
+    void updateAccessTokenTest() {
+        String accessToken = "Access.Token.Test";
+        String refreshToken = "Refresh.Token.Test";
+        SignInResponseDto signInResponseDto = SignInResponseDto.builder()
+            .accessToken(accessToken)
+            .refreshToken(refreshToken+"Result")
+            .build();
+
+        when(jwtService.getSubjectFromToken(refreshToken)).thenReturn(Optional.of(user.getEmail()));
+        when(userRepository.findUserByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(jwtService.generateAccessToken(user.getId(), user.getEmail(), user.getRole()))
+            .thenReturn(signInResponseDto.getAccessToken());
+        when(jwtService.generateRefreshToken(user)).thenReturn(signInResponseDto.getRefreshToken());
+
+        SignInResponseDto result = securityService.updateAccessToken(refreshToken);
+
+        assertEquals(signInResponseDto, result);
+    }
+
+    @Test
+    void updateAccessTokenThrowsBadTokenExceptionWhenTokenDoesNotContainSubjectTest() {
+        String refreshToken = "Refresh.Token.Test";
+
+        when(jwtService.getSubjectFromToken(refreshToken)).thenReturn(Optional.empty());
+
+        assertThrows(BadTokenException.class,()->securityService.updateAccessToken(refreshToken));
+    }
+
+    @Test
+    void updateAccessTokenThrowsNotFoundExceptionWhenUserNotFoundByEmailTest() {
+        String refreshToken = "Refresh.Token.Test";
+
+        when(jwtService.getSubjectFromToken(refreshToken)).thenReturn(Optional.of(user.getEmail()));
+        when(userRepository.findUserByEmail(user.getEmail())).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class,()->securityService.updateAccessToken(refreshToken));
     }
 }

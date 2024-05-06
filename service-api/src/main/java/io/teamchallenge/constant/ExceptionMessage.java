@@ -18,4 +18,8 @@ public final class ExceptionMessage {
         + "attributes duplication and non-existence";
     public static final String ATTRIBUTE_VALUE_NOT_FOUND_BY_ID =
         "The attribute value with id: %s is not present in database";
+    public static final String TOKEN_HAS_BEEN_EXPIRED = "Token has been expired.";
+    public static final String TOKEN_DOES_NOT_CONTAIN_SUBJECT = "Token does not contain subject.";
+    public static final String TOKEN_WAS_NOT_SIGNED_BY_USER = "Token was not signed using user's key.";
+    public static final String TOKEN_CAN_NOT_BE_PARSED = "Token can not be parsed.";
 }
