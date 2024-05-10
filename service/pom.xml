@@ -30,12 +30,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.teamchallenge</groupId>
-            <artifactId>service-api</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>org.modelmapper</groupId>
             <artifactId>modelmapper</artifactId>
             <version>${modelmapper.version}</version>

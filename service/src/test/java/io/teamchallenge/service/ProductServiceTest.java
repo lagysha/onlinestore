@@ -13,6 +13,7 @@ import io.teamchallenge.exception.AlreadyExistsException;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.exception.PersistenceException;
 import io.teamchallenge.repository.*;
+import static io.teamchallenge.util.Utils.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -352,118 +353,5 @@ class ProductServiceTest {
         verify(productRepository).findByNameAndIdNot(eq(productRequestDto.getName()), eq(1L));
         verify(attributeValueRepository).getReferenceById(eq(3L));
         verify(attributeValueRepository).findAllByIdIn(eq(List.of(3L)));
-    }
-
-    private Category getCategory() {
-        return Category.builder()
-            .id(1L)
-            .name("name1")
-            .build();
-    }
-
-    private Product getProduct() {
-        List<ProductAttribute> productAttributes = new ArrayList<>();
-        productAttributes.add(getProductAttribute());
-        List<Image> images = new ArrayList<>();
-        images.add(getImage());
-        return Product
-            .builder()
-            .id(1L)
-            .shortDesc("shortDesc")
-            .name("name")
-            .category(getCategory())
-            .productAttributes(productAttributes)
-            .price(BigDecimal.ONE)
-            .images(images)
-            .brand(getBrand())
-            .description("desc")
-            .quantity(1)
-            .build();
-    }
-
-    private Image getImage() {
-        return Image.builder()
-            .link("https://image.jpg").build();
-    }
-
-    private ShortProductResponseDto getShortProductResponseDto() {
-        var product = getProduct();
-        return ShortProductResponseDto.builder()
-            .id(product.getId())
-            .name(product.getName())
-            .price(product.getPrice())
-            .images(product.getImages().stream()
-                .map(Image::getLink)
-                .collect(Collectors.toList()))
-            .build();
-    }
-
-    private ProductResponseDto getProductResponseDto() {
-        var product = getProduct();
-        return ProductResponseDto.builder()
-            .id(product.getId())
-            .shortDesc(product.getShortDesc())
-            .categoryResponseDto(
-                CategoryResponseDto.builder()
-                    .desc(product.getCategory().getDescription())
-                    .name(product.getCategory().getName())
-                    .build())
-            .productAttributeResponseDtos(product.getProductAttributes()
-                .stream()
-                .map((pa) -> new ProductAttributeResponseDto(
-                    pa.getAttributeValue().getAttribute().getName(),
-                    pa.getAttributeValue().getValue()))
-                .collect(Collectors.toList()))
-            .images(product.getImages()
-                .stream()
-                .map(Image::getLink)
-                .collect(Collectors.toList()))
-            .brand(product.getBrand().getName())
-            .name(product.getName())
-            .description(product.getDescription())
-            .price(product.getPrice())
-            .quantity(product.getQuantity())
-            .createdAt(product.getCreatedAt())
-            .build();
-    }
-
-    private ProductRequestDto getProductRequestDto() {
-        return ProductRequestDto
-            .builder()
-            .shortDesc("shortDesc")
-            .categoryId(1L)
-            .attributeValueId(List.of(1L))
-            .imageLinks(List.of("https://image.jpg"))
-            .brandId(1L)
-            .name("name")
-            .description("desc")
-            .price(BigDecimal.ONE)
-            .quantity(1)
-            .build();
-    }
-
-    private AttributeValue getAttributeValue() {
-        return AttributeValue.builder()
-            .id(1L)
-            .attribute(getAttribute())
-            .value("value")
-            .build();
-    }
-
-    private Attribute getAttribute() {
-        return Attribute.builder().id(1L).name("name").build();
-    }
-
-    private ProductAttribute getProductAttribute() {
-        return ProductAttribute.builder()
-            .attributeValue(getAttributeValue())
-            .build();
-    }
-
-    private Brand getBrand() {
-        return Brand.builder()
-            .id(1L)
-            .name("name1")
-            .build();
     }
 }
