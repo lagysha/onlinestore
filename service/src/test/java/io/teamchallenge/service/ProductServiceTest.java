@@ -34,7 +34,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
 @ExtendWith(MockitoExtension.class)
-class ProductServiceTests {
+class ProductServiceTest {
     @Mock
     private ProductRepository productRepository;
     @Mock
@@ -405,7 +405,7 @@ class ProductServiceTests {
             .shortDesc(product.getShortDesc())
             .categoryResponseDto(
                 CategoryResponseDto.builder()
-                    .desc(product.getCategory().getDesc())
+                    .desc(product.getCategory().getDescription())
                     .name(product.getCategory().getName())
                     .build())
             .productAttributeResponseDtos(product.getProductAttributes()

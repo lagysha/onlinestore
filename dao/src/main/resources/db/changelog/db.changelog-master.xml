@@ -23,5 +23,6 @@
     <include file="/db/changelog/logs/change-table-products-remove-characteristics.xml" relativeToChangelogFile="false" />
     <include file="/db/changelog/logs/change-table-products-rename-desc.xml" relativeToChangelogFile="false" />
     <include file="/db/changelog/logs/change-table-images-drop-constraint-name.xml" relativeToChangelogFile="false" />
+    <include file="/db/changelog/logs/change-table-categories-rename-desc.xml" relativeToChangelogFile="false"/>
 
 </databaseChangeLog>

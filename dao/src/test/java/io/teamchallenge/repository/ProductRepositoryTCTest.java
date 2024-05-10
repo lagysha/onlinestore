@@ -1,23 +1,20 @@
 package io.teamchallenge.repository;
 
-import io.teamchallenge.dto.*;
-import io.teamchallenge.entity.Brand;
-import io.teamchallenge.entity.Category;
-import io.teamchallenge.entity.Image;
 import io.teamchallenge.entity.Product;
-import io.teamchallenge.entity.attributes.Attribute;
-import io.teamchallenge.entity.attributes.AttributeValue;
-import io.teamchallenge.entity.attributes.ProductAttribute;
-import jakarta.persistence.EntityManager;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
+import org.hibernate.LazyInitializationException;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.transaction.TestTransaction;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -27,6 +24,8 @@ import org.testcontainers.utility.DockerImageName;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Testcontainers
+@ActiveProfiles("ts")
+@Sql(scripts = "classpath:data.sql")
 class ProductRepositoryTCTest  {
 
     @Container
@@ -37,129 +36,116 @@ class ProductRepositoryTCTest  {
     @Autowired
     private ProductRepository productRepository;
 
-    @Autowired
-    private EntityManager entityManager;
+    @Test
+    void findByNameTest() {
+        Optional<Product> product = productRepository.findByName("Example Smartphone");
+        assertFalse(product.isEmpty());
+        assertEquals(product.get().getName(),"Example Smartphone");
+    }
 
     @Test
-    void shouldGetAllActiveProducts() {
-//        Product entity = getProduct();
-//        entityManager.persist(entity);
-//        entityManager.flush();
-//
-//        Optional<Product> product = productRepository.findByName("name");
-        System.out.println(productRepository.findAll());
+    void findByNameWhenNoProductWithSuchNamePresentTest() {
+        Optional<Product> product = productRepository.findByName("name3");
+        assertTrue(product.isEmpty());
     }
 
-    private Category getCategory() {
-        return Category.builder()
-            .id(1L)
-            .name("name1")
-            .build();
+    @Test
+    void findByNameAndIdNotTest() {
+        Optional<Product> product = productRepository.findByNameAndIdNot("Example Smartphone",2L);
+        assertFalse(product.isEmpty());
+        assertEquals(product.get().getName(),"Example Smartphone");
     }
 
-    private Product getProduct() {
-        List<ProductAttribute> productAttributes = new ArrayList<>();
-        productAttributes.add(getProductAttribute());
-        List<Image> images = new ArrayList<>();
-        images.add(getImage());
-        return Product
-            .builder()
-            .id(1L)
-            .shortDesc("shortDesc")
-            .name("name")
-            .category(getCategory())
-            .productAttributes(productAttributes)
-            .price(BigDecimal.ONE)
-            .images(images)
-            .brand(getBrand())
-            .description("desc")
-            .quantity(1)
-            .build();
+    @Test
+    void findByNameAndIdNotWhenNoProductWithSuchNameAndIdPresentTest() {
+        Optional<Product> product = productRepository.findByNameAndIdNot("Example T-shirt",2L);
+        assertTrue(product.isEmpty());
     }
 
-    private Image getImage() {
-        return Image.builder()
-            .link("https://image.jpg").build();
+    @Test
+    void findByIdWithImagesTest() {
+        Optional<Product> product = productRepository.findByIdWithImages(1L);
+
+        TestTransaction.end();
+
+        assertFalse(product.isEmpty());
+        assertEquals(product.get().getImages().size(),1L);
     }
 
-    private ShortProductResponseDto getShortProductResponseDto() {
-        var product = getProduct();
-        return ShortProductResponseDto.builder()
-            .id(product.getId())
-            .name(product.getName())
-            .price(product.getPrice())
-            .images(product.getImages().stream()
-                .map(Image::getLink)
-                .collect(Collectors.toList()))
-            .build();
+    @Test
+    void findByIdWithImagesWhenNoProductWithIdPresentTest() {
+        Optional<Product> product = productRepository.findByIdWithImages(3L);
+        assertTrue(product.isEmpty());
     }
 
-    private ProductResponseDto getProductResponseDto() {
-        var product = getProduct();
-        return ProductResponseDto.builder()
-            .id(product.getId())
-            .shortDesc(product.getShortDesc())
-            .categoryResponseDto(
-                CategoryResponseDto.builder()
-                    .desc(product.getCategory().getDesc())
-                    .name(product.getCategory().getName())
-                    .build())
-            .productAttributeResponseDtos(product.getProductAttributes()
-                .stream()
-                .map((pa) -> new ProductAttributeResponseDto(
-                    pa.getAttributeValue().getAttribute().getName(),
-                    pa.getAttributeValue().getValue()))
-                .collect(Collectors.toList()))
-            .images(product.getImages()
-                .stream()
-                .map(Image::getLink)
-                .collect(Collectors.toList()))
-            .brand(product.getBrand().getName())
-            .name(product.getName())
-            .description(product.getDescription())
-            .price(product.getPrice())
-            .quantity(product.getQuantity())
-            .createdAt(product.getCreatedAt())
-            .build();
+    @Test
+    void findByIdWithCategoryAndBrandAndProductAttributeTest() {
+        Optional<Product> product = productRepository.findByIdWithCategoryAndBrandAndProductAttribute(1L);
+
+        TestTransaction.end();
+
+        assertFalse(product.isEmpty());
+        assertEquals(product.get().getCategory().getId(),1L);
+        assertEquals(product.get().getBrand().getId(),1L);
+        assertEquals(product.get().getProductAttributes().size(),2);
     }
 
-    private ProductRequestDto getProductRequestDto() {
-        return ProductRequestDto
-            .builder()
-            .shortDesc("shortDesc")
-            .categoryId(1L)
-            .attributeValueId(List.of(1L))
-            .imageLinks(List.of("https://image.jpg"))
-            .brandId(1L)
-            .name("name")
-            .description("desc")
-            .price(BigDecimal.ONE)
-            .quantity(1)
-            .build();
+    @Test
+    void findByIdWithCategoryAndBrandAndProductAttributeWhenNoProductWithIdPresentTest() {
+        Optional<Product> product = productRepository.findByIdWithCategoryAndBrandAndProductAttribute(3L);
+        assertTrue(product.isEmpty());
     }
 
-    private AttributeValue getAttributeValue() {
-        return AttributeValue.builder()
-            .id(1L)
-            .attribute(getAttribute())
-            .value("value")
-            .build();
+    @Test
+    void findAllByIdWithImagesTest() {
+        List<Product> products = productRepository.findAllByIdWithImages(List.of(1L,2L));
+
+        TestTransaction.end();
+
+        assertEquals(products.size(), 2);
+        assertEquals(products.getFirst().getImages().size(),1L);
     }
 
-    private Attribute getAttribute() {
-        return Attribute.builder().id(1L).name("name").build();
+    @Test
+    void findAllByIdWithImagesWhenNoProductWithIdPresentTest() {
+        List<Product> product = productRepository.findAllByIdWithImages(List.of(3L));
+        assertTrue(product.isEmpty());
     }
 
-    private ProductAttribute getProductAttribute() {
-        return ProductAttribute.builder()
-            .attributeValue(getAttributeValue())
-            .build();
+    @Test
+    void findAllIdsByNameTest() {
+        Page<Long> productsIds = productRepository.
+            findAllIdsByName(Pageable.ofSize(3),"Example T-shirt");
+
+        TestTransaction.end();
+
+        assertEquals(productsIds.getTotalElements(), 1);
+        assertEquals(productsIds.getContent().getFirst(),2L);
     }
 
-    private Brand getBrand() {
-        return Brand.builder()
-            .id(1L)
-            .name("name1")
-            .build();
+    @Test
+    void findAllIdsByNameWhenNoProductWithIdPresentTest() {
+        Page<Long> productsIds = productRepository.
+            findAllIdsByName(Pageable.ofSize(3),"Example T-shirt1");
+        assertTrue(productsIds.isEmpty());
+    }
+
+    @Test
+    void findByIdWithCollectionsTest() {
+        Optional<Product> product = productRepository.findByIdWithCollections(1L);
+
+        TestTransaction.end();
+
+        assertFalse(product.isEmpty());
+        assertEquals(product.get().getCategory().getId(),1L);
+        assertEquals(product.get().getBrand().getId(),1L);
+        assertEquals(product.get().getProductAttributes().size(),2);
+        assertEquals(product.get().getImages().size(),1);
+    }
+
+    @Test
+    void findByIdWithCollectionsWhenNoProductWithIdPresentTest() {
+        Optional<Product> product = productRepository.findByIdWithCollections(3L);
+        assertTrue(product.isEmpty());
     }
 }

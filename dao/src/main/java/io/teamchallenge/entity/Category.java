@@ -24,7 +24,7 @@ public class Category {
     private String name;
 
     @Column(nullable = false)
-    private String desc;
+    private String description;
 
     @OneToMany(mappedBy = "category")
     @Setter(AccessLevel.PRIVATE)
