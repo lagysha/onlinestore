@@ -71,7 +71,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
      * @return A ResponseEntity containing the ExceptionResponse with HttpStatus.BAD_REQUEST.
      */
     @ExceptionHandler(PersistenceException.class)
-    public ResponseEntity<ExceptionResponse> handleCreationException(PersistenceException e, WebRequest webRequest) {
+    public ResponseEntity<ExceptionResponse> handlePersistenceException(PersistenceException e, WebRequest webRequest) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(webRequest));
         log.trace(e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
