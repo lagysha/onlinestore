@@ -1,4 +1,4 @@
-package io.teamchallenge.service.service;
+package io.teamchallenge.service;
 
 import io.teamchallenge.dto.security.SignInRequestDto;
 import io.teamchallenge.dto.security.SignInResponseDto;

@@ -10,9 +10,9 @@ INSERT INTO Categories (id, name, description)
 VALUES (1, 'Electronics', 'Electronic gadgets and devices'),
        (2, 'Clothing', 'Clothing items and accessories'),
        (3, 'Home Appliances', 'Appliances for home use');
-INSERT INTO Users (id, password, first_name, last_name, phone_number, email, created_at)
-VALUES (1, 'password1', 'John', 'Doe', '+1234567890', 'john@example.com', '2024-05-10 08:00:00'),
-       (2, 'password2', 'Jane', 'Smith', '+1987654321', 'jane@example.com', '2024-05-10 09:00:00');
+INSERT INTO Users (id, password, first_name, last_name, phone_number, email, created_at, role, refresh_token_key)
+VALUES (1, 'password1', 'John', 'Doe', '+1234567890', 'john@example.com', '2024-05-10 08:00:00', 'ROLE_USER', '3cZAVF/SKSCmCM2+1azD2XHK7K2PChcSg32vrrEh/Qk='),
+       (2, 'password2', 'Jane', 'Smith', '+1987654321', 'jane@example.com', '2024-05-10 09:00:00', 'ROLE_USER', '4cZAVF/SKSCmCM2+1azD2XHK7K2PChcSg32vrrEh/Qk=');
 INSERT INTO Products (id, short_desc, category_id, brand_id, name, description, price, quantity, created_at)
 VALUES (1, 'Smartphone', 1, 1, 'Example Smartphone', 'This is an example smartphone.', 599.99, 100,
         '2024-05-10 10:00:00'),

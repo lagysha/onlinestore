@@ -1,4 +1,4 @@
-package io.teamchallenge.core.controller;
+package io.teamchallenge.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.teamchallenge.controller.SecurityController;

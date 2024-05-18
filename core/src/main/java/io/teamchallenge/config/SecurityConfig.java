@@ -2,7 +2,7 @@ package io.teamchallenge.config;
 
 import io.teamchallenge.security.filter.AccessTokenJwtAuthenticationFilter;
 import io.teamchallenge.service.JwtService;
-import io.teamchallenge.service.UserAuthorisationService;
+import io.teamchallenge.service.UserAuthorizationService;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class SecurityConfig {
     private final List<String> allowedOrigins;
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtService jwtService;
-    private final UserAuthorisationService userAuthorisationService;
+    private final UserAuthorizationService userAuthorizationService;
 
     /**
      * Constructor for SecurityConfig.
@@ -42,16 +42,16 @@ public class SecurityConfig {
      * @param allowedOrigins              Array of allowed origins.
      * @param authenticationConfiguration Authentication configuration.
      * @param jwtService                  JWT service.
-     * @param userAuthorisationService    User authorisation service.
+     * @param userAuthorizationService    User authorisation service.
      */
     @Autowired
     public SecurityConfig(@Value("${ALLOWED_ORIGINS}") String[] allowedOrigins,
                           AuthenticationConfiguration authenticationConfiguration, JwtService jwtService,
-                          UserAuthorisationService userAuthorisationService) {
+                          UserAuthorizationService userAuthorizationService) {
         this.allowedOrigins = List.of(allowedOrigins);
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtService = jwtService;
-        this.userAuthorisationService = userAuthorisationService;
+        this.userAuthorizationService = userAuthorizationService;
     }
 
     /**
@@ -77,7 +77,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterAfter(
-                new AccessTokenJwtAuthenticationFilter(jwtService, authenticationManager(), userAuthorisationService),
+                new AccessTokenJwtAuthenticationFilter(jwtService, authenticationManager(), userAuthorizationService),
                 BasicAuthenticationFilter.class)
             .exceptionHandling(exception -> exception
                 .authenticationEntryPoint((req, resp, exc) ->

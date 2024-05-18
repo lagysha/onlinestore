@@ -3,7 +3,7 @@ package io.teamchallenge.service;
 import io.teamchallenge.dto.user.UserVO;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,19 +14,9 @@ import static io.teamchallenge.constant.ExceptionMessage.USER_NOT_FOUND_BY_EMAIL
  */
 @Service
 @Transactional
-public class UserAuthorisationService {
+@RequiredArgsConstructor
+public class UserAuthorizationService {
     private final UserRepository userRepository;
-
-    /**
-     * Constructor for UserAuthorisationService.
-     *
-     * @param userRepository The user repository.
-     */
-    @Autowired
-    public UserAuthorisationService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
     /**
      * Finds a user by email.
      *

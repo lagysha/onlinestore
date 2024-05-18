@@ -3,7 +3,7 @@ package io.teamchallenge.security.filter;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.teamchallenge.dto.user.UserVO;
 import io.teamchallenge.service.JwtService;
-import io.teamchallenge.service.UserAuthorisationService;
+import io.teamchallenge.service.UserAuthorizationService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,20 +21,20 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class AccessTokenJwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final UserAuthorisationService userAuthorisationService;
+    private final UserAuthorizationService userAuthorizationService;
 
     /**
      * Constructor for AccessTokenJwtAuthenticationFilter.
      *
      * @param jwtService               Service for JWT operations.
      * @param authenticationManager    Authentication manager for JWT tokens.
-     * @param userAuthorisationService Service for user authorization.
+     * @param userAuthorizationService Service for user authorization.
      */
     public AccessTokenJwtAuthenticationFilter(JwtService jwtService, AuthenticationManager authenticationManager,
-                                              UserAuthorisationService userAuthorisationService) {
+                                              UserAuthorizationService userAuthorizationService) {
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
-        this.userAuthorisationService = userAuthorisationService;
+        this.userAuthorizationService = userAuthorizationService;
     }
 
     /**
@@ -58,7 +58,7 @@ public class AccessTokenJwtAuthenticationFilter extends OncePerRequestFilter {
                 Authentication authentication =
                     authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(jwt, null));
                 UserVO userVO =
-                    userAuthorisationService.findUserVOByEmail((String) authentication.getPrincipal());
+                    userAuthorizationService.findUserVOByEmail((String) authentication.getPrincipal());
                 log.info("user: {}", userVO);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }

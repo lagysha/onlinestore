@@ -1,6 +1,6 @@
 package io.teamchallenge.validator;
 
-import io.teamchallenge.annatation.AllowedSortFields;
+import io.teamchallenge.annotation.AllowedSortFields;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.util.Arrays;
