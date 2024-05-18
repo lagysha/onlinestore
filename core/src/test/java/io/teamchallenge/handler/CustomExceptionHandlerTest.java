@@ -1,6 +1,8 @@
 package io.teamchallenge.handler;
 
 import io.teamchallenge.exception.AlreadyExistsException;
+import io.teamchallenge.exception.BadCredentialsException;
+import io.teamchallenge.exception.BadTokenException;
 import io.teamchallenge.exception.ExceptionResponse;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.exception.PersistenceException;
@@ -114,5 +116,27 @@ public class CustomExceptionHandlerTest {
 
         assertEquals(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse),
             customExceptionHandler.handleConstraintViolationException(constraintViolationException, webRequest));
+    }
+
+    @Test
+    void handleBadTokenExceptionTest() {
+        BadTokenException badTokenException = new BadTokenException("test");
+        ExceptionResponse exceptionResponse = new ExceptionResponse(objectMap);
+        when(errorAttributes.getErrorAttributes(eq(webRequest),
+            any(ErrorAttributeOptions.class))).thenReturn(objectMap);
+
+        assertEquals(customExceptionHandler.handleBadTokenException(badTokenException, webRequest),
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse));
+    }
+
+    @Test
+    void handleBadCredentialsExceptionTest() {
+        BadCredentialsException badCredentialsException = new BadCredentialsException("test");
+        ExceptionResponse exceptionResponse = new ExceptionResponse(objectMap);
+        when(errorAttributes.getErrorAttributes(eq(webRequest),
+            any(ErrorAttributeOptions.class))).thenReturn(objectMap);
+
+        assertEquals(customExceptionHandler.handleBadCredentialsException(badCredentialsException, webRequest),
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse));
     }
 }
