@@ -17,6 +17,7 @@ import static io.teamchallenge.constant.ExceptionMessage.USER_NOT_FOUND_BY_EMAIL
 @RequiredArgsConstructor
 public class UserAuthorizationService {
     private final UserRepository userRepository;
+
     /**
      * Finds a user by email.
      *
