@@ -4,22 +4,24 @@ import io.teamchallenge.dto.CategoryResponseDto;
 import io.teamchallenge.dto.ProductAttributeResponseDto;
 import io.teamchallenge.dto.ProductResponseDto;
 import io.teamchallenge.entity.Image;
-import io.teamchallenge.entity.Product;
+import static io.teamchallenge.util.Utils.getProduct;
 import java.util.stream.Collectors;
-import org.modelmapper.AbstractConverter;
-import org.springframework.stereotype.Component;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@Component
-public class ProductResponseDtoMapper extends AbstractConverter<Product,ProductResponseDto> {
-    /**
-     * Converts a Product entity to a corresponding ProductResponseDto object.
-     *
-     * @param product The Product entity to be converted.
-     * @return ProductResponseDto representing the converted product with relevant information.
-     */
-    @Override
-    protected ProductResponseDto convert(Product product) {
-        return ProductResponseDto.builder()
+@ExtendWith(MockitoExtension.class)
+public class ProductResponseDtoMapperTest {
+    @InjectMocks
+    private ProductResponseDtoMapper productResponseDtoMapper;
+
+    @Test
+    void convertTest(){
+        var product = getProduct();
+
+        var expected  = ProductResponseDto.builder()
             .id(product.getId())
             .shortDesc(product.getShortDesc())
             .categoryResponseDto(
@@ -44,5 +46,7 @@ public class ProductResponseDtoMapper extends AbstractConverter<Product,ProductR
             .quantity(product.getQuantity())
             .createdAt(product.getCreatedAt())
             .build();
+
+        assertEquals(expected,productResponseDtoMapper.convert(product));
     }
 }

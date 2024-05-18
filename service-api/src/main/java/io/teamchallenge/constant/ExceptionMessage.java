@@ -13,9 +13,9 @@ public final class ExceptionMessage {
     public static final String CATEGORY_NOT_FOUND_BY_ID = "The category with id: %s is not present in database";
     public static final String PRODUCT_WITH_NAME_ALREADY_EXISTS =
         "The product with name: %s is already present in database";
-    public static final String PRODUCT_CREATION_EXCEPTION
+    public static final String PRODUCT_PERSISTENCE_EXCEPTION
         = "The product with such attributes can't be created due to following reasons: "
-        + "attributes duplication and non-existence";
+        + "attributes duplication or non-existence";
     public static final String ATTRIBUTE_VALUE_NOT_FOUND_BY_ID =
         "The attribute value with id: %s is not present in database";
     public static final String TOKEN_HAS_BEEN_EXPIRED = "Token has been expired.";
