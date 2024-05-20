@@ -1,4 +1,4 @@
-package io.teamchallenge.annatation;
+package io.teamchallenge.annotation;
 
 import io.teamchallenge.validator.AllowedSortFieldsValidator;
 import jakarta.validation.Constraint;

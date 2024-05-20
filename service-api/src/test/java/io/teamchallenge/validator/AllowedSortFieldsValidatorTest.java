@@ -1,11 +1,11 @@
 package io.teamchallenge.validator;
 
 
-import io.teamchallenge.annatation.AllowedSortFields;
+import io.teamchallenge.annotation.AllowedSortFields;
 import jakarta.validation.ConstraintValidatorContext;
 import jakarta.validation.Payload;
 import java.lang.annotation.Annotation;
-import org.hibernate.validator.internal.engine.constraintvalidation.ConstraintValidatorContextImpl;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;

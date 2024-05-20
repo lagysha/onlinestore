@@ -1,6 +1,6 @@
 package io.teamchallenge.controller;
 
-import io.teamchallenge.annatation.AllowedSortFields;
+import io.teamchallenge.annotation.AllowedSortFields;
 import io.teamchallenge.dto.PageableDto;
 import io.teamchallenge.dto.ProductRequestDto;
 import io.teamchallenge.dto.ProductResponseDto;

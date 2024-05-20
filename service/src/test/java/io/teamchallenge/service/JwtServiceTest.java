@@ -1,0 +1,173 @@
+package io.teamchallenge.service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import io.teamchallenge.entity.User;
+import io.teamchallenge.enumerated.Role;
+import io.teamchallenge.exception.BadTokenException;
+import jakarta.servlet.http.HttpServletRequest;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Optional;
+import java.util.UUID;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.MockedStatic;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+public class JwtServiceTest {
+    public static final int accessTokenValidTimeInMinutes = 20;
+    public static final int refreshTokenValidTimeInMinutes = 60;
+    public static final String secretKey = "5cZAVF/SKSCmCM2+1azD2XHK7K2PChcSg32vrrEh/Qk=";
+    @InjectMocks
+    private JwtService jwtService =
+        new JwtService(secretKey, new ObjectMapper(), accessTokenValidTimeInMinutes, refreshTokenValidTimeInMinutes);
+    private final String accessToken = "eyJhbGciOiJIUzI1NiJ9" +
+        ".eyJpc3MiOiJHYWRnZXRIb3VzZSIsInN1YiI6InRlc3RAbWFpbC5jb20iLCJpZCI6MSwicm9sZSI6IlJPT" +
+        "EVfVVNFUiIsImlhdCI6MTcxNDc1MDAyMiwiZXhwIjoxNzE0Nzg2MDIyfQ" +
+        ".sfkczlafsasfVxmd9asfasfasfasCu8DbWbZAkSWHujs";
+
+    private final User user = User.builder()
+        .id(1L)
+        .email("test@mail.com")
+        .role(Role.ROLE_USER)
+        .refreshTokenKey(secretKey)
+        .build();
+
+    @Test
+    void getTokenFromRequestTest() {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+
+        when(request.getHeader("Authorization")).thenReturn("Bearer " + accessToken);
+
+        Optional<String> token = jwtService.getTokenFromRequest(request);
+
+        verify(request).getHeader(eq("Authorization"));
+        assertEquals(accessToken, token.get());
+    }
+
+    @Test
+    void generateAccessTokenTest() {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        String accessToken = getToken(localDateTime, accessTokenValidTimeInMinutes, secretKey);
+
+        String result;
+        try (MockedStatic<LocalDateTime> mockedStatic = mockStatic(LocalDateTime.class)) {
+            mockedStatic.when(LocalDateTime::now).thenReturn(localDateTime);
+            result = jwtService.generateAccessToken(user.getId(), user.getEmail(), user.getRole());
+        }
+
+        assertEquals(accessToken, result);
+    }
+
+    @Test
+    void generateRefreshTokenTest() {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        String refreshToken = getToken(localDateTime, refreshTokenValidTimeInMinutes, user.getRefreshTokenKey());
+
+        String result;
+        try (MockedStatic<LocalDateTime> mockedStatic = mockStatic(LocalDateTime.class)) {
+            mockedStatic.when(LocalDateTime::now).thenReturn(localDateTime);
+            result = jwtService.generateRefreshToken(user);
+        }
+
+        assertEquals(refreshToken, result);
+    }
+
+    @Test
+    void generateTokenKeyTest() {
+        UUID uuid = UUID.randomUUID();
+        String key;
+        try (MockedStatic<UUID> mockUUID = mockStatic(UUID.class)) {
+            mockUUID.when(UUID::randomUUID).thenReturn(uuid);
+            key = jwtService.generateTokenKey();
+        }
+        assertEquals(uuid, UUID.fromString(key));
+    }
+    @Test
+    void getSubjectFromTokenTest() {
+        String subject = "test@mail.com";
+
+        Optional<String> subjectFromToken = jwtService.getSubjectFromToken(accessToken);
+
+        assertEquals(subject, subjectFromToken.get());
+    }
+
+    @Test
+    void getSubjectFromTokenReturnsEmptyOptionalWhenThereIsNoSubjectInTokenTest() {
+        String token = Jwts.builder()
+            .signWith(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)), Jwts.SIG.HS256)
+            .compact();
+
+        Optional<String> subjectFromToken = jwtService.getSubjectFromToken(token);
+
+        assertTrue(subjectFromToken.isEmpty());
+    }
+
+    @Test
+    void getSubjectFromTokenThrowsBadTokenExceptionWhenTokenCanNotBeParsedTest() {
+        String token = "eyJhbGciOaiJIUzI1NiJ9" +
+            ".eyJpc3MiOiJHYWRnZXRIbs3VzZSIsImlkIjoxLCJyb2xlIjoiUk9M" +
+            "RV9VU0VSIiwiaWF0IjoxNzfE0NzUwMDIyLCJleHAiOjE3MTQ3ODYwMjJ9" +
+            ".gYdMkgLvXJuAHXbPmeRY1DiwDKfcltJSxj6RRR-5VaQ";
+
+        assertThrows(BadTokenException.class, ()->jwtService.getSubjectFromToken(token));
+    }
+
+    @Test
+    void verifyTokenTest() {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        String token = getToken(localDateTime, refreshTokenValidTimeInMinutes, secretKey);
+
+        jwtService.verifyToken(token, secretKey);
+    }
+
+    @Test
+    void verifyTokenThrowsBadTokenExceptionWhenTokenWasNotSignedByUserTest() {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        String key = secretKey+"1";
+        String token = getToken(localDateTime, refreshTokenValidTimeInMinutes, secretKey);
+
+        assertThrows(BadTokenException.class, ()->jwtService.verifyToken(token, key));
+    }
+
+    @Test
+    void verifyTokenThrowsBadTokenExceptionWhenTokenHasBeenExpiredTest() {
+        LocalDateTime localDateTime = LocalDateTime.of(0,1,1,0,0);
+        String token = getToken(localDateTime, refreshTokenValidTimeInMinutes, secretKey);
+
+        assertThrows(BadTokenException.class, ()->jwtService.verifyToken(token, secretKey));
+    }
+
+    private String getToken(LocalDateTime localDateTime, int refreshTokenValidTimeInMinutes, String secretKey) {
+        Date now = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+        calendar.add(Calendar.MINUTE, refreshTokenValidTimeInMinutes);
+
+        return Jwts.builder()
+            .issuer("GadgetHouse")
+            .subject(user.getEmail())
+            .claim("id", user.getId())
+            .claim("role", user.getRole())
+            .issuedAt(now)
+            .expiration(calendar.getTime())
+            .signWith(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)), Jwts.SIG.HS256)
+            .compact();
+    }
+}

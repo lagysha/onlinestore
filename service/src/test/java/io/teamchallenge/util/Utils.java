@@ -1,6 +1,11 @@
 package io.teamchallenge.util;
 
-import io.teamchallenge.dto.*;
+import io.teamchallenge.dto.CategoryResponseDto;
+import io.teamchallenge.dto.ProductAttributeResponseDto;
+import io.teamchallenge.dto.ProductRequestDto;
+import io.teamchallenge.dto.ProductResponseDto;
+import io.teamchallenge.dto.ShortProductResponseDto;
+import io.teamchallenge.dto.user.UserVO;
 import io.teamchallenge.entity.Brand;
 import io.teamchallenge.entity.Category;
 import io.teamchallenge.entity.Image;
@@ -8,6 +13,7 @@ import io.teamchallenge.entity.Product;
 import io.teamchallenge.entity.attributes.Attribute;
 import io.teamchallenge.entity.attributes.AttributeValue;
 import io.teamchallenge.entity.attributes.ProductAttribute;
+import io.teamchallenge.enumerated.Role;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -124,6 +130,14 @@ public class Utils {
         return Brand.builder()
             .id(1L)
             .name("name1")
+            .build();
+    }
+
+    public static UserVO getUserVO() {
+        return UserVO.builder()
+            .id(1L)
+            .email("testmail@gmail.com")
+            .role(Role.ROLE_USER)
             .build();
     }
 }
