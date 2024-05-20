@@ -30,7 +30,6 @@ public class Attribute {
     @Setter(AccessLevel.PRIVATE)
     private List<AttributeValue> attributeValues = new ArrayList<>();
 
-
     /**
      * Adds a category attribute to the category.
      *
@@ -68,9 +67,8 @@ public class Attribute {
      *
      * @param attributeValue The attribute value to remove.
      */
-    public void removeCategoryAttribute(AttributeValue attributeValue) {
+    public void removeAttributeValue(AttributeValue attributeValue) {
         attributeValues.remove(attributeValue);
         attributeValue.setAttribute(null);
     }
-
 }

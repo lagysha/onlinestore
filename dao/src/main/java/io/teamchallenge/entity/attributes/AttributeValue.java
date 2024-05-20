@@ -14,7 +14,6 @@ import lombok.*;
 @Builder
 @EqualsAndHashCode(exclude = {"attribute","productAttributes"})
 public class AttributeValue {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,7 +28,6 @@ public class AttributeValue {
     @OneToMany(mappedBy = "attributeValue")
     @Setter(AccessLevel.PRIVATE)
     private List<ProductAttribute> productAttributes;
-
 
     /**
      * Adds a product attribute to the list of attributes associated with this product.
@@ -52,5 +50,4 @@ public class AttributeValue {
         productAttributes.remove(productAttribute);
         productAttribute.setAttributeValue(null);
     }
-
 }

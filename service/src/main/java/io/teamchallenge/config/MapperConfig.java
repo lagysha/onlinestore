@@ -9,6 +9,9 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class MapperConfig {
+    /**
+     * Configures and provides a ModelMapper bean for object mapping.
+     */
     @Bean
     public ModelMapper modelMapper(List<Converter<?, ?>> converters) {
         ModelMapper modelMapper = new ModelMapper();
