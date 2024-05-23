@@ -22,6 +22,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
+import static io.teamchallenge.constant.SecurityConstants.ADMIN;
 import static io.teamchallenge.constant.SecurityConstants.USER;
 import static jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
@@ -90,6 +91,8 @@ public class SecurityConfig {
                     "/hello"
                 )
                 .hasRole(USER)
+                .anyRequest()
+                .hasRole(ADMIN)
             ).build();
     }
 
