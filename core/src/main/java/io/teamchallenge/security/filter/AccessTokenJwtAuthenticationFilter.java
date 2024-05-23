@@ -1,41 +1,31 @@
 package io.teamchallenge.security.filter;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.teamchallenge.dto.user.UserVO;
+import io.jsonwebtoken.JwtParser;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import io.teamchallenge.security.token.ClaimsUsernamePasswordAuthenticationToken;
 import io.teamchallenge.service.JwtService;
-import io.teamchallenge.service.UserAuthorizationService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.Optional;
+import javax.crypto.SecretKey;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Slf4j
+@RequiredArgsConstructor
 public class AccessTokenJwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
-    private final UserAuthorizationService userAuthorizationService;
-
-    /**
-     * Constructor for AccessTokenJwtAuthenticationFilter.
-     *
-     * @param jwtService               Service for JWT operations.
-     * @param authenticationManager    Authentication manager for JWT tokens.
-     * @param userAuthorizationService Service for user authorization.
-     */
-    public AccessTokenJwtAuthenticationFilter(JwtService jwtService, AuthenticationManager authenticationManager,
-                                              UserAuthorizationService userAuthorizationService) {
-        this.jwtService = jwtService;
-        this.authenticationManager = authenticationManager;
-        this.userAuthorizationService = userAuthorizationService;
-    }
 
     /**
      * Performs filtering of the incoming HTTP request.
@@ -54,12 +44,17 @@ public class AccessTokenJwtAuthenticationFilter extends OncePerRequestFilter {
             if (token.isPresent()) {
                 String jwt = token.get();
                 log.info("token: {}", jwt);
-
-                Authentication authentication =
-                    authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(jwt, null));
-                UserVO userVO =
-                    userAuthorizationService.findUserVOByEmail((String) authentication.getPrincipal());
-                log.info("user: {}", userVO);
+                SecretKey secretKey = Keys.hmacShaKeyFor(jwtService.getSecretKey().getBytes(StandardCharsets.UTF_8));
+                System.out.println(secretKey);
+                JwtParser jwtParser = Jwts.parser().verifyWith(secretKey).build();
+                System.out.println(jwtParser);
+                Claims claims = jwtParser.parseSignedClaims(jwt).getPayload();
+                String email = claims.getSubject();
+                String role = (String) claims.get("role");
+                log.info("user: {}", claims);
+                ClaimsUsernamePasswordAuthenticationToken
+                    authentication = new ClaimsUsernamePasswordAuthenticationToken(email, "",
+                        Collections.singleton(new SimpleGrantedAuthority(role)), claims);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (ExpiredJwtException e) {
