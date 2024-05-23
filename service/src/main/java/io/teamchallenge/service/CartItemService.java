@@ -95,6 +95,7 @@ public class CartItemService {
             .id(cartItemId)
             .product(product)
             .user(user)
+            //TODO : add this to number to the app constant
             .quantity(1)
             .build();
         var savedCartItem = cartItemRepository.persist(cartItem);

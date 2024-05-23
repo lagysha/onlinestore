@@ -10,24 +10,23 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.security.config.core.userdetails.UserDetailsMapFactoryBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductControllerTest {
 
     private static final String productLink = "/api/v1/products";
-    private MockMvc mockMvc;
     private final ErrorAttributes errorAttributes = new DefaultErrorAttributes();
-
+    private MockMvc mockMvc;
     @InjectMocks
     private ProductController productController;
 
@@ -44,13 +43,13 @@ public class ProductControllerTest {
     }
 
     @Test
-    void getAllTest(){
-        var pageable = PageRequest.of(1,1, Sort.by("price"));
+    void getAllTest() {
+        var pageable = PageRequest.of(1, 1, Sort.by("price"));
         var name = "phone";
         var response = new PageableDto<>(
             List.of(Utils.getShortProductResponseDto()), 1, 1, 1);
 
-        when(productService.getAll(pageable,name))
+        when(productService.getAll(pageable, name))
             .thenReturn(response);
 
     }
