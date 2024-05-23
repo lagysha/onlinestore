@@ -1,10 +1,10 @@
 package io.teamchallenge.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import io.teamchallenge.entity.User;
 import io.teamchallenge.enumerated.Role;
@@ -13,7 +13,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.Base64;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Optional;
+import java.util.UUID;
 import javax.crypto.SecretKey;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +25,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import static io.teamchallenge.constant.ExceptionMessage.*;
+import static io.teamchallenge.constant.ExceptionMessage.TOKEN_CAN_NOT_BE_PARSED;
+import static io.teamchallenge.constant.ExceptionMessage.TOKEN_HAS_BEEN_EXPIRED;
+import static io.teamchallenge.constant.ExceptionMessage.TOKEN_WAS_NOT_SIGNED_BY_USER;
 
 /**
  * Service class for handling JWT (JSON Web Token) operations.
@@ -32,8 +38,8 @@ public class JwtService {
     @Getter
     private final String secretKey;
     private final ObjectMapper objectMapper;
-    private final int accessTokenValidTimeInMinutes;
-    private final int refreshTokenValidTimeInMinutes;
+    private final Integer accessTokenValidTimeInMinutes;
+    private final Integer refreshTokenValidTimeInMinutes;
 
     /**
      * Constructor for JwtService.
@@ -45,8 +51,8 @@ public class JwtService {
      */
     @Autowired
     public JwtService(@Value("${JWT_TOKEN_KEY}") String secretKey, ObjectMapper objectMapper,
-                      @Value("${accessTokenValidTimeMin}") int accessTokenValidTimeInMinutes,
-                      @Value("${refreshTokenValidTimeMin}") int refreshTokenValidTimeInMinutes) {
+                      @Value("${accessTokenValidTimeMin}") Integer accessTokenValidTimeInMinutes,
+                      @Value("${refreshTokenValidTimeMin}") Integer refreshTokenValidTimeInMinutes) {
         this.secretKey = secretKey;
         this.objectMapper = objectMapper;
         this.accessTokenValidTimeInMinutes = accessTokenValidTimeInMinutes;

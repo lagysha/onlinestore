@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Slf4j
-@Transactional
+@Transactional(readOnly = true)
 public class SecurityService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
@@ -53,6 +53,7 @@ public class SecurityService {
      * @param signUpRequestDto The sign-up request DTO containing user details.
      * @return The sign-up response DTO containing user information.
      */
+    @Transactional
     public SignUpResponseDto signUpUser(SignUpRequestDto signUpRequestDto) {
         log.info("User tries to sign up {}", signUpRequestDto);
         if (userRepository.existsByEmail(signUpRequestDto.getEmail())) {
@@ -75,7 +76,6 @@ public class SecurityService {
      * @throws BadCredentialsException if the provided credentials are invalid.
      * @throws NotFoundException       if the user is not found.
      */
-    @Transactional(readOnly = true)
     public SignInResponseDto signInUser(SignInRequestDto signInRequestDto) {
         log.info("User tries to sign in {}", signInRequestDto);
         User user = userRepository.findUserByEmail(signInRequestDto.getEmail())
@@ -100,6 +100,7 @@ public class SecurityService {
      * @throws BadTokenException If the provided refresh token does not contain a subject.
      * @throws NotFoundException If a user with the email extracted from the refresh token is not found.
      */
+    @Transactional
     public SignInResponseDto updateAccessToken(String refreshToken) {
         String email = jwtService.getSubjectFromToken(refreshToken)
             .orElseThrow(() -> new BadTokenException(ExceptionMessage.TOKEN_DOES_NOT_CONTAIN_SUBJECT));

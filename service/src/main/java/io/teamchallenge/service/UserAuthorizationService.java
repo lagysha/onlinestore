@@ -13,7 +13,7 @@ import static io.teamchallenge.constant.ExceptionMessage.USER_NOT_FOUND_BY_EMAIL
  * Service class for user authorization-related operations.
  */
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class UserAuthorizationService {
     private final UserRepository userRepository;
@@ -25,7 +25,6 @@ public class UserAuthorizationService {
      * @return The {@link UserVO} object representing the user.
      * @throws NotFoundException if the user with the specified email is not found.
      */
-    @Transactional(readOnly = true)
     public UserVO findUserVOByEmail(String email) {
         return userRepository.findUserVOByEmail(email).stream().findAny()
             .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_BY_EMAIL));
