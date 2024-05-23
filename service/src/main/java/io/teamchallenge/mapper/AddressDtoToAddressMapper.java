@@ -4,9 +4,11 @@ import io.teamchallenge.dto.address.AddressDto;
 import io.teamchallenge.entity.Address;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.repository.CountryRepository;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.AbstractConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import static io.teamchallenge.constant.ExceptionMessage.COUNTRY_NOT_FOUND_BY_NAME;
 
@@ -14,18 +16,10 @@ import static io.teamchallenge.constant.ExceptionMessage.COUNTRY_NOT_FOUND_BY_NA
  * Mapper class to convert {@link AddressDto} objects to {@link Address} entities.
  */
 @Component
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class AddressDtoToAddressMapper extends AbstractConverter<AddressDto, Address> {
     private final CountryRepository countryRepository;
-
-    /**
-     * Constructor for AddressDtoToAddressMapper.
-     *
-     * @param countryRepository {@link CountryRepository} instance for country data access.
-     */
-    @Autowired
-    public AddressDtoToAddressMapper(CountryRepository countryRepository) {
-        this.countryRepository = countryRepository;
-    }
 
     /**
      * Converts an {@link AddressDto} object to an {@link Address} entity.
