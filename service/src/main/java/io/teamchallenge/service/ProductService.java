@@ -1,7 +1,9 @@
 package io.teamchallenge.service;
 
 import io.teamchallenge.constant.ExceptionMessage;
+
 import static io.teamchallenge.constant.ExceptionMessage.*;
+
 import io.teamchallenge.dto.PageableDto;
 import io.teamchallenge.dto.ProductRequestDto;
 import io.teamchallenge.dto.ProductResponseDto;
@@ -14,7 +16,11 @@ import io.teamchallenge.entity.attributes.ProductAttribute;
 import io.teamchallenge.exception.AlreadyExistsException;
 import io.teamchallenge.exception.PersistenceException;
 import io.teamchallenge.exception.NotFoundException;
-import io.teamchallenge.repository.*;
+import io.teamchallenge.repository.AttributeValueRepository;
+import io.teamchallenge.repository.BrandRepository;
+import io.teamchallenge.repository.CategoryRepository;
+import io.teamchallenge.repository.ProductAttributeRepository;
+import io.teamchallenge.repository.ProductRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -81,6 +87,7 @@ public class ProductService {
      * @param id The identifier of the product to delete.
      * @throws NotFoundException if the product with the given ID is not found.
      */
+    @Transactional
     public void deleteById(Long id) {
         var retrievedProduct = productRepository
             .findById(id)
@@ -94,7 +101,7 @@ public class ProductService {
      *
      * @param productRequestDto The ProductRequestDto containing the details of the product to create.
      * @return The ProductResponseDto representing the created product.
-     * @throws PersistenceException      if there is an issue creating the product.
+     * @throws PersistenceException   if there is an issue creating the product.
      * @throws NotFoundException      if the brand or category specified in the request is not found.
      * @throws AlreadyExistsException if the product name is invalid.
      */
@@ -146,7 +153,7 @@ public class ProductService {
      * @param id                The identifier of the product to update.
      * @param productRequestDto The ProductRequestDto containing the updated details of the product.
      * @return The ProductResponseDto representing the updated product.
-     * @throws PersistenceException      if there is an issue creating the product.
+     * @throws PersistenceException   if there is an issue creating the product.
      * @throws NotFoundException      if the brand or category specified in the request is not found.
      * @throws AlreadyExistsException if the product name is invalid.
      */
