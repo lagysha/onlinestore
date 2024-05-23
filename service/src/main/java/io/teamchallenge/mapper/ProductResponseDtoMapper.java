@@ -1,8 +1,8 @@
 package io.teamchallenge.mapper;
 
 import io.teamchallenge.dto.CategoryResponseDto;
-import io.teamchallenge.dto.ProductAttributeResponseDto;
-import io.teamchallenge.dto.ProductResponseDto;
+import io.teamchallenge.dto.product.ProductAttributeResponseDto;
+import io.teamchallenge.dto.product.ProductResponseDto;
 import io.teamchallenge.entity.Image;
 import io.teamchallenge.entity.Product;
 import java.util.stream.Collectors;

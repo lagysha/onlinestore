@@ -17,6 +17,7 @@ import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.security.config.core.userdetails.UserDetailsMapFactoryBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -51,7 +52,6 @@ public class ProductControllerTest {
 
         when(productService.getAll(pageable,name))
             .thenReturn(response);
-
 
     }
 }

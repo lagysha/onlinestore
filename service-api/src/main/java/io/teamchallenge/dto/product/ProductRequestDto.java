@@ -1,4 +1,4 @@
-package io.teamchallenge.dto;
+package io.teamchallenge.dto.product;
 
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;

@@ -1,8 +1,10 @@
 package io.teamchallenge.controller;
 
-import io.teamchallenge.dto.CartItemResponseDto;
-import io.teamchallenge.dto.CartResponseDto;
+import io.teamchallenge.dto.cart.CartItemResponseDto;
+import io.teamchallenge.dto.cart.CartResponseDto;
+import io.teamchallenge.dto.cart.PathRequestDto;
 import io.teamchallenge.service.CartItemService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +26,8 @@ public class CartItemController {
     @PostMapping("/{user_id}/{product_id}")
     public ResponseEntity<CartItemResponseDto> create(@PathVariable("user_id") Long userId,
                                                       @PathVariable("product_id") Long productId) {
-        return ResponseEntity.ok(cartItemService.create(userId, productId));
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(cartItemService.create(userId, productId));
     }
 
     //TODO : I need an annotation which will give me the current user
@@ -33,5 +36,13 @@ public class CartItemController {
                                                       @PathVariable("product_id") Long productId) {
         cartItemService.deleteByCartItemId(userId, productId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    //TODO : I need an annotation which will give me the current user
+    @PatchMapping("/{user_id}/{product_id}")
+    public ResponseEntity<CartItemResponseDto> patchUpdate(@PathVariable("user_id") Long userId,
+                                                           @PathVariable("product_id") Long productId,
+                                                           @RequestBody @Valid PathRequestDto pathRequestDto) {
+        return ResponseEntity.ok(cartItemService.patch(userId, productId, pathRequestDto));
     }
 }

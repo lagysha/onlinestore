@@ -22,5 +22,5 @@ public final class ExceptionMessage {
     public static final String TOKEN_CAN_NOT_BE_PARSED = "Token can not be parsed.";
     public static final String CARTITEM_ALREADY_EXISTS =
         "The cartItem with id: %s is already present in database";
-    private static final String CARTITEM_NOT_FOUND_BY_ID = "The cartItem with id: %s is not present in database";
+    public static final String CARTITEM_NOT_FOUND_BY_ID = "The cartItem with id: %s is not present in database";
 }

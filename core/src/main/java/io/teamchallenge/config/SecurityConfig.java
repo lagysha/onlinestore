@@ -101,6 +101,9 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST,
                     "/api/v1/cart-items/{user_id}/{product_id}")
                 .hasRole(USER)
+                .requestMatchers(HttpMethod.PATCH,
+                    "/api/v1/cart-items/{user_id}/{product_id}")
+                .hasRole(USER)
                 .requestMatchers(HttpMethod.DELETE,
                     "/api/v1/cart-items/{user_id}/{product_id}")
                 .hasRole(USER)

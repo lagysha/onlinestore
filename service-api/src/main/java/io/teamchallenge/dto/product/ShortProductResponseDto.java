@@ -1,4 +1,4 @@
-package io.teamchallenge.dto;
+package io.teamchallenge.dto.product;
 
 import java.math.BigDecimal;
 import java.util.List;

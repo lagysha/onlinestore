@@ -1,6 +1,6 @@
 package io.teamchallenge.mapper;
 
-import io.teamchallenge.dto.ShortProductResponseDto;
+import io.teamchallenge.dto.product.ShortProductResponseDto;
 import io.teamchallenge.entity.Image;
 import static io.teamchallenge.util.Utils.getProduct;
 import java.util.stream.Collectors;

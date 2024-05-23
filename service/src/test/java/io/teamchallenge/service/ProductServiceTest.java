@@ -2,24 +2,19 @@ package io.teamchallenge.service;
 
 import io.teamchallenge.constant.ExceptionMessage;
 import io.teamchallenge.dto.*;
-import io.teamchallenge.entity.Brand;
-import io.teamchallenge.entity.Category;
-import io.teamchallenge.entity.Image;
-import io.teamchallenge.entity.Product;
-import io.teamchallenge.entity.attributes.Attribute;
+import io.teamchallenge.dto.product.ProductResponseDto;
+import io.teamchallenge.dto.product.ShortProductResponseDto;
 import io.teamchallenge.entity.attributes.AttributeValue;
-import io.teamchallenge.entity.attributes.ProductAttribute;
 import io.teamchallenge.exception.AlreadyExistsException;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.exception.PersistenceException;
 import io.teamchallenge.repository.*;
 import static io.teamchallenge.util.Utils.*;
-import java.math.BigDecimal;
-import java.util.ArrayList;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;

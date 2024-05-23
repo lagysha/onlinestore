@@ -65,6 +65,7 @@ public class SecurityControllerTest {
             .firstName("John")
             .lastName("Doe")
             .build();
+
         when(securityService.signUpUser(signUpRequestDto)).thenReturn(signUpResponseDto);
 
         String response = mockMvc.perform(post(REQUEST_MAPPING + "/signUp")

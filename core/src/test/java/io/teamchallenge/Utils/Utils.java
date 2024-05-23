@@ -1,6 +1,10 @@
 package io.teamchallenge.Utils;
 
 import io.teamchallenge.dto.*;
+import io.teamchallenge.dto.product.ProductAttributeResponseDto;
+import io.teamchallenge.dto.product.ProductRequestDto;
+import io.teamchallenge.dto.product.ProductResponseDto;
+import io.teamchallenge.dto.product.ShortProductResponseDto;
 import io.teamchallenge.entity.Brand;
 import io.teamchallenge.entity.Category;
 import io.teamchallenge.entity.Image;

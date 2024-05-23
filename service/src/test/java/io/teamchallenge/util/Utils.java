@@ -1,10 +1,10 @@
 package io.teamchallenge.util;
 
 import io.teamchallenge.dto.CategoryResponseDto;
-import io.teamchallenge.dto.ProductAttributeResponseDto;
-import io.teamchallenge.dto.ProductRequestDto;
-import io.teamchallenge.dto.ProductResponseDto;
-import io.teamchallenge.dto.ShortProductResponseDto;
+import io.teamchallenge.dto.product.ProductAttributeResponseDto;
+import io.teamchallenge.dto.product.ProductRequestDto;
+import io.teamchallenge.dto.product.ProductResponseDto;
+import io.teamchallenge.dto.product.ShortProductResponseDto;
 import io.teamchallenge.dto.user.UserVO;
 import io.teamchallenge.entity.Brand;
 import io.teamchallenge.entity.Category;

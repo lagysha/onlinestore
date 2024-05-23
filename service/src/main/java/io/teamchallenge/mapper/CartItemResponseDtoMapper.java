@@ -1,6 +1,6 @@
 package io.teamchallenge.mapper;
 
-import io.teamchallenge.dto.CartItemResponseDto;
+import io.teamchallenge.dto.cart.CartItemResponseDto;
 import io.teamchallenge.entity.Image;
 import io.teamchallenge.entity.cartitem.CartItem;
 import java.util.stream.Collectors;

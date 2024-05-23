@@ -6,8 +6,9 @@ import io.teamchallenge.constant.ExceptionMessage;
 
 import static io.teamchallenge.constant.ExceptionMessage.CARTITEM_ALREADY_EXISTS;
 
-import io.teamchallenge.dto.CartItemResponseDto;
-import io.teamchallenge.dto.CartResponseDto;
+import io.teamchallenge.dto.cart.CartItemResponseDto;
+import io.teamchallenge.dto.cart.CartResponseDto;
+import io.teamchallenge.dto.cart.PathRequestDto;
 import io.teamchallenge.entity.cartitem.CartItem;
 import io.teamchallenge.entity.cartitem.CartItemId;
 import io.teamchallenge.exception.AlreadyExistsException;
@@ -15,6 +16,7 @@ import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.repository.CartItemRepository;
 import io.teamchallenge.repository.ProductRepository;
 import io.teamchallenge.repository.UserRepository;
+import jakarta.validation.Valid;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.stream.Collector;
@@ -96,9 +98,24 @@ public class CartItemService {
 
         cartItemRepository
             .findById(cartItemId)
-            .orElseThrow(() -> new NotFoundException(ExceptionMessage.CATEGORY_NOT_FOUND_BY_ID.formatted(cartItemId)));
+            .orElseThrow(() -> new NotFoundException(ExceptionMessage.CARTITEM_NOT_FOUND_BY_ID.formatted(cartItemId)));
 
         cartItemRepository.deleteById(cartItemId);
+    }
+
+    @Transactional
+    public CartItemResponseDto patch(Long userId, Long productId, PathRequestDto pathRequestDto) {
+        CartItemId cartItemId = CartItemId.builder()
+            .productId(productId)
+            .userId(userId).build();
+
+        var retrievedCartItem = cartItemRepository
+            .findById(cartItemId)
+            .orElseThrow(() -> new NotFoundException(ExceptionMessage.CARTITEM_NOT_FOUND_BY_ID.formatted(cartItemId)));
+
+        retrievedCartItem.setQuantity(pathRequestDto.getQuantity());
+
+        return modelMapper.map(retrievedCartItem, CartItemResponseDto.class);
     }
 
     private void validateCartItemId(CartItemId cartItemId) {
@@ -110,6 +127,5 @@ public class CartItemService {
                 CARTITEM_ALREADY_EXISTS.formatted(retrievedCartItem.get().getId()));
         }
     }
-
 
 }

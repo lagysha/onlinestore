@@ -5,9 +5,9 @@ import io.teamchallenge.constant.ExceptionMessage;
 import static io.teamchallenge.constant.ExceptionMessage.*;
 
 import io.teamchallenge.dto.PageableDto;
-import io.teamchallenge.dto.ProductRequestDto;
-import io.teamchallenge.dto.ProductResponseDto;
-import io.teamchallenge.dto.ShortProductResponseDto;
+import io.teamchallenge.dto.product.ProductRequestDto;
+import io.teamchallenge.dto.product.ProductResponseDto;
+import io.teamchallenge.dto.product.ShortProductResponseDto;
 import io.teamchallenge.entity.Brand;
 import io.teamchallenge.entity.Category;
 import io.teamchallenge.entity.Image;
