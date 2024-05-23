@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -30,17 +32,21 @@ import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 public class SecurityConfig {
     private final List<String> allowedOrigins;
     private final JwtService jwtService;
+    private final AuthenticationConfiguration authenticationConfiguration;
 
     /**
      * Constructor for SecurityConfig.
      *
      * @param allowedOrigins              Array of allowed origins.
      * @param jwtService                  JWT service.
+     * @param authenticationConfiguration Authentication configuration
      */
     @Autowired
-    public SecurityConfig(@Value("${ALLOWED_ORIGINS}") String[] allowedOrigins, JwtService jwtService) {
+    public SecurityConfig(@Value("${ALLOWED_ORIGINS}") String[] allowedOrigins, JwtService jwtService,
+                          AuthenticationConfiguration authenticationConfiguration) {
         this.allowedOrigins = List.of(allowedOrigins);
         this.jwtService = jwtService;
+        this.authenticationConfiguration = authenticationConfiguration;
     }
 
     /**
@@ -85,6 +91,17 @@ public class SecurityConfig {
                 )
                 .hasRole(USER)
             ).build();
+    }
+
+    /**
+     * Provides an AuthenticationManager bean.
+     *
+     * @return AuthenticationManager object.
+     * @throws Exception If an error occurs while obtaining the authentication manager.
+     */
+    @Bean
+    public AuthenticationManager authenticationManager() throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     /**
