@@ -1,6 +1,6 @@
 package io.teamchallenge.controller;
 
-import io.teamchallenge.Utils.Utils;
+import io.teamchallenge.utils.Utils;
 import io.teamchallenge.dto.PageableDto;
 import io.teamchallenge.handler.CustomExceptionHandler;
 import io.teamchallenge.service.ProductService;

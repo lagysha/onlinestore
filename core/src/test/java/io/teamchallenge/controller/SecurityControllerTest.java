@@ -5,6 +5,7 @@ import io.teamchallenge.dto.security.SignInResponseDto;
 import io.teamchallenge.dto.security.SignUpRequestDto;
 import io.teamchallenge.dto.security.SignUpResponseDto;
 import io.teamchallenge.service.SecurityService;
+import io.teamchallenge.utils.Utils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,32 +22,16 @@ import static org.springframework.http.HttpStatus.OK;
 
 @ExtendWith(MockitoExtension.class)
 public class SecurityControllerTest {
+    public final SignInResponseDto GET_SIGN_IN_RESPONSE_DTO = Utils.getSignInResponseDto();
     @InjectMocks
     private SecurityController securityController;
     @Mock
     private SecurityService securityService;
-    private final String REQUEST_MAPPING = "/api/v1";
-    private final SignInResponseDto signInResponseDto = SignInResponseDto.builder()
-        .accessToken("accessToken")
-        .refreshToken("refreshToken")
-        .build();
-
 
     @Test
     void signUpUserTest(){
-        SignUpRequestDto signUpRequestDto = SignUpRequestDto.builder()
-            .email("test@mail.com")
-            .firstName("John")
-            .lastName("Doe")
-            .phoneNumber("0123456789")
-            .password("Password1234!")
-            .build();
-        SignUpResponseDto signUpResponseDto = SignUpResponseDto.builder()
-            .id(1L)
-            .email("test@mail.com")
-            .firstName("John")
-            .lastName("Doe")
-            .build();
+        SignUpRequestDto signUpRequestDto = Utils.getSignUpRequestDto();
+        SignUpResponseDto signUpResponseDto = Utils.getSignUpResponseDto();
         when(securityService.signUpUser(signUpRequestDto)).thenReturn(signUpResponseDto);
 
         ResponseEntity<SignUpResponseDto> signUpResponseDtoResponseEntity =
@@ -59,32 +44,27 @@ public class SecurityControllerTest {
 
     @Test
     void signInUserTest() {
-        SignInRequestDto signInRequestDto = SignInRequestDto.builder()
-            .email("test@mail.com")
-            .password("Password1234!")
-            .build();
-
-        when(securityService.signInUser(signInRequestDto)).thenReturn(signInResponseDto);
+        SignInRequestDto signInRequestDto = Utils.getSignInRequestDto();
+        when(securityService.signInUser(signInRequestDto)).thenReturn(GET_SIGN_IN_RESPONSE_DTO);
 
         ResponseEntity<SignInResponseDto> signInResponseDtoResponseEntity =
             securityController.signInUser(signInRequestDto);
 
         verify(securityService).signInUser(eq(signInRequestDto));
         assertEquals(OK, signInResponseDtoResponseEntity.getStatusCode());
-        assertEquals(signInResponseDto, signInResponseDtoResponseEntity.getBody());
+        assertEquals(GET_SIGN_IN_RESPONSE_DTO, signInResponseDtoResponseEntity.getBody());
     }
 
     @Test
     void updateAccessTokenTest() {
         String refreshToken = "refreshTokenTest";
-
-        when(securityService.updateAccessToken(refreshToken)).thenReturn(signInResponseDto);
+        when(securityService.updateAccessToken(refreshToken)).thenReturn(GET_SIGN_IN_RESPONSE_DTO);
 
         ResponseEntity<SignInResponseDto> signInResponseDtoResponseEntity =
             securityController.updateAccessToken(refreshToken);
 
         verify(securityService).updateAccessToken(eq(refreshToken));
         assertEquals(OK, signInResponseDtoResponseEntity.getStatusCode());
-        assertEquals(signInResponseDto, signInResponseDtoResponseEntity.getBody());
+        assertEquals(GET_SIGN_IN_RESPONSE_DTO, signInResponseDtoResponseEntity.getBody());
     }
 }

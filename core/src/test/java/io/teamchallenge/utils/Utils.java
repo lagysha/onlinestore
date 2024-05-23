@@ -1,6 +1,10 @@
-package io.teamchallenge.Utils;
+package io.teamchallenge.utils;
 
 import io.teamchallenge.dto.*;
+import io.teamchallenge.dto.security.SignInRequestDto;
+import io.teamchallenge.dto.security.SignInResponseDto;
+import io.teamchallenge.dto.security.SignUpRequestDto;
+import io.teamchallenge.dto.security.SignUpResponseDto;
 import io.teamchallenge.entity.Brand;
 import io.teamchallenge.entity.Category;
 import io.teamchallenge.entity.Image;
@@ -124,6 +128,39 @@ public class Utils {
         return Brand.builder()
             .id(1L)
             .name("name1")
+            .build();
+    }
+
+    public static SignInResponseDto getSignInResponseDto() {
+        return SignInResponseDto.builder()
+            .accessToken("accessToken")
+            .refreshToken("refreshToken")
+            .build();
+    }
+
+    public static SignUpRequestDto getSignUpRequestDto() {
+        return SignUpRequestDto.builder()
+            .email("test@mail.com")
+            .firstName("John")
+            .lastName("Doe")
+            .phoneNumber("0123456789")
+            .password("Password1234!")
+            .build();
+    }
+
+    public static SignUpResponseDto getSignUpResponseDto() {
+        return SignUpResponseDto.builder()
+            .id(1L)
+            .email("test@mail.com")
+            .firstName("John")
+            .lastName("Doe")
+            .build();
+    }
+
+    public static SignInRequestDto getSignInRequestDto() {
+        return SignInRequestDto.builder()
+            .email("test@mail.com")
+            .password("Password1234!")
             .build();
     }
 }

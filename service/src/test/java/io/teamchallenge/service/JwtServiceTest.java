@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import io.teamchallenge.entity.User;
-import io.teamchallenge.enumerated.Role;
 import io.teamchallenge.exception.BadTokenException;
+import io.teamchallenge.util.Utils;
 import jakarta.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -31,23 +31,15 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class JwtServiceTest {
-    public static final int accessTokenValidTimeInMinutes = 20;
-    public static final int refreshTokenValidTimeInMinutes = 60;
-    public static final String secretKey = "5cZAVF/SKSCmCM2+1azD2XHK7K2PChcSg32vrrEh/Qk=";
+    private final int accessTokenValidTimeInMinutes = 20;
+    private final int refreshTokenValidTimeInMinutes = 60;
+    private final String secretKey = Utils.getSecretKey();
+    private final String accessToken = Utils.getAccessToken();
+    private final User user = Utils.getUser();
+
     @InjectMocks
     private JwtService jwtService =
         new JwtService(secretKey, new ObjectMapper(), accessTokenValidTimeInMinutes, refreshTokenValidTimeInMinutes);
-    private final String accessToken = "eyJhbGciOiJIUzI1NiJ9" +
-        ".eyJpc3MiOiJHYWRnZXRIb3VzZSIsInN1YiI6InRlc3RAbWFpbC5jb20iLCJpZCI6MSwicm9sZSI6IlJPT" +
-        "EVfVVNFUiIsImlhdCI6MTcxNDc1MDAyMiwiZXhwIjoxNzE0Nzg2MDIyfQ" +
-        ".sfkczlafsasfVxmd9asfasfasfasCu8DbWbZAkSWHujs";
-
-    private final User user = User.builder()
-        .id(1L)
-        .email("test@mail.com")
-        .role(Role.ROLE_USER)
-        .refreshTokenKey(secretKey)
-        .build();
 
     @Test
     void getTokenFromRequestTest() {
