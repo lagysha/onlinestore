@@ -7,10 +7,14 @@ import io.teamchallenge.dto.security.SignUpResponseDto;
 import io.teamchallenge.service.SecurityService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
@@ -18,18 +22,9 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @RequestMapping("/api/v1")
 @Validated
+@RequiredArgsConstructor
 public class SecurityController {
     private final SecurityService securityService;
-
-    /**
-     * Constructor for SecurityController.
-     *
-     * @param securityService SecurityService instance to handle security operations.
-     */
-    @Autowired
-    public SecurityController(SecurityService securityService) {
-        this.securityService = securityService;
-    }
 
     /**
      * Endpoint for user sign-up.
