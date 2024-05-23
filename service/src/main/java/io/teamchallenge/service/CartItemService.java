@@ -38,14 +38,22 @@ public class CartItemService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
 
+    /**
+     * Retrieves the cart items for a specific user.
+     *
+     * @param userId the ID of the user whose cart items are to be retrieved
+     * @return a CartResponseDto containing the cart items and total price of the cart
+     */
     public CartResponseDto getByUserId(Long userId) {
-        Pageable pageable = PageRequest.of(0, MAX_NUMBER_OF_UNIQUE_PRODUCTS_IN_CART, Sort.by("createdAt"));
+        Pageable pageable = PageRequest.of(0, MAX_NUMBER_OF_UNIQUE_PRODUCTS_IN_CART,
+            Sort.by("createdAt"));
 
         Page<CartItemId> retrievedCartItemsIds = cartItemRepository.findCartItemIdsByUserId(userId, pageable);
 
         return cartItemRepository
             //TODO : implement order of images in the database with save
             //TODO : here fetch only first image
+            //TODO : change java doc
             .findAllByIdWithImagesAndProducts(retrievedCartItemsIds.getContent())
             .stream()
             .collect(
@@ -65,6 +73,13 @@ public class CartItemService {
             );
     }
 
+    /**
+     * Creates a new cart item for a specific user and product.
+     *
+     * @param userId    the ID of the user for whom the cart item is to be created
+     * @param productId the ID of the product to be added to the cart
+     * @return a CartItemResponseDto containing the created cart item details
+     */
     @Transactional
     public CartItemResponseDto create(Long userId, Long productId) {
         CartItemId cartItemId = CartItemId.builder()
@@ -74,10 +89,7 @@ public class CartItemService {
         validateCartItemId(cartItemId);
         var product = productRepository.findByIdWithImages(productId)
             .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID.formatted(productId)));
-
-        //TODO : delete this when I will have an annotation to retrieve current user
-        var user = userRepository.findById(userId)
-            .orElseThrow();
+        var user = userRepository.getReferenceById(userId);
 
         var cartItem = CartItem.builder()
             .id(cartItemId)
@@ -90,6 +102,12 @@ public class CartItemService {
         return modelMapper.map(savedCartItem, CartItemResponseDto.class);
     }
 
+    /**
+     * Deletes a cart item by user ID and product ID.
+     *
+     * @param userId    the ID of the user who owns the cart item
+     * @param productId the ID of the product to be removed from the cart
+     */
     @Transactional
     public void deleteByCartItemId(Long userId, Long productId) {
         CartItemId cartItemId = CartItemId.builder()
@@ -103,6 +121,14 @@ public class CartItemService {
         cartItemRepository.deleteById(cartItemId);
     }
 
+    /**
+     * Partially updates the quantity of a cart item for a specific user and product.
+     *
+     * @param userId         the ID of the user who owns the cart item
+     * @param productId      the ID of the product in the cart item
+     * @param pathRequestDto the request body containing the fields to be updated
+     * @return a CartItemResponseDto containing the updated cart item details
+     */
     @Transactional
     public CartItemResponseDto patch(Long userId, Long productId, PathRequestDto pathRequestDto) {
         CartItemId cartItemId = CartItemId.builder()
@@ -119,13 +145,9 @@ public class CartItemService {
     }
 
     private void validateCartItemId(CartItemId cartItemId) {
-        var retrievedCartItem = cartItemRepository.findById(
-            cartItemId
-        );
+        var retrievedCartItem = cartItemRepository.findById(cartItemId);
         if (retrievedCartItem.isPresent()) {
-            throw new AlreadyExistsException(
-                CARTITEM_ALREADY_EXISTS.formatted(retrievedCartItem.get().getId()));
+            throw new AlreadyExistsException(CARTITEM_ALREADY_EXISTS.formatted(retrievedCartItem.get().getId()));
         }
     }
-
 }

@@ -11,15 +11,29 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface CartItemRepository extends JpaRepository<CartItem, CartItemId>, BaseJpaRepository<CartItem,CartItemId> {
+public interface CartItemRepository
+    extends JpaRepository<CartItem, CartItemId>, BaseJpaRepository<CartItem, CartItemId> {
+    /**
+     * Retrieves a page of cart item IDs for a specific user.
+     *
+     * @param userId   the ID of the user whose cart item IDs are to be retrieved
+     * @param pageable the pagination information
+     * @return a page of CartItemIds for the specified user
+     */
+    //TODO : implement order of images in the database with save
+    //TODO : here fetch only first image
+    //TODO : change java doc
+    @Query(value = "select ci.id from CartItem ci where ci.user.id = :userId")
+    Page<CartItemId> findCartItemIdsByUserId(@Param("userId") Long userId, Pageable pageable);
 
-
-    @Query(value = "select ci.id from CartItem ci " +
-        " where ci.user.id = :userId")
-    Page<CartItemId> findCartItemIdsByUserId(Long userId, Pageable pageable);
-    @EntityGraph(attributePaths = {"product.images","product"})
+    /**
+     * Retrieves a list of cart items with their associated product and product images,
+     * based on a list of cart item IDs.
+     *
+     * @param cartItemIds the list of cart item IDs to be retrieved
+     * @return a list of CartItems with associated products and images
+     */
+    @EntityGraph(attributePaths = {"product.images", "product"})
     @Query(value = "select ci from CartItem ci where ci.id in :cartItemIds")
     List<CartItem> findAllByIdWithImagesAndProducts(@Param("cartItemIds") List<CartItemId> cartItemIds);
-
-
 }
