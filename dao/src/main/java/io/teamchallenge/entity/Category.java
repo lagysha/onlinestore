@@ -1,5 +1,6 @@
 package io.teamchallenge.entity;
 
+import io.teamchallenge.entity.attributes.CategoryAttribute;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ public class Category {
     private String name;
 
     @Column(nullable = false)
-    private String desc;
+    private String description;
 
     @OneToMany(mappedBy = "category")
     @Setter(AccessLevel.PRIVATE)

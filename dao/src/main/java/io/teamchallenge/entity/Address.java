@@ -16,11 +16,6 @@ public class Address {
     @Id
     private Long id;
 
-    @MapsId
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
     @Column(name = "address_line", nullable = false)
     private String addressLine;
 
@@ -29,6 +24,11 @@ public class Address {
 
     @Column(name = "postal_code", nullable = false)
     private String postalCode;
+
+    @MapsId
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "country_id", nullable = false)
