@@ -1,0 +1,16 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+    <changeSet id="create_attributes_table" author="Malov Nikita">
+        <createTable tableName="attributes">
+            <column name="id" type="bigint" autoIncrement="true"/>
+            <column name="name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="attributes" columnNames="id" constraintName="PK_attributes"/>
+        <addUniqueConstraint tableName="attributes" columnNames="name"
+                             constraintName="UQ_attributes_name"/>
+    </changeSet>
+</databaseChangeLog>

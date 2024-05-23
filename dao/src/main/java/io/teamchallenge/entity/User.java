@@ -1,11 +1,19 @@
 package io.teamchallenge.entity;
 
 import io.teamchallenge.entity.cartitem.CartItem;
+import io.teamchallenge.enumerated.Role;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
@@ -34,7 +42,7 @@ public class User {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Column(nullable = false, unique = true,name = "phone_number")
+    @Column(nullable = false, unique = true, name = "phone_number")
     private String phoneNumber;
 
     @Setter(AccessLevel.PRIVATE)
@@ -50,8 +58,15 @@ public class User {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @OneToOne(mappedBy = "user", optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Address address;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
+    @Column(name = "refresh_token_key", nullable = false)
+    private String refreshTokenKey;
 
     /**
      * Sets the address for this user and updates the user reference in the address object.

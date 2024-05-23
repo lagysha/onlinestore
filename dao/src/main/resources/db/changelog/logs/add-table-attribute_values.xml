@@ -1,0 +1,24 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+    <changeSet id="create_attribute_values_table" author="Malov Nikita">
+        <createTable tableName="attribute_values">
+            <column name="id" type="bigint" autoIncrement="true"/>
+            <column name="attribute_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="attribute_values" columnNames="id" constraintName="PK_attribute_values"/>
+        <addForeignKeyConstraint baseTableName="attribute_values" baseColumnNames="attribute_id"
+                                 constraintName="FK_attribute_values_attributes"
+                                 referencedTableName="attributes"
+                                 referencedColumnNames="id"/>
+        <createIndex tableName="attribute_values" indexName="FK_attribute_values_attributes">
+            <column name="attribute_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>
