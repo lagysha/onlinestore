@@ -60,7 +60,7 @@ class ProductServiceTest {
             retrievedIds.getTotalPages());
         when(productRepository.findAllIdsByName(pageable, "name"))
             .thenReturn(retrievedIds);
-        when(productRepository.findAllByIdWithImages(productIds))
+        when(productRepository.findAllByIdWithImages(productIds,pageable.getSort()))
             .thenReturn(List.of(product));
         when(modelMapper.map(product, ShortProductResponseDto.class))
             .thenReturn(shortProductResponseDto);
@@ -68,7 +68,7 @@ class ProductServiceTest {
         var actual = productService.getAll(pageable, "name");
 
         verify(productRepository).findAllIdsByName(eq(pageable), eq("name"));
-        verify(productRepository).findAllByIdWithImages(eq(productIds));
+        verify(productRepository).findAllByIdWithImages(eq(productIds),eq(pageable.getSort()));
         assertEquals(actual, expected);
     }
 

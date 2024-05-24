@@ -139,13 +139,6 @@ public class Utils {
             .build();
     }
 
-    public static UserVO getUserVO() {
-        return UserVO.builder()
-            .id(1L)
-            .email("testmail@gmail.com")
-            .role(Role.ROLE_USER)
-            .build();
-    }
 
     public static User getUser() {
         return User.builder()

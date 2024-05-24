@@ -1,47 +1,34 @@
 package io.teamchallenge.controller;
 
-import io.teamchallenge.utils.Utils;
 import io.teamchallenge.dto.PageableDto;
-import io.teamchallenge.handler.CustomExceptionHandler;
 import io.teamchallenge.service.ProductService;
+import io.teamchallenge.utils.Utils;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
-import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.HttpStatus.OK;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductControllerTest {
 
-    private static final String productLink = "/api/v1/products";
-    private final ErrorAttributes errorAttributes = new DefaultErrorAttributes();
-    private MockMvc mockMvc;
     @InjectMocks
     private ProductController productController;
 
     @Mock
     private ProductService productService;
-
-    @BeforeEach
-    public void setUp() {
-        this.mockMvc = MockMvcBuilders
-            .standaloneSetup(productController)
-            .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
-            .setControllerAdvice(new CustomExceptionHandler(errorAttributes))
-            .build();
-    }
 
     @Test
     void getAllTest() {
@@ -49,8 +36,64 @@ public class ProductControllerTest {
         var name = "phone";
         var response = new PageableDto<>(
             List.of(Utils.getShortProductResponseDto()), 1, 1, 1);
+        when(productService.getAll(pageable, name)).thenReturn(response);
 
-        when(productService.getAll(pageable, name))
-            .thenReturn(response);
+        var responseEntity = productController.getAll(name,pageable);
+
+        verify(productService).getAll(eq(pageable),eq(name));
+        assertEquals(OK,responseEntity.getStatusCode());
+        assertEquals(response,responseEntity.getBody());
+    }
+
+    @Test
+    void getByIdTest() {
+        var id = 1L;
+        var response = Utils.getProductResponseDto();
+        when(productService.getById(id)).thenReturn(response);
+
+        var responseEntity = productController.getById(id);
+
+        verify(productService).getById(eq(id));
+        assertEquals(OK,responseEntity.getStatusCode());
+        assertEquals(response,responseEntity.getBody());
+    }
+
+    @Test
+    void createTest() {
+        var request = Utils.getProductRequestDto();
+        var response = Utils.getProductResponseDto();
+        when(productService.create(request)).thenReturn(response);
+
+        var responseEntity = productController.create(request);
+
+        verify(productService).create(eq(request));
+        assertEquals(CREATED,responseEntity.getStatusCode());
+        assertEquals(response,responseEntity.getBody());
+    }
+
+    @Test
+    void updateTest() {
+        var id = 1L;
+        var request = Utils.getProductRequestDto();
+        var response = Utils.getProductResponseDto();
+        when(productService.update(id,request)).thenReturn(response);
+
+        var responseEntity = productController.update(id,request);
+
+        verify(productService).update(eq(id),eq(request));
+        assertEquals(OK,responseEntity.getStatusCode());
+        assertEquals(response,responseEntity.getBody());
+    }
+
+    @Test
+    void deleteTest() {
+        var id = 1L;
+        doNothing().when(productService).deleteById(id);
+
+        var responseEntity = productController.delete(id);
+
+        verify(productService).deleteById(eq(id));
+        assertEquals(NO_CONTENT,responseEntity.getStatusCode());
+        System.out.println(responseEntity);
     }
 }
