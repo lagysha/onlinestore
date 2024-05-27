@@ -5,15 +5,12 @@ import io.teamchallenge.dto.security.SignInResponseDto;
 import io.teamchallenge.dto.security.SignUpRequestDto;
 import io.teamchallenge.dto.security.SignUpResponseDto;
 import io.teamchallenge.entity.User;
-import io.teamchallenge.enumerated.Role;
 import io.teamchallenge.exception.AlreadyExistsException;
 import io.teamchallenge.exception.BadCredentialsException;
 import io.teamchallenge.exception.BadTokenException;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.repository.UserRepository;
-import io.teamchallenge.service.JwtService;
-import io.teamchallenge.service.SecurityService;
-import java.time.LocalDateTime;
+import io.teamchallenge.util.Utils;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,48 +39,19 @@ public class SecurityServiceTest {
     @InjectMocks
     private SecurityService securityService;
 
-    private final User user = User.builder()
-        .id(1L)
-        .email("test@mail.com")
-        .password("EncodedPassword1234!")
-        .phoneNumber("1234567890")
-        .firstName("John")
-        .lastName("Doe")
-        .refreshTokenKey("5cZAVF/SKSCmCM2+1azD2XHK7K2PChcSg32vrrEh/Qk=")
-        .role(Role.ROLE_USER)
-        .createdAt(LocalDateTime.of(2020, 1, 1, 1, 1))
-        .build();
+    private final User user = Utils.getUser();
 
-    private final User newUser = User.builder()
-        .email(user.getEmail())
-        .password(user.getPassword())
-        .phoneNumber(user.getPhoneNumber())
-        .firstName(user.getFirstName())
-        .lastName(user.getLastName())
-        .role(user.getRole())
-        .build();
+    private final User newUser = Utils.getNewUser();
 
-    private final SignUpRequestDto signUpRequestDto = SignUpRequestDto.builder()
-        .email(newUser.getEmail())
-        .password("Password1234!")
-        .phoneNumber(newUser.getPhoneNumber())
-        .firstName(newUser.getFirstName())
-        .lastName(newUser.getLastName())
-        .build();
+    private final SignUpRequestDto signUpRequestDto = Utils.getSignUpRequestDto();
 
-    private final SignInRequestDto signInRequestDto = SignInRequestDto.builder()
-        .email(user.getEmail())
-        .password("Password1234!")
-        .build();
+    private final SignInRequestDto signInRequestDto = Utils.getSignInRequestDto();
+    private final String accessToken = Utils.getAccessToken();
+    private final String refreshToken = Utils.getRefreshToken();
 
     @Test
     void signUpUserTest() {
-        SignUpResponseDto signUpResponseDto = SignUpResponseDto.builder()
-            .id(newUser.getId())
-            .email(newUser.getEmail())
-            .firstName(newUser.getFirstName())
-            .lastName(newUser.getLastName())
-            .build();
+        SignUpResponseDto signUpResponseDto = Utils.getSignUpResponseDto();
 
         when(modelMapper.map(signUpRequestDto, User.class)).thenReturn(newUser);
         when(userRepository.existsByEmail(signUpRequestDto.getEmail())).thenReturn(false);
@@ -113,8 +81,6 @@ public class SecurityServiceTest {
 
     @Test
     void signInUserTest() {
-        String accessToken = "Access.Token.Test";
-        String refreshToken = "Refresh.Token.Test";
         SignInResponseDto signInResponseDto = SignInResponseDto.builder()
             .accessToken(accessToken)
             .refreshToken(refreshToken)
@@ -147,8 +113,6 @@ public class SecurityServiceTest {
 
     @Test
     void updateAccessTokenTest() {
-        String accessToken = "Access.Token.Test";
-        String refreshToken = "Refresh.Token.Test";
         SignInResponseDto signInResponseDto = SignInResponseDto.builder()
             .accessToken(accessToken)
             .refreshToken(refreshToken+"Result")
@@ -167,8 +131,6 @@ public class SecurityServiceTest {
 
     @Test
     void updateAccessTokenThrowsBadTokenExceptionWhenTokenDoesNotContainSubjectTest() {
-        String refreshToken = "Refresh.Token.Test";
-
         when(jwtService.getSubjectFromToken(refreshToken)).thenReturn(Optional.empty());
 
         assertThrows(BadTokenException.class,()->securityService.updateAccessToken(refreshToken));
@@ -176,8 +138,6 @@ public class SecurityServiceTest {
 
     @Test
     void updateAccessTokenThrowsNotFoundExceptionWhenUserNotFoundByEmailTest() {
-        String refreshToken = "Refresh.Token.Test";
-
         when(jwtService.getSubjectFromToken(refreshToken)).thenReturn(Optional.of(user.getEmail()));
         when(userRepository.findUserByEmail(user.getEmail())).thenReturn(Optional.empty());
 

@@ -5,6 +5,9 @@ import io.teamchallenge.dto.ProductAttributeResponseDto;
 import io.teamchallenge.dto.ProductRequestDto;
 import io.teamchallenge.dto.ProductResponseDto;
 import io.teamchallenge.dto.ShortProductResponseDto;
+import io.teamchallenge.dto.security.SignInRequestDto;
+import io.teamchallenge.dto.security.SignUpRequestDto;
+import io.teamchallenge.dto.security.SignUpResponseDto;
 import io.teamchallenge.dto.user.UserVO;
 import io.teamchallenge.entity.Brand;
 import io.teamchallenge.entity.Category;
@@ -150,6 +153,13 @@ public class Utils {
             ".sfkczlafsasfVxmd9asfasfasfasCu8DbWbZAkSWHujs";
     }
 
+    public static String getRefreshToken() {
+        return "eyJhbGciOiJIUzI1NiJ9" +
+            ".eyJpc3MiOiJHYWRnZXRIb3VzZSIsInN1YiI6ImV4YW1wbGUxMjNAZXhhbXBsZS5jb20iLCJpZCI6MTEsInJ" +
+            "vbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MTY4MDA5NDcsImV4cCI6MTcxNzQwNTc0N30" +
+            ".odua7l-MEZmfjsCu4jmAciqLI[lSRdvrD0Jmufd-N56";
+    }
+
     public static User getUser() {
         return User.builder()
             .id(1L)
@@ -159,6 +169,47 @@ public class Utils {
             .createdAt(LocalDateTime.of(2024,1,1,1,1))
             .password("password")
             .phoneNumber("123456789010")
+            .build();
+    }
+
+    public static User getNewUser() {
+        User user = getUser();
+        return User.builder()
+            .email(user.getEmail())
+            .password(user.getPassword())
+            .phoneNumber(user.getPhoneNumber())
+            .firstName(user.getFirstName())
+            .lastName(user.getLastName())
+            .role(user.getRole())
+            .build();
+    }
+
+    public static SignUpRequestDto getSignUpRequestDto () {
+        User newUser = getUser();
+        return SignUpRequestDto.builder()
+            .email(newUser.getEmail())
+            .password("Password1234!")
+            .phoneNumber(newUser.getPhoneNumber())
+            .firstName(newUser.getFirstName())
+            .lastName(newUser.getLastName())
+            .build();
+    }
+
+    public static SignInRequestDto getSignInRequestDto () {
+        User user = getUser();
+        return SignInRequestDto.builder()
+            .email(user.getEmail())
+            .password("Password1234!")
+            .build();
+    }
+
+    public static SignUpResponseDto getSignUpResponseDto () {
+        User newUser = getUser();
+        return SignUpResponseDto.builder()
+            .id(newUser.getId())
+            .email(newUser.getEmail())
+            .firstName(newUser.getFirstName())
+            .lastName(newUser.getLastName())
             .build();
     }
 
