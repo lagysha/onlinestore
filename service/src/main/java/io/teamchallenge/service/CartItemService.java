@@ -42,13 +42,12 @@ public class CartItemService {
      * @return a CartResponseDto containing the cart items and total price of the cart
      */
     public CartResponseDto getByUserId(Long userId) {
-        Pageable pageable = PageRequest.of(0, MAX_NUMBER_OF_UNIQUE_PRODUCTS_IN_CART,
-            Sort.by("createdAt"));
+        Pageable pageable = PageRequest.of(0, MAX_NUMBER_OF_UNIQUE_PRODUCTS_IN_CART);
 
         Page<CartItemId> retrievedCartItemsIds = cartItemRepository.findCartItemIdsByUserId(userId, pageable);
 
         return cartItemRepository
-            .findAllByIdWithImagesAndProducts(retrievedCartItemsIds.getContent())
+            .findAllByIdWithImagesAndProducts(retrievedCartItemsIds.getContent(),Sort.by("createdAt"))
             .stream()
             .collect(
                 Collector.of(

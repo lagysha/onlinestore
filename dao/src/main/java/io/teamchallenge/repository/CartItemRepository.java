@@ -6,6 +6,7 @@ import io.teamchallenge.entity.cartitem.CartItemId;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,13 +25,13 @@ public interface CartItemRepository
     Page<CartItemId> findCartItemIdsByUserId(@Param("userId") Long userId, Pageable pageable);
 
     /**
-     * Retrieves a list of cart items with their associated product and product images,
-     * based on a list of cart item IDs.
+     * Finds all {@link CartItem} entities by their IDs with associated product images and products.
      *
-     * @param cartItemIds the list of cart item IDs to be retrieved
-     * @return a list of CartItems with associated products and images
+     * @param cartItemIds the list of {@link CartItemId} to find the cart items by.
+     * @param sort the sorting criteria for the result list.
+     * @return a list of {@link CartItem} entities with associated product images and products.
      */
     @EntityGraph(attributePaths = {"product.images", "product"})
     @Query(value = "select ci from CartItem ci where ci.id in :cartItemIds")
-    List<CartItem> findAllByIdWithImagesAndProducts(@Param("cartItemIds") List<CartItemId> cartItemIds);
+    List<CartItem> findAllByIdWithImagesAndProducts(@Param("cartItemIds") List<CartItemId> cartItemIds, Sort sort);
 }

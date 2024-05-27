@@ -3,8 +3,9 @@ package io.teamchallenge.repository;
 import io.teamchallenge.entity.Product;
 import java.util.List;
 import java.util.Optional;
-import org.hibernate.LazyInitializationException;
+
 import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -27,7 +28,7 @@ import org.testcontainers.utility.DockerImageName;
 @Testcontainers
 @ActiveProfiles("ts")
 @Sql(scripts = "classpath:data.sql")
-class ProductRepositoryTCTest  {
+class ProductRepositoryTCTest {
 
     @Container
     @ServiceConnection
@@ -41,7 +42,7 @@ class ProductRepositoryTCTest  {
     void findByNameTest() {
         Optional<Product> product = productRepository.findByName("Example Smartphone");
         assertFalse(product.isEmpty());
-        assertEquals(product.get().getName(),"Example Smartphone");
+        assertEquals(product.get().getName(), "Example Smartphone");
     }
 
     @Test
@@ -52,14 +53,14 @@ class ProductRepositoryTCTest  {
 
     @Test
     void findByNameAndIdNotTest() {
-        Optional<Product> product = productRepository.findByNameAndIdNot("Example Smartphone",2L);
+        Optional<Product> product = productRepository.findByNameAndIdNot("Example Smartphone", 2L);
         assertFalse(product.isEmpty());
-        assertEquals(product.get().getName(),"Example Smartphone");
+        assertEquals(product.get().getName(), "Example Smartphone");
     }
 
     @Test
     void findByNameAndIdNotWhenNoProductWithSuchNameAndIdPresentTest() {
-        Optional<Product> product = productRepository.findByNameAndIdNot("Example T-shirt",2L);
+        Optional<Product> product = productRepository.findByNameAndIdNot("Example T-shirt", 2L);
         assertTrue(product.isEmpty());
     }
 
@@ -70,7 +71,7 @@ class ProductRepositoryTCTest  {
         TestTransaction.end();
 
         assertFalse(product.isEmpty());
-        assertEquals(product.get().getImages().size(),1L);
+        assertEquals(product.get().getImages().size(), 1L);
     }
 
     @Test
@@ -86,9 +87,9 @@ class ProductRepositoryTCTest  {
         TestTransaction.end();
 
         assertFalse(product.isEmpty());
-        assertEquals(product.get().getCategory().getId(),1L);
-        assertEquals(product.get().getBrand().getId(),1L);
-        assertEquals(product.get().getProductAttributes().size(),2);
+        assertEquals(product.get().getCategory().getId(), 1L);
+        assertEquals(product.get().getBrand().getId(), 1L);
+        assertEquals(product.get().getProductAttributes().size(), 2);
     }
 
     @Test
@@ -99,12 +100,12 @@ class ProductRepositoryTCTest  {
 
     @Test
     void findAllByIdWithImagesTest() {
-        List<Product> products = productRepository.findAllByIdWithImages(List.of(1L,2L),Sort.unsorted());
+        List<Product> products = productRepository.findAllByIdWithImages(List.of(1L, 2L), Sort.unsorted());
 
         TestTransaction.end();
 
         assertEquals(products.size(), 2);
-        assertEquals(products.getFirst().getImages().size(),1L);
+        assertEquals(products.getFirst().getImages().size(), 1L);
     }
 
     @Test
@@ -116,18 +117,18 @@ class ProductRepositoryTCTest  {
     @Test
     void findAllIdsByNameTest() {
         Page<Long> productsIds = productRepository.
-            findAllIdsByName(Pageable.ofSize(3),"Example T-shirt".toLowerCase());
+            findAllIdsByName(Pageable.ofSize(3), "Example T-shirt".toLowerCase());
 
         TestTransaction.end();
 
         assertEquals(productsIds.getTotalElements(), 1);
-        assertEquals(productsIds.getContent().getFirst(),2L);
+        assertEquals(productsIds.getContent().getFirst(), 2L);
     }
 
     @Test
     void findAllIdsByNameWhenNoProductWithIdPresentTest() {
         Page<Long> productsIds = productRepository.
-            findAllIdsByName(Pageable.ofSize(3),"Example T-shirt1");
+            findAllIdsByName(Pageable.ofSize(3), "Example T-shirt1");
         assertTrue(productsIds.isEmpty());
     }
 
@@ -138,10 +139,10 @@ class ProductRepositoryTCTest  {
         TestTransaction.end();
 
         assertFalse(product.isEmpty());
-        assertEquals(product.get().getCategory().getId(),1L);
-        assertEquals(product.get().getBrand().getId(),1L);
-        assertEquals(product.get().getProductAttributes().size(),2);
-        assertEquals(product.get().getImages().size(),1);
+        assertEquals(product.get().getCategory().getId(), 1L);
+        assertEquals(product.get().getBrand().getId(), 1L);
+        assertEquals(product.get().getProductAttributes().size(), 2);
+        assertEquals(product.get().getImages().size(), 1);
     }
 
     @Test
