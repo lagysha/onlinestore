@@ -93,7 +93,7 @@ public class JwtServiceTest {
     }
     @Test
     void getSubjectFromTokenTest() {
-        String subject = "test@mail.com";
+        String subject = "example123@example.com";
 
         Optional<String> subjectFromToken = jwtService.getSubjectFromToken(accessToken);
 
