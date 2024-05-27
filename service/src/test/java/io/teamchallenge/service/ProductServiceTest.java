@@ -1,33 +1,44 @@
 package io.teamchallenge.service;
 
 import io.teamchallenge.constant.ExceptionMessage;
-import io.teamchallenge.dto.*;
+import io.teamchallenge.dto.PageableDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
 import io.teamchallenge.dto.product.ShortProductResponseDto;
 import io.teamchallenge.entity.attributes.AttributeValue;
 import io.teamchallenge.exception.AlreadyExistsException;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.exception.PersistenceException;
-import io.teamchallenge.repository.*;
-import static io.teamchallenge.util.Utils.*;
-
+import io.teamchallenge.repository.AttributeValueRepository;
+import io.teamchallenge.repository.BrandRepository;
+import io.teamchallenge.repository.CategoryRepository;
+import io.teamchallenge.repository.ProductAttributeRepository;
+import io.teamchallenge.repository.ProductRepository;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+
+import static io.teamchallenge.util.Utils.getAttributeValue;
+import static io.teamchallenge.util.Utils.getBrand;
+import static io.teamchallenge.util.Utils.getCategory;
+import static io.teamchallenge.util.Utils.getProduct;
+import static io.teamchallenge.util.Utils.getProductRequestDto;
+import static io.teamchallenge.util.Utils.getProductResponseDto;
+import static io.teamchallenge.util.Utils.getShortProductResponseDto;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
@@ -60,7 +71,7 @@ class ProductServiceTest {
             retrievedIds.getTotalPages());
         when(productRepository.findAllIdsByName(pageable, "name"))
             .thenReturn(retrievedIds);
-        when(productRepository.findAllByIdWithImages(productIds,pageable.getSort()))
+        when(productRepository.findAllByIdWithImages(productIds, pageable.getSort()))
             .thenReturn(List.of(product));
         when(modelMapper.map(product, ShortProductResponseDto.class))
             .thenReturn(shortProductResponseDto);
@@ -68,7 +79,7 @@ class ProductServiceTest {
         var actual = productService.getAll(pageable, "name");
 
         verify(productRepository).findAllIdsByName(eq(pageable), eq("name"));
-        verify(productRepository).findAllByIdWithImages(eq(productIds),eq(pageable.getSort()));
+        verify(productRepository).findAllByIdWithImages(eq(productIds), eq(pageable.getSort()));
         assertEquals(actual, expected);
     }
 

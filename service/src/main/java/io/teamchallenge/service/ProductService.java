@@ -1,9 +1,6 @@
 package io.teamchallenge.service;
 
 import io.teamchallenge.constant.ExceptionMessage;
-
-import static io.teamchallenge.constant.ExceptionMessage.*;
-
 import io.teamchallenge.dto.PageableDto;
 import io.teamchallenge.dto.product.ProductRequestDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
@@ -14,8 +11,8 @@ import io.teamchallenge.entity.Image;
 import io.teamchallenge.entity.Product;
 import io.teamchallenge.entity.attributes.ProductAttribute;
 import io.teamchallenge.exception.AlreadyExistsException;
-import io.teamchallenge.exception.PersistenceException;
 import io.teamchallenge.exception.NotFoundException;
+import io.teamchallenge.exception.PersistenceException;
 import io.teamchallenge.repository.AttributeValueRepository;
 import io.teamchallenge.repository.BrandRepository;
 import io.teamchallenge.repository.CategoryRepository;
@@ -32,6 +29,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static io.teamchallenge.constant.ExceptionMessage.BRAND_NOT_FOUND_BY_ID;
+import static io.teamchallenge.constant.ExceptionMessage.CATEGORY_NOT_FOUND_BY_ID;
+import static io.teamchallenge.constant.ExceptionMessage.PRODUCT_PERSISTENCE_EXCEPTION;
+import static io.teamchallenge.constant.ExceptionMessage.PRODUCT_WITH_NAME_ALREADY_EXISTS;
 
 @Service
 @RequiredArgsConstructor
