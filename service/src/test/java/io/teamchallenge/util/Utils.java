@@ -1,14 +1,13 @@
 package io.teamchallenge.util;
 
 import io.teamchallenge.dto.CategoryResponseDto;
-import io.teamchallenge.dto.ProductAttributeResponseDto;
-import io.teamchallenge.dto.ProductRequestDto;
-import io.teamchallenge.dto.ProductResponseDto;
-import io.teamchallenge.dto.ShortProductResponseDto;
+import io.teamchallenge.dto.product.ProductAttributeResponseDto;
+import io.teamchallenge.dto.product.ProductRequestDto;
+import io.teamchallenge.dto.product.ProductResponseDto;
+import io.teamchallenge.dto.product.ShortProductResponseDto;
 import io.teamchallenge.dto.security.SignInRequestDto;
 import io.teamchallenge.dto.security.SignUpRequestDto;
 import io.teamchallenge.dto.security.SignUpResponseDto;
-import io.teamchallenge.dto.user.UserVO;
 import io.teamchallenge.entity.Brand;
 import io.teamchallenge.entity.Category;
 import io.teamchallenge.entity.Image;
@@ -138,6 +137,12 @@ public class Utils {
             .build();
     }
 
+    public static String getAccessToken() {
+        return "eyJhbGciOiJIUzI1NiJ9" +
+            ".eyJpc3MiOiJHYWRnZXRIb3VzZSIsInN1YiI6ImV4YW1wbGUxMjNAZXhhbXBsZS5jb20iLCJpZCI6MTEsInJ" +
+            "vbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MTY4MDA5NDcsImV4cCI6MTcxNzQwNTc0N30" +
+            ".odua7l-MEZmfjsCu4jmAciqLI[lSRdvrD0Jmufd-N56";
+    }
 
     public static String getRefreshToken() {
         return "eyJhbGciOiJIUzI1NiJ9" +
@@ -151,7 +156,7 @@ public class Utils {
             .id(1L)
             .email("test@mail.com")
             .role(Role.ROLE_USER)
-            .refreshTokenKey(SECRET_KEY)
+            .refreshTokenKey(getSecretKey())
             .createdAt(LocalDateTime.of(2024,1,1,1,1))
             .password("password")
             .phoneNumber("123456789010")

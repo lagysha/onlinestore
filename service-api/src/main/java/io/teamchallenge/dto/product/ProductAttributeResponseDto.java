@@ -1,6 +1,5 @@
 package io.teamchallenge.dto.product;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
