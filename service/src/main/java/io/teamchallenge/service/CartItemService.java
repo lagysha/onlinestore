@@ -1,11 +1,6 @@
 package io.teamchallenge.service;
 
-import static io.teamchallenge.constant.AppConstant.MAX_NUMBER_OF_UNIQUE_PRODUCTS_IN_CART;
-
 import io.teamchallenge.constant.ExceptionMessage;
-
-import static io.teamchallenge.constant.ExceptionMessage.CARTITEM_ALREADY_EXISTS;
-
 import io.teamchallenge.dto.cart.CartItemResponseDto;
 import io.teamchallenge.dto.cart.CartResponseDto;
 import io.teamchallenge.dto.cart.PathRequestDto;
@@ -16,7 +11,6 @@ import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.repository.CartItemRepository;
 import io.teamchallenge.repository.ProductRepository;
 import io.teamchallenge.repository.UserRepository;
-import jakarta.validation.Valid;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.stream.Collector;
@@ -28,6 +22,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static io.teamchallenge.constant.AppConstant.MAX_NUMBER_OF_UNIQUE_PRODUCTS_IN_CART;
+import static io.teamchallenge.constant.ExceptionMessage.CARTITEM_ALREADY_EXISTS;
 
 @Service
 @Transactional(readOnly = true)
@@ -51,9 +48,6 @@ public class CartItemService {
         Page<CartItemId> retrievedCartItemsIds = cartItemRepository.findCartItemIdsByUserId(userId, pageable);
 
         return cartItemRepository
-            //TODO : implement order of images in the database with save
-            //TODO : here fetch only first image
-            //TODO : change java doc
             .findAllByIdWithImagesAndProducts(retrievedCartItemsIds.getContent())
             .stream()
             .collect(

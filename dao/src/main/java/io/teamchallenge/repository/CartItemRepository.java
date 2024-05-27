@@ -20,9 +20,6 @@ public interface CartItemRepository
      * @param pageable the pagination information
      * @return a page of CartItemIds for the specified user
      */
-    //TODO : implement order of images in the database with save
-    //TODO : here fetch only first image
-    //TODO : change java doc
     @Query(value = "select ci.id from CartItem ci where ci.user.id = :userId")
     Page<CartItemId> findCartItemIdsByUserId(@Param("userId") Long userId, Pageable pageable);
 
