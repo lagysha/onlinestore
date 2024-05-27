@@ -2,6 +2,9 @@ package io.teamchallenge.utils;
 
 
 import io.teamchallenge.dto.CategoryResponseDto;
+import io.teamchallenge.dto.cart.CartItemResponseDto;
+import io.teamchallenge.dto.cart.CartResponseDto;
+import io.teamchallenge.dto.cart.PatchRequestDto;
 import io.teamchallenge.dto.product.ProductAttributeResponseDto;
 import io.teamchallenge.dto.product.ProductRequestDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
@@ -17,6 +20,8 @@ import io.teamchallenge.entity.Product;
 import io.teamchallenge.entity.attributes.Attribute;
 import io.teamchallenge.entity.attributes.AttributeValue;
 import io.teamchallenge.entity.attributes.ProductAttribute;
+import io.teamchallenge.entity.cartitem.CartItem;
+import io.teamchallenge.repository.CartItemRepository;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +32,32 @@ public class Utils {
         return Category.builder()
             .id(1L)
             .name("name1")
+            .build();
+    }
+
+    public static PatchRequestDto getPatchRequestDto(){
+        return PatchRequestDto
+            .builder()
+            .quantity(1)
+            .build();
+    }
+
+    public static CartResponseDto getCartResponseDto(){
+        return CartResponseDto
+            .builder()
+            .cartItemResponseDtos(new ArrayList<>())
+            .totalPrice(BigDecimal.ZERO)
+            .build();
+    }
+
+    public static CartItemResponseDto getCartItemResponseDto(){
+        return CartItemResponseDto
+            .builder()
+            .productId(1L)
+            .quantity(1)
+            .images(new ArrayList<>())
+            .name("name")
+            .price(BigDecimal.ONE)
             .build();
     }
 

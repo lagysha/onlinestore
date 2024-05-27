@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
@@ -94,6 +95,6 @@ public class ProductControllerTest {
 
         verify(productService).deleteById(eq(id));
         assertEquals(NO_CONTENT,responseEntity.getStatusCode());
-        System.out.println(responseEntity);
+        assertNull(responseEntity.getBody());
     }
 }
