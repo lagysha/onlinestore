@@ -1,20 +1,23 @@
 package io.teamchallenge.service;
 
 import io.teamchallenge.constant.ExceptionMessage;
-import static io.teamchallenge.constant.ExceptionMessage.*;
 import io.teamchallenge.dto.PageableDto;
-import io.teamchallenge.dto.ProductRequestDto;
-import io.teamchallenge.dto.ProductResponseDto;
-import io.teamchallenge.dto.ShortProductResponseDto;
+import io.teamchallenge.dto.product.ProductRequestDto;
+import io.teamchallenge.dto.product.ProductResponseDto;
+import io.teamchallenge.dto.product.ShortProductResponseDto;
 import io.teamchallenge.entity.Brand;
 import io.teamchallenge.entity.Category;
 import io.teamchallenge.entity.Image;
 import io.teamchallenge.entity.Product;
 import io.teamchallenge.entity.attributes.ProductAttribute;
 import io.teamchallenge.exception.AlreadyExistsException;
-import io.teamchallenge.exception.PersistenceException;
 import io.teamchallenge.exception.NotFoundException;
-import io.teamchallenge.repository.*;
+import io.teamchallenge.exception.PersistenceException;
+import io.teamchallenge.repository.AttributeValueRepository;
+import io.teamchallenge.repository.BrandRepository;
+import io.teamchallenge.repository.CategoryRepository;
+import io.teamchallenge.repository.ProductAttributeRepository;
+import io.teamchallenge.repository.ProductRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,9 +25,15 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static io.teamchallenge.constant.ExceptionMessage.BRAND_NOT_FOUND_BY_ID;
+import static io.teamchallenge.constant.ExceptionMessage.CATEGORY_NOT_FOUND_BY_ID;
+import static io.teamchallenge.constant.ExceptionMessage.PRODUCT_PERSISTENCE_EXCEPTION;
+import static io.teamchallenge.constant.ExceptionMessage.PRODUCT_WITH_NAME_ALREADY_EXISTS;
 
 @Service
 @RequiredArgsConstructor
@@ -45,9 +54,11 @@ public class ProductService {
      * @return PageableDto containing a list of ProductResponseDto representing the paginated list of products.
      */
     public PageableDto<ShortProductResponseDto> getAll(Pageable pageable, String name) {
-        Page<Long> retrievedProducts = productRepository.findAllIdsByName(pageable, name);
+        Page<Long> retrievedProducts =
+            productRepository.findAllIdsByName(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()),
+                name.toLowerCase());
         List<ShortProductResponseDto> content = productRepository
-            .findAllByIdWithImages(retrievedProducts.getContent())
+            .findAllByIdWithImages(retrievedProducts.getContent(), pageable.getSort())
             .stream()
             .map(product -> modelMapper.map(product, ShortProductResponseDto.class))
             .collect(Collectors.toList());
@@ -81,6 +92,7 @@ public class ProductService {
      * @param id The identifier of the product to delete.
      * @throws NotFoundException if the product with the given ID is not found.
      */
+    @Transactional
     public void deleteById(Long id) {
         var retrievedProduct = productRepository
             .findById(id)
@@ -94,7 +106,7 @@ public class ProductService {
      *
      * @param productRequestDto The ProductRequestDto containing the details of the product to create.
      * @return The ProductResponseDto representing the created product.
-     * @throws PersistenceException      if there is an issue creating the product.
+     * @throws PersistenceException   if there is an issue creating the product.
      * @throws NotFoundException      if the brand or category specified in the request is not found.
      * @throws AlreadyExistsException if the product name is invalid.
      */
@@ -114,6 +126,7 @@ public class ProductService {
             .images(new ArrayList<>())
             .productAttributes(new ArrayList<>())
             .build();
+
         productRequestDto.getImageLinks()
             .forEach(link -> product
                 .addImage(Image.builder().link(link).build()));
@@ -129,7 +142,6 @@ public class ProductService {
             );
 
         try {
-            //TODO: Also add batch insert if needed
             var savedProduct = productRepository.save(product);
             productAttributeRepository.findAllByIdIn(productRequestDto.getAttributeValueId());
 
@@ -146,7 +158,7 @@ public class ProductService {
      * @param id                The identifier of the product to update.
      * @param productRequestDto The ProductRequestDto containing the updated details of the product.
      * @return The ProductResponseDto representing the updated product.
-     * @throws PersistenceException      if there is an issue creating the product.
+     * @throws PersistenceException   if there is an issue creating the product.
      * @throws NotFoundException      if the brand or category specified in the request is not found.
      * @throws AlreadyExistsException if the product name is invalid.
      */
@@ -167,15 +179,12 @@ public class ProductService {
         product.setShortDesc(productRequestDto.getShortDesc());
         product.setPrice(productRequestDto.getPrice());
 
-
-        //TODO: add service here to store images and retrieve links
         product.clearAllImages();
         productRequestDto.getImageLinks()
             .forEach(link -> product
                 .addImage(Image.builder().link(link).build()));
 
         try {
-            //TODO: Also add batch insert and batch delete if needed
             List<Long> idsToFetch = updateProductAttributes(productRequestDto, product);
             attributeValueRepository.findAllByIdIn(idsToFetch);
             return modelMapper.map(product, ProductResponseDto.class);
