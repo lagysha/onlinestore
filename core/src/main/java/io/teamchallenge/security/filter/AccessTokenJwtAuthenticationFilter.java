@@ -43,15 +43,14 @@ public class AccessTokenJwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             if (token.isPresent()) {
                 String jwt = token.get();
-                log.info("token: {}", jwt);
                 SecretKey secretKey = Keys.hmacShaKeyFor(jwtService.getSecretKey().getBytes(StandardCharsets.UTF_8));
-                System.out.println(secretKey);
                 JwtParser jwtParser = Jwts.parser().verifyWith(secretKey).build();
-                System.out.println(jwtParser);
+
                 Claims claims = jwtParser.parseSignedClaims(jwt).getPayload();
                 String email = claims.getSubject();
                 String role = (String) claims.get("role");
                 log.info("user: {}", claims);
+
                 ClaimsUsernamePasswordAuthenticationToken
                     authentication = new ClaimsUsernamePasswordAuthenticationToken(email, "",
                         Collections.singleton(new SimpleGrantedAuthority(role)), claims);

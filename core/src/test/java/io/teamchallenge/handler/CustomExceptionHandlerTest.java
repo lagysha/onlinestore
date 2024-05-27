@@ -10,6 +10,8 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import java.util.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.apache.coyote.BadRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -137,6 +139,17 @@ public class CustomExceptionHandlerTest {
             any(ErrorAttributeOptions.class))).thenReturn(objectMap);
 
         assertEquals(customExceptionHandler.handleBadCredentialsException(badCredentialsException, webRequest),
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse));
+    }
+
+    @Test
+    void handleBadRequestExceptionTest() {
+        BadRequestException badRequestException = new BadRequestException("test");
+        ExceptionResponse exceptionResponse = new ExceptionResponse(objectMap);
+        when(errorAttributes.getErrorAttributes(eq(webRequest),
+            any(ErrorAttributeOptions.class))).thenReturn(objectMap);
+
+        assertEquals(customExceptionHandler.handleBadCredentialsException(badRequestException, webRequest),
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse));
     }
 }

@@ -1,31 +1,28 @@
-package io.teamchallenge.util;
+package io.teamchallenge.utils;
+
 
 import io.teamchallenge.dto.CategoryResponseDto;
 import io.teamchallenge.dto.product.ProductAttributeResponseDto;
 import io.teamchallenge.dto.product.ProductRequestDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
 import io.teamchallenge.dto.product.ShortProductResponseDto;
-import io.teamchallenge.dto.user.UserVO;
+import io.teamchallenge.dto.security.SignInRequestDto;
+import io.teamchallenge.dto.security.SignInResponseDto;
+import io.teamchallenge.dto.security.SignUpRequestDto;
+import io.teamchallenge.dto.security.SignUpResponseDto;
 import io.teamchallenge.entity.Brand;
 import io.teamchallenge.entity.Category;
 import io.teamchallenge.entity.Image;
 import io.teamchallenge.entity.Product;
-import io.teamchallenge.entity.User;
 import io.teamchallenge.entity.attributes.Attribute;
 import io.teamchallenge.entity.attributes.AttributeValue;
 import io.teamchallenge.entity.attributes.ProductAttribute;
-import io.teamchallenge.enumerated.Role;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Utils {
-    public final static String SECRET_KEY = "5cZAVF/SKSCmCM2+1azD2XHK7K2PChcSg32vrrEh/Qk=";
-    public final static String ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJHYWRnZXRIb3VzZSIsInN1YiI6InRlc3RAbWF"
-       + "pbC5jb20iLCJpZCI6MSwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTcxNDc1MDAyMiwiZXhwIjoxNzE0Nzg2MDIyfQ.sfkczlafsasfVxm"
-       + "d9asfasfasfasCu8DbWbZAkSWHujs";
     public static Category getCategory() {
         return Category.builder()
             .id(1L)
@@ -139,16 +136,36 @@ public class Utils {
             .build();
     }
 
+    public static SignInResponseDto getSignInResponseDto() {
+        return SignInResponseDto.builder()
+            .accessToken("accessToken")
+            .refreshToken("refreshToken")
+            .build();
+    }
 
-    public static User getUser() {
-        return User.builder()
+    public static SignUpRequestDto getSignUpRequestDto() {
+        return SignUpRequestDto.builder()
+            .email("test@mail.com")
+            .firstName("John")
+            .lastName("Doe")
+            .phoneNumber("0123456789")
+            .password("Password1234!")
+            .build();
+    }
+
+    public static SignUpResponseDto getSignUpResponseDto() {
+        return SignUpResponseDto.builder()
             .id(1L)
             .email("test@mail.com")
-            .role(Role.ROLE_USER)
-            .refreshTokenKey(SECRET_KEY)
-            .createdAt(LocalDateTime.of(2024,1,1,1,1))
-            .password("password")
-            .phoneNumber("123456789010")
+            .firstName("John")
+            .lastName("Doe")
+            .build();
+    }
+
+    public static SignInRequestDto getSignInRequestDto() {
+        return SignInRequestDto.builder()
+            .email("test@mail.com")
+            .password("Password1234!")
             .build();
     }
 }

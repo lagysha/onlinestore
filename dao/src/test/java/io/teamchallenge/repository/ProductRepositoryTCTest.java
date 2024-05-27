@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.transaction.TestTransaction;
@@ -98,7 +99,7 @@ class ProductRepositoryTCTest  {
 
     @Test
     void findAllByIdWithImagesTest() {
-        List<Product> products = productRepository.findAllByIdWithImages(List.of(1L,2L));
+        List<Product> products = productRepository.findAllByIdWithImages(List.of(1L,2L),Sort.unsorted());
 
         TestTransaction.end();
 
@@ -108,14 +109,14 @@ class ProductRepositoryTCTest  {
 
     @Test
     void findAllByIdWithImagesWhenNoProductWithIdPresentTest() {
-        List<Product> product = productRepository.findAllByIdWithImages(List.of(3L));
+        List<Product> product = productRepository.findAllByIdWithImages(List.of(3L), Sort.unsorted());
         assertTrue(product.isEmpty());
     }
 
     @Test
     void findAllIdsByNameTest() {
         Page<Long> productsIds = productRepository.
-            findAllIdsByName(Pageable.ofSize(3),"Example T-shirt");
+            findAllIdsByName(Pageable.ofSize(3),"Example T-shirt".toLowerCase());
 
         TestTransaction.end();
 

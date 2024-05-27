@@ -1,9 +1,6 @@
 package io.teamchallenge.service;
 
 import io.teamchallenge.constant.ExceptionMessage;
-
-import static io.teamchallenge.constant.ExceptionMessage.*;
-
 import io.teamchallenge.dto.PageableDto;
 import io.teamchallenge.dto.product.ProductRequestDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
@@ -14,8 +11,8 @@ import io.teamchallenge.entity.Image;
 import io.teamchallenge.entity.Product;
 import io.teamchallenge.entity.attributes.ProductAttribute;
 import io.teamchallenge.exception.AlreadyExistsException;
-import io.teamchallenge.exception.PersistenceException;
 import io.teamchallenge.exception.NotFoundException;
+import io.teamchallenge.exception.PersistenceException;
 import io.teamchallenge.repository.AttributeValueRepository;
 import io.teamchallenge.repository.BrandRepository;
 import io.teamchallenge.repository.CategoryRepository;
@@ -28,9 +25,15 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static io.teamchallenge.constant.ExceptionMessage.BRAND_NOT_FOUND_BY_ID;
+import static io.teamchallenge.constant.ExceptionMessage.CATEGORY_NOT_FOUND_BY_ID;
+import static io.teamchallenge.constant.ExceptionMessage.PRODUCT_PERSISTENCE_EXCEPTION;
+import static io.teamchallenge.constant.ExceptionMessage.PRODUCT_WITH_NAME_ALREADY_EXISTS;
 
 @Service
 @RequiredArgsConstructor
@@ -51,9 +54,11 @@ public class ProductService {
      * @return PageableDto containing a list of ProductResponseDto representing the paginated list of products.
      */
     public PageableDto<ShortProductResponseDto> getAll(Pageable pageable, String name) {
-        Page<Long> retrievedProducts = productRepository.findAllIdsByName(pageable, name);
+        Page<Long> retrievedProducts =
+            productRepository.findAllIdsByName(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()),
+                name.toLowerCase());
         List<ShortProductResponseDto> content = productRepository
-            .findAllByIdWithImages(retrievedProducts.getContent())
+            .findAllByIdWithImages(retrievedProducts.getContent(), pageable.getSort())
             .stream()
             .map(product -> modelMapper.map(product, ShortProductResponseDto.class))
             .collect(Collectors.toList());
@@ -121,6 +126,7 @@ public class ProductService {
             .images(new ArrayList<>())
             .productAttributes(new ArrayList<>())
             .build();
+
         productRequestDto.getImageLinks()
             .forEach(link -> product
                 .addImage(Image.builder().link(link).build()));
@@ -136,7 +142,6 @@ public class ProductService {
             );
 
         try {
-            //TODO: Also add batch insert if needed
             var savedProduct = productRepository.save(product);
             productAttributeRepository.findAllByIdIn(productRequestDto.getAttributeValueId());
 
@@ -174,15 +179,12 @@ public class ProductService {
         product.setShortDesc(productRequestDto.getShortDesc());
         product.setPrice(productRequestDto.getPrice());
 
-
-        //TODO: add service here to store images and retrieve links
         product.clearAllImages();
         productRequestDto.getImageLinks()
             .forEach(link -> product
                 .addImage(Image.builder().link(link).build()));
 
         try {
-            //TODO: Also add batch insert and batch delete if needed
             List<Long> idsToFetch = updateProductAttributes(productRequestDto, product);
             attributeValueRepository.findAllByIdIn(idsToFetch);
             return modelMapper.map(product, ProductResponseDto.class);

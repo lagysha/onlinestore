@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.BadRequestException;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.http.HttpHeaders;
@@ -150,6 +151,22 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ExceptionResponse> handleBadCredentialsException(BadCredentialsException e,
                                                                         WebRequest webRequest) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(webRequest));
+        log.trace(e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(exceptionResponse);
+    }
+
+    /**
+     * Exception handler method to handle BadRequestException.
+     *
+     * @param e          The BadRequestException instance that occurred.
+     * @param webRequest The WebRequest associated with the request.
+     * @return A ResponseEntity containing the ExceptionResponse with HttpStatus.BAD_REQUEST.
+     */
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ExceptionResponse> handleBadCredentialsException(BadRequestException e,
+                                                                           WebRequest webRequest) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(webRequest));
         log.trace(e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)

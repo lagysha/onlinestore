@@ -4,6 +4,7 @@ import io.teamchallenge.dto.security.SignUpRequestDto;
 import io.teamchallenge.entity.User;
 import io.teamchallenge.enumerated.Role;
 import io.teamchallenge.service.JwtService;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.AbstractConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,21 +14,10 @@ import org.springframework.stereotype.Component;
  * This class maps a {@link SignUpRequestDto} object to an {@link User} entity.
  */
 @Component
+@RequiredArgsConstructor
 public class SignUpRequestDtoToUserMapper extends AbstractConverter<SignUpRequestDto, User> {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-
-    /**
-     * Constructor to autowire dependencies.
-     *
-     * @param passwordEncoder {@link PasswordEncoder} bean used for password hashing.
-     * @param jwtService {@link JwtService} bean used for generating refresh token key.
-     */
-    @Autowired
-    public SignUpRequestDtoToUserMapper(PasswordEncoder passwordEncoder, JwtService jwtService) {
-        this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
-    }
 
     /**
      * Converts a {@link SignUpRequestDto} object to an {@link User} entity.
