@@ -140,7 +140,6 @@ public class ProductService {
             );
 
         try {
-            //TODO: Also add batch insert if needed
             var savedProduct = productRepository.save(product);
             productAttributeRepository.findAllByIdIn(productRequestDto.getAttributeValueId());
 
@@ -184,7 +183,6 @@ public class ProductService {
                 .addImage(Image.builder().link(link).build()));
 
         try {
-            //TODO: Also add batch insert and batch delete if needed
             List<Long> idsToFetch = updateProductAttributes(productRequestDto, product);
             attributeValueRepository.findAllByIdIn(idsToFetch);
             return modelMapper.map(product, ProductResponseDto.class);
