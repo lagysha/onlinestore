@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -33,7 +34,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      * @return A Page containing the IDs of products matching the provided name.
      */
     @Query("select p.id from Product p "
-        + "where (:name is NULL or p.name like %:name%)")
+        + "where (:name is NULL or lower(p.name) like %:name%)")
     Page<Long> findAllIdsByName(Pageable pageable, String name);
 
     /**
@@ -42,8 +43,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      * @param productIds The list of IDs of the Products to retrieve.
      * @return A list of Products with associated images eagerly fetched.
      */
-    @Query("select p from Product p join fetch p.images where p.id in :productIds")
-    List<Product> findAllByIdWithImages(@Param("productIds") List<Long> productIds);
+    @Query("select p from Product p left join fetch p.images where p.id in :productIds")
+    List<Product> findAllByIdWithImages(@Param("productIds") List<Long> productIds, Sort sort);
 
     /**
      * Retrieves a Product by its ID with associated category, brand, and product attributes eagerly fetched.
@@ -55,9 +56,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("select p from Product p "
         + "join fetch p.category "
         + "join fetch p.brand "
-        + "join fetch p.productAttributes pa "
-        + "join fetch pa.attributeValue "
-        + "join fetch pa.attributeValue.attribute "
+        + "left join fetch p.productAttributes pa "
+        + "left join fetch pa.attributeValue "
+        + "left join fetch pa.attributeValue.attribute "
         + "where p.id in :productId ")
     Optional<Product> findByIdWithCategoryAndBrandAndProductAttribute(@Param("productId") Long id);
 
@@ -67,7 +68,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      * @param id The ID of the Product to retrieve.
      * @return An Optional containing the Product if found, with associated images eagerly fetched.
      */
-    @Query("select p from Product p join fetch p.images where p.id in :productId ")
+    @Query("select p from Product p left join fetch p.images where p.id in :productId ")
     Optional<Product> findByIdWithImages(@Param("productId") Long id);
 
     /**

@@ -138,20 +138,6 @@ public class Utils {
             .build();
     }
 
-    public static UserVO getUserVO() {
-        return UserVO.builder()
-            .id(1L)
-            .email("testmail@gmail.com")
-            .role(Role.ROLE_USER)
-            .build();
-    }
-
-    public static String getAccessToken() {
-        return "eyJhbGciOiJIUzI1NiJ9" +
-            ".eyJpc3MiOiJHYWRnZXRIb3VzZSIsInN1YiI6InRlc3RAbWFpbC5jb20iLCJpZCI6MSwicm9sZSI6IlJPT" +
-            "EVfVVNFUiIsImlhdCI6MTcxNDc1MDAyMiwiZXhwIjoxNzE0Nzg2MDIyfQ" +
-            ".sfkczlafsasfVxmd9asfasfasfasCu8DbWbZAkSWHujs";
-    }
 
     public static String getRefreshToken() {
         return "eyJhbGciOiJIUzI1NiJ9" +
@@ -165,7 +151,7 @@ public class Utils {
             .id(1L)
             .email("test@mail.com")
             .role(Role.ROLE_USER)
-            .refreshTokenKey(getSecretKey())
+            .refreshTokenKey(SECRET_KEY)
             .createdAt(LocalDateTime.of(2024,1,1,1,1))
             .password("password")
             .phoneNumber("123456789010")
