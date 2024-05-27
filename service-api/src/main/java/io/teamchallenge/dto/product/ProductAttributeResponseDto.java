@@ -1,4 +1,4 @@
-package io.teamchallenge.dto.security;
+package io.teamchallenge.dto.product;
 
 
 import lombok.AllArgsConstructor;
@@ -9,16 +9,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @ToString
 @EqualsAndHashCode
-@Builder
-public class SignUpResponseDto {
-    private Long id;
-    private String email;
-    private String firstName;
-    private String lastName;
+public class ProductAttributeResponseDto {
+    private String name;
+    private String value;
 }

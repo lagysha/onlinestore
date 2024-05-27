@@ -11,6 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Embeddable
+@ToString
 @EqualsAndHashCode
 public class CartItemId implements Serializable {
     @Column(name = "user_id")

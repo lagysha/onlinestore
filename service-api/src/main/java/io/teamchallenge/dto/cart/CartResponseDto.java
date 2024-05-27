@@ -1,6 +1,7 @@
-package io.teamchallenge.dto;
+package io.teamchallenge.dto.cart;
 
-
+import java.math.BigDecimal;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,7 +18,7 @@ import lombok.ToString;
 @Builder
 @ToString
 @EqualsAndHashCode
-public class CategoryResponseDto {
-    private String name;
-    private String desc;
+public class CartResponseDto {
+    private List<CartItemResponseDto> cartItemResponseDtos;
+    private BigDecimal totalPrice;
 }

@@ -1,5 +1,6 @@
 package io.teamchallenge.config;
 
+import static io.teamchallenge.constant.SecurityConstants.ADMIN;
 import io.teamchallenge.security.filter.AccessTokenJwtAuthenticationFilter;
 import io.teamchallenge.service.JwtService;
 import java.util.Collections;
@@ -88,9 +89,23 @@ public class SecurityConfig {
                 )
                 .permitAll()
                 .requestMatchers(HttpMethod.GET,
-                    "/hello"
-                )
+                    "/api/v1/cart-items/{user_id}",
+                    "/api/v1/products",
+                    "/api/v1/products/{id}",
+                    "/hello")
                 .hasRole(USER)
+                .requestMatchers(HttpMethod.POST,
+                    "/api/v1/cart-items/{product_id}")
+                .hasRole(USER)
+                .requestMatchers(HttpMethod.PATCH,
+                    "/api/v1/cart-items/{product_id}")
+                .hasRole(USER)
+                .requestMatchers(HttpMethod.DELETE,
+                    "/api/v1/cart-items/{product_id}")
+                .hasRole(USER)
+                .requestMatchers(
+                    "/api/v1/products")
+                .hasRole(ADMIN)
                 .anyRequest()
                 .hasRole(ADMIN)
             ).build();

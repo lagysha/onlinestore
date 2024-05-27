@@ -2,9 +2,9 @@ package io.teamchallenge.controller;
 
 import io.teamchallenge.annotation.AllowedSortFields;
 import io.teamchallenge.dto.PageableDto;
-import io.teamchallenge.dto.ProductRequestDto;
-import io.teamchallenge.dto.ProductResponseDto;
-import io.teamchallenge.dto.ShortProductResponseDto;
+import io.teamchallenge.dto.product.ProductRequestDto;
+import io.teamchallenge.dto.product.ProductResponseDto;
+import io.teamchallenge.dto.product.ShortProductResponseDto;
 import io.teamchallenge.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

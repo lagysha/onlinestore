@@ -1,10 +1,10 @@
 package io.teamchallenge.util;
 
 import io.teamchallenge.dto.CategoryResponseDto;
-import io.teamchallenge.dto.ProductAttributeResponseDto;
-import io.teamchallenge.dto.ProductRequestDto;
-import io.teamchallenge.dto.ProductResponseDto;
-import io.teamchallenge.dto.ShortProductResponseDto;
+import io.teamchallenge.dto.product.ProductAttributeResponseDto;
+import io.teamchallenge.dto.product.ProductRequestDto;
+import io.teamchallenge.dto.product.ProductResponseDto;
+import io.teamchallenge.dto.product.ShortProductResponseDto;
 import io.teamchallenge.dto.user.UserVO;
 import io.teamchallenge.entity.Brand;
 import io.teamchallenge.entity.Category;
@@ -22,6 +22,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Utils {
+    public final static String SECRET_KEY = "5cZAVF/SKSCmCM2+1azD2XHK7K2PChcSg32vrrEh/Qk=";
+    public final static String ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJHYWRnZXRIb3VzZSIsInN1YiI6InRlc3RAbWF"
+       + "pbC5jb20iLCJpZCI6MSwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTcxNDc1MDAyMiwiZXhwIjoxNzE0Nzg2MDIyfQ.sfkczlafsasfVxm"
+       + "d9asfasfasfasCu8DbWbZAkSWHujs";
     public static Category getCategory() {
         return Category.builder()
             .id(1L)
@@ -135,34 +139,16 @@ public class Utils {
             .build();
     }
 
-    public static UserVO getUserVO() {
-        return UserVO.builder()
-            .id(1L)
-            .email("testmail@gmail.com")
-            .role(Role.ROLE_USER)
-            .build();
-    }
-
-    public static String getAccessToken() {
-        return "eyJhbGciOiJIUzI1NiJ9" +
-            ".eyJpc3MiOiJHYWRnZXRIb3VzZSIsInN1YiI6InRlc3RAbWFpbC5jb20iLCJpZCI6MSwicm9sZSI6IlJPT" +
-            "EVfVVNFUiIsImlhdCI6MTcxNDc1MDAyMiwiZXhwIjoxNzE0Nzg2MDIyfQ" +
-            ".sfkczlafsasfVxmd9asfasfasfasCu8DbWbZAkSWHujs";
-    }
 
     public static User getUser() {
         return User.builder()
             .id(1L)
             .email("test@mail.com")
             .role(Role.ROLE_USER)
-            .refreshTokenKey(getSecretKey())
+            .refreshTokenKey(SECRET_KEY)
             .createdAt(LocalDateTime.of(2024,1,1,1,1))
             .password("password")
             .phoneNumber("123456789010")
             .build();
-    }
-
-    public static String getSecretKey() {
-        return "5cZAVF/SKSCmCM2+1azD2XHK7K2PChcSg32vrrEh/Qk=";
     }
 }
