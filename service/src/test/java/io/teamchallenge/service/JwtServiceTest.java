@@ -20,8 +20,6 @@ import org.mockito.InjectMocks;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static io.teamchallenge.util.Utils.ACCESS_TOKEN;
-import static io.teamchallenge.util.Utils.SECRET_KEY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -36,27 +34,29 @@ public class JwtServiceTest {
     private final int accessTokenValidTimeInMinutes = 20;
     private final int refreshTokenValidTimeInMinutes = 60;
     private final User user = Utils.getUser();
+    private final String accessToken = Utils.getAccessToken();
+    private final String secretKey = Utils.getSecretKey();
 
     @InjectMocks
     private JwtService jwtService =
-        new JwtService(SECRET_KEY, new ObjectMapper(), accessTokenValidTimeInMinutes, refreshTokenValidTimeInMinutes);
+        new JwtService(secretKey, new ObjectMapper(), accessTokenValidTimeInMinutes, refreshTokenValidTimeInMinutes);
 
     @Test
     void getTokenFromRequestTest() {
         HttpServletRequest request = mock(HttpServletRequest.class);
 
-        when(request.getHeader("Authorization")).thenReturn("Bearer " + ACCESS_TOKEN);
+        when(request.getHeader("Authorization")).thenReturn("Bearer " + accessToken);
 
         Optional<String> token = jwtService.getTokenFromRequest(request);
 
         verify(request).getHeader(eq("Authorization"));
-        assertEquals(ACCESS_TOKEN, token.get());
+        assertEquals(accessToken, token.get());
     }
 
     @Test
     void generateAccessTokenTest() {
         LocalDateTime localDateTime = LocalDateTime.now();
-        String accessToken = getToken(localDateTime, accessTokenValidTimeInMinutes, SECRET_KEY);
+        String accessToken = getToken(localDateTime, accessTokenValidTimeInMinutes, secretKey);
 
         String result;
         try (MockedStatic<LocalDateTime> mockedStatic = mockStatic(LocalDateTime.class)) {
@@ -93,9 +93,9 @@ public class JwtServiceTest {
     }
     @Test
     void getSubjectFromTokenTest() {
-        String subject = "test@mail.com";
+        String subject = "example123@example.com";
 
-        Optional<String> subjectFromToken = jwtService.getSubjectFromToken(ACCESS_TOKEN);
+        Optional<String> subjectFromToken = jwtService.getSubjectFromToken(accessToken);
 
         assertEquals(subject, subjectFromToken.get());
     }
@@ -103,7 +103,7 @@ public class JwtServiceTest {
     @Test
     void getSubjectFromTokenReturnsEmptyOptionalWhenThereIsNoSubjectInTokenTest() {
         String token = Jwts.builder()
-            .signWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8)), Jwts.SIG.HS256)
+            .signWith(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)), Jwts.SIG.HS256)
             .compact();
 
         Optional<String> subjectFromToken = jwtService.getSubjectFromToken(token);
@@ -124,17 +124,17 @@ public class JwtServiceTest {
     @Test
     void verifyTokenTest() {
         LocalDateTime localDateTime = LocalDateTime.now();
-        String token = getToken(localDateTime, refreshTokenValidTimeInMinutes, SECRET_KEY);
+        String token = getToken(localDateTime, refreshTokenValidTimeInMinutes, secretKey);
 
-        jwtService.verifyToken(token, SECRET_KEY);
+        jwtService.verifyToken(token, secretKey);
     }
 
     @Test
     void verifyTokenThrowsBadTokenExceptionWhenTokenWasNotSignedByUserTest() {
         LocalDateTime localDateTime = LocalDateTime.now();
         String additionalWrongSymbol = "1";
-        String key = SECRET_KEY+ additionalWrongSymbol;
-        String token = getToken(localDateTime, refreshTokenValidTimeInMinutes, SECRET_KEY);
+        String key = secretKey+ additionalWrongSymbol;
+        String token = getToken(localDateTime, refreshTokenValidTimeInMinutes, secretKey);
 
         assertThrows(BadTokenException.class, ()->jwtService.verifyToken(token, key));
     }
@@ -142,9 +142,9 @@ public class JwtServiceTest {
     @Test
     void verifyTokenThrowsBadTokenExceptionWhenTokenHasBeenExpiredTest() {
         LocalDateTime localDateTime = LocalDateTime.of(0,1,1,0,0);
-        String token = getToken(localDateTime, refreshTokenValidTimeInMinutes, SECRET_KEY);
+        String token = getToken(localDateTime, refreshTokenValidTimeInMinutes, secretKey);
 
-        assertThrows(BadTokenException.class, ()->jwtService.verifyToken(token, SECRET_KEY));
+        assertThrows(BadTokenException.class, ()->jwtService.verifyToken(token, secretKey));
     }
 
     private String getToken(LocalDateTime localDateTime, int refreshTokenValidTimeInMinutes, String secretKey) {
