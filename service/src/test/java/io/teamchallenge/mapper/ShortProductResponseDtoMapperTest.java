@@ -2,9 +2,13 @@ package io.teamchallenge.mapper;
 
 import io.teamchallenge.dto.product.ShortProductResponseDto;
 import io.teamchallenge.entity.Image;
+
 import static io.teamchallenge.util.Utils.getProduct;
+
 import java.util.stream.Collectors;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,10 +21,10 @@ public class ShortProductResponseDtoMapperTest {
     private ShortProductResponseDtoMapper shortProductResponseDtoMapper;
 
     @Test
-    void convertTest(){
+    void convertTest() {
         var product = getProduct();
 
-        var expected  = ShortProductResponseDto
+        var expected = ShortProductResponseDto
             .builder()
             .id(product.getId())
             .name(product.getName())
@@ -30,6 +34,6 @@ public class ShortProductResponseDtoMapperTest {
                 .collect(Collectors.toList()))
             .build();
 
-        assertEquals(expected,shortProductResponseDtoMapper.convert(product));
+        assertEquals(expected, shortProductResponseDtoMapper.convert(product));
     }
 }

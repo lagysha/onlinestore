@@ -80,7 +80,7 @@ class ProductServiceTest {
 
         verify(productRepository).findAllIdsByName(eq(pageable), eq("name"));
         verify(productRepository).findAllByIdWithImages(eq(productIds), eq(pageable.getSort()));
-        verify(modelMapper).map(eq(product),eq(ShortProductResponseDto.class));
+        verify(modelMapper).map(eq(product), eq(ShortProductResponseDto.class));
         assertEquals(actual, expected);
     }
 
@@ -96,7 +96,7 @@ class ProductServiceTest {
         var actual = productService.getById(1L);
 
         verify(productRepository).findByIdWithCollections(eq(1L));
-        verify(modelMapper).map(eq(product),eq(ProductResponseDto.class));
+        verify(modelMapper).map(eq(product), eq(ProductResponseDto.class));
         assertEquals(actual, productResponseDto);
     }
 
@@ -164,7 +164,7 @@ class ProductServiceTest {
         verify(productRepository).findByName(eq(product.getName()));
         verify(attributeValueRepository).getReferenceById(eq(1L));
         verify(productAttributeRepository).findAllByIdIn(eq(productRequestDto.getAttributeValueId()));
-        verify(modelMapper).map(eq(savedProduct),eq(ProductResponseDto.class));
+        verify(modelMapper).map(eq(savedProduct), eq(ProductResponseDto.class));
         assertEquals(productResponseDto, actual);
     }
 
@@ -267,7 +267,7 @@ class ProductServiceTest {
         verify(productRepository).findByIdWithCollections(eq(1L));
         verify(attributeValueRepository).findAllByIdIn(eq(Collections.emptyList()));
         verify(productRepository).findByNameAndIdNot(eq(productRequestDto.getName()), eq(1L));
-        verify(modelMapper).map(eq(product),eq(ProductResponseDto.class));
+        verify(modelMapper).map(eq(product), eq(ProductResponseDto.class));
         assertEquals(productResponseDto, actual);
     }
 

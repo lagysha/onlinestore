@@ -29,17 +29,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class SecurityServiceTest {
-    @Mock
-    private UserRepository userRepository;
-    @Mock
-    private JwtService jwtService;
-    @Mock
-    private PasswordEncoder passwordEncoder;
-    @Mock
-    private ModelMapper modelMapper;
-    @InjectMocks
-    private SecurityService securityService;
-
     private final User user = User.builder()
         .id(1L)
         .email("test@mail.com")
@@ -51,7 +40,6 @@ public class SecurityServiceTest {
         .role(Role.ROLE_USER)
         .createdAt(LocalDateTime.of(2020, 1, 1, 1, 1))
         .build();
-
     private final User newUser = User.builder()
         .email(user.getEmail())
         .password(user.getPassword())
@@ -60,7 +48,6 @@ public class SecurityServiceTest {
         .lastName(user.getLastName())
         .role(user.getRole())
         .build();
-
     private final SignUpRequestDto signUpRequestDto = SignUpRequestDto.builder()
         .email(newUser.getEmail())
         .password("Password1234!")
@@ -68,11 +55,20 @@ public class SecurityServiceTest {
         .firstName(newUser.getFirstName())
         .lastName(newUser.getLastName())
         .build();
-
     private final SignInRequestDto signInRequestDto = SignInRequestDto.builder()
         .email(user.getEmail())
         .password("Password1234!")
         .build();
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private JwtService jwtService;
+    @Mock
+    private PasswordEncoder passwordEncoder;
+    @Mock
+    private ModelMapper modelMapper;
+    @InjectMocks
+    private SecurityService securityService;
 
     @Test
     void signUpUserTest() {
@@ -99,14 +95,14 @@ public class SecurityServiceTest {
     void signUpUserThrowsAlreadyExistsExceptionWhenUserExistsWithSameEmailTest() {
         when(userRepository.existsByEmail(signUpRequestDto.getEmail())).thenReturn(true);
 
-        assertThrows(AlreadyExistsException.class, ()->securityService.signUpUser(signUpRequestDto));
+        assertThrows(AlreadyExistsException.class, () -> securityService.signUpUser(signUpRequestDto));
     }
 
     @Test
     void signUpUserThrowsAlreadyExistsExceptionWhenUserExistsWithSamePhoneNumberTest() {
         when(userRepository.existsByPhoneNumber(signUpRequestDto.getPhoneNumber())).thenReturn(true);
 
-        assertThrows(AlreadyExistsException.class, ()->securityService.signUpUser(signUpRequestDto));
+        assertThrows(AlreadyExistsException.class, () -> securityService.signUpUser(signUpRequestDto));
     }
 
     @Test
@@ -132,7 +128,7 @@ public class SecurityServiceTest {
     void signInUserThrowsNotFoundExceptionWhenUserNotFoundByEmailTest() {
         when(userRepository.findUserByEmail(signInRequestDto.getEmail())).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, ()->securityService.signInUser(signInRequestDto));
+        assertThrows(NotFoundException.class, () -> securityService.signInUser(signInRequestDto));
     }
 
     @Test
@@ -140,7 +136,7 @@ public class SecurityServiceTest {
         when(userRepository.findUserByEmail(signInRequestDto.getEmail())).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(signInRequestDto.getPassword(), user.getPassword())).thenReturn(false);
 
-        assertThrows(BadCredentialsException.class, ()->securityService.signInUser(signInRequestDto));
+        assertThrows(BadCredentialsException.class, () -> securityService.signInUser(signInRequestDto));
     }
 
     @Test
@@ -149,7 +145,7 @@ public class SecurityServiceTest {
         String refreshToken = "Refresh.Token.Test";
         SignInResponseDto signInResponseDto = SignInResponseDto.builder()
             .accessToken(accessToken)
-            .refreshToken(refreshToken+"Result")
+            .refreshToken(refreshToken + "Result")
             .build();
 
         when(jwtService.getSubjectFromToken(refreshToken)).thenReturn(Optional.of(user.getEmail()));
@@ -169,7 +165,7 @@ public class SecurityServiceTest {
 
         when(jwtService.getSubjectFromToken(refreshToken)).thenReturn(Optional.empty());
 
-        assertThrows(BadTokenException.class,()->securityService.updateAccessToken(refreshToken));
+        assertThrows(BadTokenException.class, () -> securityService.updateAccessToken(refreshToken));
     }
 
     @Test
@@ -179,6 +175,6 @@ public class SecurityServiceTest {
         when(jwtService.getSubjectFromToken(refreshToken)).thenReturn(Optional.of(user.getEmail()));
         when(userRepository.findUserByEmail(user.getEmail())).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class,()->securityService.updateAccessToken(refreshToken));
+        assertThrows(NotFoundException.class, () -> securityService.updateAccessToken(refreshToken));
     }
 }

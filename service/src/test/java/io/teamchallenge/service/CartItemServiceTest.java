@@ -10,7 +10,6 @@ import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.repository.CartItemRepository;
 import io.teamchallenge.repository.ProductRepository;
 import io.teamchallenge.repository.UserRepository;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;

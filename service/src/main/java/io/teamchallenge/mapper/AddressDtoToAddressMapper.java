@@ -6,7 +6,6 @@ import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.repository.CountryRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.AbstractConverter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 

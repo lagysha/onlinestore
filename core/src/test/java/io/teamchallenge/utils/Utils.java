@@ -1,6 +1,5 @@
 package io.teamchallenge.utils;
 
-
 import io.teamchallenge.dto.CategoryResponseDto;
 import io.teamchallenge.dto.cart.CartItemResponseDto;
 import io.teamchallenge.dto.cart.CartResponseDto;
@@ -20,8 +19,6 @@ import io.teamchallenge.entity.Product;
 import io.teamchallenge.entity.attributes.Attribute;
 import io.teamchallenge.entity.attributes.AttributeValue;
 import io.teamchallenge.entity.attributes.ProductAttribute;
-import io.teamchallenge.entity.cartitem.CartItem;
-import io.teamchallenge.repository.CartItemRepository;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,14 +32,14 @@ public class Utils {
             .build();
     }
 
-    public static PatchRequestDto getPatchRequestDto(){
+    public static PatchRequestDto getPatchRequestDto() {
         return PatchRequestDto
             .builder()
             .quantity(1)
             .build();
     }
 
-    public static CartResponseDto getCartResponseDto(){
+    public static CartResponseDto getCartResponseDto() {
         return CartResponseDto
             .builder()
             .cartItemResponseDtos(new ArrayList<>())
@@ -50,7 +47,7 @@ public class Utils {
             .build();
     }
 
-    public static CartItemResponseDto getCartItemResponseDto(){
+    public static CartItemResponseDto getCartItemResponseDto() {
         return CartItemResponseDto
             .builder()
             .productId(1L)

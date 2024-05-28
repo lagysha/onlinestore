@@ -4,9 +4,13 @@ import io.teamchallenge.dto.CategoryResponseDto;
 import io.teamchallenge.dto.product.ProductAttributeResponseDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
 import io.teamchallenge.entity.Image;
+
 import static io.teamchallenge.util.Utils.getProduct;
+
 import java.util.stream.Collectors;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,10 +22,10 @@ public class ProductResponseDtoMapperTest {
     private ProductResponseDtoMapper productResponseDtoMapper;
 
     @Test
-    void convertTest(){
+    void convertTest() {
         var product = getProduct();
 
-        var expected  = ProductResponseDto.builder()
+        var expected = ProductResponseDto.builder()
             .id(product.getId())
             .shortDesc(product.getShortDesc())
             .categoryResponseDto(
@@ -47,6 +51,6 @@ public class ProductResponseDtoMapperTest {
             .createdAt(product.getCreatedAt())
             .build();
 
-        assertEquals(expected,productResponseDtoMapper.convert(product));
+        assertEquals(expected, productResponseDtoMapper.convert(product));
     }
 }

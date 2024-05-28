@@ -1,6 +1,5 @@
 package io.teamchallenge.config;
 
-import static io.teamchallenge.constant.SecurityConstants.ADMIN;
 import io.teamchallenge.security.filter.AccessTokenJwtAuthenticationFilter;
 import io.teamchallenge.service.JwtService;
 import java.util.Collections;

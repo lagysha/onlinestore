@@ -150,7 +150,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ExceptionResponse> handleBadCredentialsException(BadCredentialsException e,
-                                                                        WebRequest webRequest) {
+                                                                           WebRequest webRequest) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(webRequest));
         log.trace(e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)

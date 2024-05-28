@@ -47,7 +47,7 @@ public class CartItemService {
         Page<CartItemId> retrievedCartItemsIds = cartItemRepository.findCartItemIdsByUserId(userId, pageable);
 
         return cartItemRepository
-            .findAllByIdWithImagesAndProducts(retrievedCartItemsIds.getContent(),Sort.by("createdAt"))
+            .findAllByIdWithImagesAndProducts(retrievedCartItemsIds.getContent(), Sort.by("createdAt"))
             .stream()
             .collect(
                 Collector.of(
@@ -117,8 +117,8 @@ public class CartItemService {
     /**
      * Partially updates the quantity of a cart item for a specific user and product.
      *
-     * @param userId         the ID of the user who owns the cart item
-     * @param productId      the ID of the product in the cart item
+     * @param userId          the ID of the user who owns the cart item
+     * @param productId       the ID of the product in the cart item
      * @param patchRequestDto the request body containing the fields to be updated
      * @return a CartItemResponseDto containing the updated cart item details
      */

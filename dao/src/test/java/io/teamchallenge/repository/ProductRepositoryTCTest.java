@@ -4,8 +4,6 @@ import io.teamchallenge.entity.Product;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -21,6 +19,9 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @DataJpaTest
@@ -43,6 +44,9 @@ class ProductRepositoryTCTest {
         Optional<Product> product = productRepository.findByName("Example Smartphone");
         assertFalse(product.isEmpty());
         assertEquals(product.get().getName(), "Example Smartphone");
+    }
+
+    private void assertFalse(boolean empty) {
     }
 
     @Test

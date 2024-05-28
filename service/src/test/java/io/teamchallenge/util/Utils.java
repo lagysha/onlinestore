@@ -8,7 +8,6 @@ import io.teamchallenge.dto.product.ProductAttributeResponseDto;
 import io.teamchallenge.dto.product.ProductRequestDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
 import io.teamchallenge.dto.product.ShortProductResponseDto;
-import io.teamchallenge.dto.user.UserVO;
 import io.teamchallenge.entity.Brand;
 import io.teamchallenge.entity.Category;
 import io.teamchallenge.entity.Image;
@@ -29,8 +28,9 @@ import java.util.stream.Collectors;
 public class Utils {
     public final static String SECRET_KEY = "5cZAVF/SKSCmCM2+1azD2XHK7K2PChcSg32vrrEh/Qk=";
     public final static String ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJHYWRnZXRIb3VzZSIsInN1YiI6InRlc3RAbWF"
-       + "pbC5jb20iLCJpZCI6MSwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTcxNDc1MDAyMiwiZXhwIjoxNzE0Nzg2MDIyfQ.sfkczlafsasfVxm"
-       + "d9asfasfasfasCu8DbWbZAkSWHujs";
+        + "pbC5jb20iLCJpZCI6MSwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTcxNDc1MDAyMiwiZXhwIjoxNzE0Nzg2MDIyfQ.sfkczlafsasfVxm"
+        + "d9asfasfasfasCu8DbWbZAkSWHujs";
+
     public static Category getCategory() {
         return Category.builder()
             .id(1L)
@@ -38,10 +38,10 @@ public class Utils {
             .build();
     }
 
-    public static CartItem getCartItem(){
+    public static CartItem getCartItem() {
         return CartItem
             .builder()
-            .id(new CartItemId(1L,1L))
+            .id(new CartItemId(1L, 1L))
             .quantity(1)
             .user(getUser())
             .product(getProduct())
@@ -49,14 +49,14 @@ public class Utils {
             .build();
     }
 
-    public static PatchRequestDto getPatchRequestDto(){
+    public static PatchRequestDto getPatchRequestDto() {
         return PatchRequestDto
             .builder()
             .quantity(1)
             .build();
     }
 
-    public static CartResponseDto getCartResponseDto(){
+    public static CartResponseDto getCartResponseDto() {
         return CartResponseDto
             .builder()
             .cartItemResponseDtos(new ArrayList<>())
@@ -64,7 +64,7 @@ public class Utils {
             .build();
     }
 
-    public static CartItemResponseDto getCartItemResponseDto(){
+    public static CartItemResponseDto getCartItemResponseDto() {
         return CartItemResponseDto
             .builder()
             .productId(1L)
@@ -188,7 +188,7 @@ public class Utils {
             .email("test@mail.com")
             .role(Role.ROLE_USER)
             .refreshTokenKey(SECRET_KEY)
-            .createdAt(LocalDateTime.of(2024,1,1,1,1))
+            .createdAt(LocalDateTime.of(2024, 1, 1, 1, 1))
             .password("password")
             .phoneNumber("123456789010")
             .build();

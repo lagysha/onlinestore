@@ -91,6 +91,7 @@ public class JwtServiceTest {
         }
         assertEquals(uuid, UUID.fromString(key));
     }
+
     @Test
     void getSubjectFromTokenTest() {
         String subject = "test@mail.com";
@@ -118,7 +119,7 @@ public class JwtServiceTest {
             "RV9VU0VSIiwiaWF0IjoxNzfE0NzUwMDIyLCJleHAiOjE3MTQ3ODYwMjJ9" +
             ".gYdMkgLvXJuAHXbPmeRY1DiwDKfcltJSxj6RRR-5VaQ";
 
-        assertThrows(BadTokenException.class, ()->jwtService.getSubjectFromToken(token));
+        assertThrows(BadTokenException.class, () -> jwtService.getSubjectFromToken(token));
     }
 
     @Test
@@ -133,18 +134,18 @@ public class JwtServiceTest {
     void verifyTokenThrowsBadTokenExceptionWhenTokenWasNotSignedByUserTest() {
         LocalDateTime localDateTime = LocalDateTime.now();
         String additionalWrongSymbol = "1";
-        String key = SECRET_KEY+ additionalWrongSymbol;
+        String key = SECRET_KEY + additionalWrongSymbol;
         String token = getToken(localDateTime, refreshTokenValidTimeInMinutes, SECRET_KEY);
 
-        assertThrows(BadTokenException.class, ()->jwtService.verifyToken(token, key));
+        assertThrows(BadTokenException.class, () -> jwtService.verifyToken(token, key));
     }
 
     @Test
     void verifyTokenThrowsBadTokenExceptionWhenTokenHasBeenExpiredTest() {
-        LocalDateTime localDateTime = LocalDateTime.of(0,1,1,0,0);
+        LocalDateTime localDateTime = LocalDateTime.of(0, 1, 1, 0, 0);
         String token = getToken(localDateTime, refreshTokenValidTimeInMinutes, SECRET_KEY);
 
-        assertThrows(BadTokenException.class, ()->jwtService.verifyToken(token, SECRET_KEY));
+        assertThrows(BadTokenException.class, () -> jwtService.verifyToken(token, SECRET_KEY));
     }
 
     private String getToken(LocalDateTime localDateTime, int refreshTokenValidTimeInMinutes, String secretKey) {

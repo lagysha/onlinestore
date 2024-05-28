@@ -1,11 +1,9 @@
 package io.teamchallenge.repository;
 
-import io.teamchallenge.entity.Product;
 import io.teamchallenge.entity.cartitem.CartItemId;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -56,21 +54,22 @@ public class CartItemRepositoryTCTest {
     @Test
     void findAllByIdWithImagesAndProductsTest() {
         var cartItems = cartItemRepository
-            .findAllByIdWithImagesAndProducts(List.of(new CartItemId(1L,2L),new CartItemId(2L,1L))
+            .findAllByIdWithImagesAndProducts(List.of(new CartItemId(1L, 2L), new CartItemId(2L, 1L))
                 , Sort.by("createdAt"));
 
         TestTransaction.end();
 
         assertFalse(cartItems.isEmpty());
         assertEquals(1L, cartItems.getFirst().getProduct().getImages().size());
-        LocalDateTime expected = LocalDateTime.parse("2024-05-10 14:00:00",DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        LocalDateTime expected =
+            LocalDateTime.parse("2024-05-10 14:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         assertEquals(expected, cartItems.getFirst().getCreatedAt());
     }
 
     @Test
     void findByIdWithCategoryAndBrandAndProductAttributeWhenNoProductWithIdPresentTest() {
         var cartItems = cartItemRepository
-            .findAllByIdWithImagesAndProducts(List.of(new CartItemId(2L,2L))
+            .findAllByIdWithImagesAndProducts(List.of(new CartItemId(2L, 2L))
                 , Sort.by("createdAt"));
 
         assertTrue(cartItems.isEmpty());

@@ -9,7 +9,9 @@ import io.teamchallenge.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+
 import static org.springframework.data.domain.Sort.Direction.DESC;
+
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +32,7 @@ public class ProductController {
      * @param pageable Pageable object specifying pagination and sorting parameters.
      *                 Defaults to sorting by creation date in descending order if not specified.
      * @return ResponseEntity containing a PageableDto of ProductResponseDto,
-     *         representing the paginated list of products.
+     * representing the paginated list of products.
      */
     @GetMapping
     public ResponseEntity<PageableDto<ShortProductResponseDto>> getAll(@RequestParam(required = false) String name,

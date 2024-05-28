@@ -38,8 +38,7 @@ public class CartItemController {
     @PostMapping("/{product_id}")
     public ResponseEntity<CartItemResponseDto> create(@CurrentUserId Long userId,
                                                       @PathVariable("product_id") Long productId) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-            .body(cartItemService.create(userId, productId));
+        return ResponseEntity.status(HttpStatus.CREATED).body(cartItemService.create(userId, productId));
     }
 
     /**
@@ -50,8 +49,7 @@ public class CartItemController {
      * @return a ResponseEntity indicating the status of the operation
      */
     @DeleteMapping("/{product_id}")
-    public ResponseEntity<Void> delete(@CurrentUserId Long userId,
-                                       @PathVariable("product_id") Long productId) {
+    public ResponseEntity<Void> delete(@CurrentUserId Long userId, @PathVariable("product_id") Long productId) {
         cartItemService.deleteByCartItemId(userId, productId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -61,7 +59,7 @@ public class CartItemController {
      *
      * @param userId          the ID of the current user obtained from the security context
      * @param productId       the ID of the product to be updated in the cart
-     * @param patchRequestDto  the request body containing the fields to be updated
+     * @param patchRequestDto the request body containing the fields to be updated
      * @return a ResponseEntity containing a CartItemResponseDto with the updated cart item
      */
     @PatchMapping("/{product_id}")
