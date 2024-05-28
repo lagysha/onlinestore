@@ -1,6 +1,9 @@
 package io.teamchallenge.util;
 
 import io.teamchallenge.dto.CategoryResponseDto;
+import io.teamchallenge.dto.cart.CartItemResponseDto;
+import io.teamchallenge.dto.cart.CartResponseDto;
+import io.teamchallenge.dto.cart.PatchRequestDto;
 import io.teamchallenge.dto.product.ProductAttributeResponseDto;
 import io.teamchallenge.dto.product.ProductRequestDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
@@ -16,6 +19,8 @@ import io.teamchallenge.entity.User;
 import io.teamchallenge.entity.attributes.Attribute;
 import io.teamchallenge.entity.attributes.AttributeValue;
 import io.teamchallenge.entity.attributes.ProductAttribute;
+import io.teamchallenge.entity.cartitem.CartItem;
+import io.teamchallenge.entity.cartitem.CartItemId;
 import io.teamchallenge.enumerated.Role;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -28,6 +33,43 @@ public class Utils {
         return Category.builder()
             .id(1L)
             .name("name1")
+            .build();
+    }
+
+    public static CartItem getCartItem() {
+        return CartItem
+            .builder()
+            .id(new CartItemId(1L, 1L))
+            .quantity(1)
+            .user(getUser())
+            .product(getProduct())
+            .createdAt(LocalDateTime.now())
+            .build();
+    }
+
+    public static PatchRequestDto getPatchRequestDto() {
+        return PatchRequestDto
+            .builder()
+            .quantity(1)
+            .build();
+    }
+
+    public static CartResponseDto getCartResponseDto() {
+        return CartResponseDto
+            .builder()
+            .cartItemResponseDtos(new ArrayList<>())
+            .totalPrice(BigDecimal.ZERO)
+            .build();
+    }
+
+    public static CartItemResponseDto getCartItemResponseDto() {
+        return CartItemResponseDto
+            .builder()
+            .productId(1L)
+            .quantity(1)
+            .images(new ArrayList<>())
+            .name("name")
+            .price(BigDecimal.ONE)
             .build();
     }
 
@@ -157,7 +199,9 @@ public class Utils {
             .email("test@mail.com")
             .role(Role.ROLE_USER)
             .refreshTokenKey(getSecretKey())
-            .createdAt(LocalDateTime.of(2024,1,1,1,1))
+            .createdAt(LocalDateTime.of(2024, 1, 1, 1, 1))
+            .refreshTokenKey(getSecretKey())
+            .createdAt(LocalDateTime.of(2024, 1, 1, 1, 1))
             .password("password")
             .phoneNumber("123456789010")
             .build();
@@ -175,7 +219,7 @@ public class Utils {
             .build();
     }
 
-    public static SignUpRequestDto getSignUpRequestDto () {
+    public static SignUpRequestDto getSignUpRequestDto() {
         User newUser = getUser();
         return SignUpRequestDto.builder()
             .email(newUser.getEmail())
@@ -186,7 +230,7 @@ public class Utils {
             .build();
     }
 
-    public static SignInRequestDto getSignInRequestDto () {
+    public static SignInRequestDto getSignInRequestDto() {
         User user = getUser();
         return SignInRequestDto.builder()
             .email(user.getEmail())
@@ -194,7 +238,7 @@ public class Utils {
             .build();
     }
 
-    public static SignUpResponseDto getSignUpResponseDto () {
+    public static SignUpResponseDto getSignUpResponseDto() {
         User newUser = getUser();
         return SignUpResponseDto.builder()
             .id(newUser.getId())

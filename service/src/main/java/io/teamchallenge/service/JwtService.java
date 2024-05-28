@@ -59,6 +59,11 @@ public class JwtService {
         this.refreshTokenValidTimeInMinutes = refreshTokenValidTimeInMinutes;
     }
 
+    private static Date getNow() {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+    }
+
     /**
      * Retrieves the JWT token from the HTTP request.
      *
@@ -164,10 +169,5 @@ public class JwtService {
         } catch (JwtException | IllegalArgumentException e) {
             throw new BadTokenException(TOKEN_WAS_NOT_SIGNED_BY_USER);
         }
-    }
-
-    private static Date getNow() {
-        LocalDateTime localDateTime = LocalDateTime.now();
-        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
 }

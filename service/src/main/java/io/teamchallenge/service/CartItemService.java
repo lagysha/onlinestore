@@ -1,14 +1,9 @@
 package io.teamchallenge.service;
 
-import static io.teamchallenge.constant.AppConstant.MAX_NUMBER_OF_UNIQUE_PRODUCTS_IN_CART;
-
 import io.teamchallenge.constant.ExceptionMessage;
-
-import static io.teamchallenge.constant.ExceptionMessage.CARTITEM_ALREADY_EXISTS;
-
 import io.teamchallenge.dto.cart.CartItemResponseDto;
 import io.teamchallenge.dto.cart.CartResponseDto;
-import io.teamchallenge.dto.cart.PathRequestDto;
+import io.teamchallenge.dto.cart.PatchRequestDto;
 import io.teamchallenge.entity.cartitem.CartItem;
 import io.teamchallenge.entity.cartitem.CartItemId;
 import io.teamchallenge.exception.AlreadyExistsException;
@@ -16,7 +11,6 @@ import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.repository.CartItemRepository;
 import io.teamchallenge.repository.ProductRepository;
 import io.teamchallenge.repository.UserRepository;
-import jakarta.validation.Valid;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.stream.Collector;
@@ -28,6 +22,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static io.teamchallenge.constant.AppConstant.MAX_NUMBER_OF_UNIQUE_PRODUCTS_IN_CART;
+import static io.teamchallenge.constant.ExceptionMessage.CARTITEM_ALREADY_EXISTS;
 
 @Service
 @Transactional(readOnly = true)
@@ -45,16 +42,12 @@ public class CartItemService {
      * @return a CartResponseDto containing the cart items and total price of the cart
      */
     public CartResponseDto getByUserId(Long userId) {
-        Pageable pageable = PageRequest.of(0, MAX_NUMBER_OF_UNIQUE_PRODUCTS_IN_CART,
-            Sort.by("createdAt"));
+        Pageable pageable = PageRequest.of(0, MAX_NUMBER_OF_UNIQUE_PRODUCTS_IN_CART);
 
         Page<CartItemId> retrievedCartItemsIds = cartItemRepository.findCartItemIdsByUserId(userId, pageable);
 
         return cartItemRepository
-            //TODO : implement order of images in the database with save
-            //TODO : here fetch only first image
-            //TODO : change java doc
-            .findAllByIdWithImagesAndProducts(retrievedCartItemsIds.getContent())
+            .findAllByIdWithImagesAndProducts(retrievedCartItemsIds.getContent(), Sort.by("createdAt"))
             .stream()
             .collect(
                 Collector.of(
@@ -95,7 +88,6 @@ public class CartItemService {
             .id(cartItemId)
             .product(product)
             .user(user)
-            //TODO : add this to number to the app constant
             .quantity(1)
             .build();
         var savedCartItem = cartItemRepository.persist(cartItem);
@@ -125,13 +117,13 @@ public class CartItemService {
     /**
      * Partially updates the quantity of a cart item for a specific user and product.
      *
-     * @param userId         the ID of the user who owns the cart item
-     * @param productId      the ID of the product in the cart item
-     * @param pathRequestDto the request body containing the fields to be updated
+     * @param userId          the ID of the user who owns the cart item
+     * @param productId       the ID of the product in the cart item
+     * @param patchRequestDto the request body containing the fields to be updated
      * @return a CartItemResponseDto containing the updated cart item details
      */
     @Transactional
-    public CartItemResponseDto patch(Long userId, Long productId, PathRequestDto pathRequestDto) {
+    public CartItemResponseDto patch(Long userId, Long productId, PatchRequestDto patchRequestDto) {
         CartItemId cartItemId = CartItemId.builder()
             .productId(productId)
             .userId(userId).build();
@@ -140,7 +132,7 @@ public class CartItemService {
             .findById(cartItemId)
             .orElseThrow(() -> new NotFoundException(ExceptionMessage.CARTITEM_NOT_FOUND_BY_ID.formatted(cartItemId)));
 
-        retrievedCartItem.setQuantity(pathRequestDto.getQuantity());
+        retrievedCartItem.setQuantity(patchRequestDto.getQuantity());
 
         return modelMapper.map(retrievedCartItem, CartItemResponseDto.class);
     }

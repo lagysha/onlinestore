@@ -6,7 +6,6 @@ import io.teamchallenge.enumerated.Role;
 import io.teamchallenge.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.AbstractConverter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 

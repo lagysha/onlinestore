@@ -1,6 +1,5 @@
 package io.teamchallenge.validator;
 
-
 import io.teamchallenge.annotation.AllowedSortFields;
 import jakarta.validation.ConstraintValidatorContext;
 import jakarta.validation.Payload;
@@ -22,53 +21,15 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 public class AllowedSortFieldsValidatorTest {
 
+    private final AllowedSortFields allowedSortFields = getAllowedSortFields();
     @Mock
     private ConstraintValidatorContext context;
-
     @InjectMocks
     private AllowedSortFieldsValidator allowedSortFieldsValidator;
-
     @Mock
     private ConstraintValidatorContext.ConstraintViolationBuilder constraintViolationBuilder;
 
-    private final AllowedSortFields allowedSortFields = getAllowedSortFields();;
     private boolean initialized = false;
-
-    @BeforeEach
-    void setUp() {
-        if (!initialized) {
-            allowedSortFieldsValidator.initialize(allowedSortFields);
-            initialized = true;
-        }
-    }
-
-    @Test
-    void initializeTest(){
-        allowedSortFieldsValidator.initialize(allowedSortFields);
-    }
-
-    @Test
-    void isValidWithNullPageableReturnTrueTest(){
-        assertTrue(allowedSortFieldsValidator.isValid(null,context));
-    }
-
-    @Test
-    void isValidWithUnsortedPageableReturnTrueTest(){
-        assertTrue(allowedSortFieldsValidator.isValid(Pageable.ofSize(1),context));
-    }
-
-    @Test
-    void isValidWithAllowedFieldsReturnTrueTest(){
-        assertTrue(allowedSortFieldsValidator.isValid(Pageable.unpaged(Sort.by("1","2")),context));
-    }
-
-    @Test
-    void isValidWithNotAllowedFieldsReturnFalseTest(){
-        when(context.buildConstraintViolationWithTemplate(anyString()))
-            .thenReturn(constraintViolationBuilder);
-
-        assertFalse(allowedSortFieldsValidator.isValid(Pageable.unpaged(Sort.by("1","2","3")),context));
-    }
 
     private static AllowedSortFields getAllowedSortFields() {
         return new AllowedSortFields() {
@@ -97,5 +58,41 @@ public class AllowedSortFieldsValidatorTest {
                 return new String[] {"1", "2"};
             }
         };
+    }
+
+    @BeforeEach
+    void setUp() {
+        if (!initialized) {
+            allowedSortFieldsValidator.initialize(allowedSortFields);
+            initialized = true;
+        }
+    }
+
+    @Test
+    void initializeTest() {
+        allowedSortFieldsValidator.initialize(allowedSortFields);
+    }
+
+    @Test
+    void isValidWithNullPageableReturnTrueTest() {
+        assertTrue(allowedSortFieldsValidator.isValid(null, context));
+    }
+
+    @Test
+    void isValidWithUnsortedPageableReturnTrueTest() {
+        assertTrue(allowedSortFieldsValidator.isValid(Pageable.ofSize(1), context));
+    }
+
+    @Test
+    void isValidWithAllowedFieldsReturnTrueTest() {
+        assertTrue(allowedSortFieldsValidator.isValid(Pageable.unpaged(Sort.by("1", "2")), context));
+    }
+
+    @Test
+    void isValidWithNotAllowedFieldsReturnFalseTest() {
+        when(context.buildConstraintViolationWithTemplate(anyString()))
+            .thenReturn(constraintViolationBuilder);
+
+        assertFalse(allowedSortFieldsValidator.isValid(Pageable.unpaged(Sort.by("1", "2", "3")), context));
     }
 }

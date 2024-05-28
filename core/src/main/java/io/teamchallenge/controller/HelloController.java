@@ -10,7 +10,7 @@ public class HelloController {
     /**
      * Returns a greeting message.
      *
-     * @param name An optional parameter representing the name of the person to greet.
+     * @param name An optional parameter representinga the name of the person to greet.
      * @return A greeting message with the provided name, or "Hello, Unknown" if no name is provided.
      */
     @GetMapping("/hello")
