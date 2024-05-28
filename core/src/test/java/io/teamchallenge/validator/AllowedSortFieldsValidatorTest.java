@@ -1,6 +1,5 @@
 package io.teamchallenge.validator;
 
-
 import io.teamchallenge.annotation.AllowedSortFields;
 import jakarta.validation.ConstraintValidatorContext;
 import jakarta.validation.Payload;
@@ -29,7 +28,7 @@ public class AllowedSortFieldsValidatorTest {
     private AllowedSortFieldsValidator allowedSortFieldsValidator;
     @Mock
     private ConstraintValidatorContext.ConstraintViolationBuilder constraintViolationBuilder;
-    ;
+
     private boolean initialized = false;
 
     private static AllowedSortFields getAllowedSortFields() {

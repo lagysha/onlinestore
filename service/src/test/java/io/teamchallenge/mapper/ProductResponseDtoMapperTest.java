@@ -4,17 +4,14 @@ import io.teamchallenge.dto.CategoryResponseDto;
 import io.teamchallenge.dto.product.ProductAttributeResponseDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
 import io.teamchallenge.entity.Image;
-
-import static io.teamchallenge.util.Utils.getProduct;
-
 import java.util.stream.Collectors;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static io.teamchallenge.util.Utils.getProduct;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductResponseDtoMapperTest {
