@@ -1,13 +1,13 @@
 package io.teamchallenge.util;
 
 import io.teamchallenge.dto.CategoryResponseDto;
-import io.teamchallenge.dto.cart.CartItemResponseDto;
-import io.teamchallenge.dto.cart.CartResponseDto;
-import io.teamchallenge.dto.cart.PatchRequestDto;
 import io.teamchallenge.dto.product.ProductAttributeResponseDto;
 import io.teamchallenge.dto.product.ProductRequestDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
 import io.teamchallenge.dto.product.ShortProductResponseDto;
+import io.teamchallenge.dto.security.SignInRequestDto;
+import io.teamchallenge.dto.security.SignUpRequestDto;
+import io.teamchallenge.dto.security.SignUpResponseDto;
 import io.teamchallenge.entity.Brand;
 import io.teamchallenge.entity.Category;
 import io.teamchallenge.entity.Image;
@@ -28,9 +28,8 @@ import java.util.stream.Collectors;
 public class Utils {
     public final static String SECRET_KEY = "5cZAVF/SKSCmCM2+1azD2XHK7K2PChcSg32vrrEh/Qk=";
     public final static String ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJHYWRnZXRIb3VzZSIsInN1YiI6InRlc3RAbWF"
-        + "pbC5jb20iLCJpZCI6MSwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTcxNDc1MDAyMiwiZXhwIjoxNzE0Nzg2MDIyfQ.sfkczlafsasfVxm"
-        + "d9asfasfasfasCu8DbWbZAkSWHujs";
-
+       + "pbC5jb20iLCJpZCI6MSwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTcxNDc1MDAyMiwiZXhwIjoxNzE0Nzg2MDIyfQ.sfkczlafsasfVxm"
+       + "d9asfasfasfasCu8DbWbZAkSWHujs";
     public static Category getCategory() {
         return Category.builder()
             .id(1L)
@@ -181,16 +180,76 @@ public class Utils {
             .build();
     }
 
+    public static String getAccessToken() {
+        return "eyJhbGciOiJIUzI1NiJ9" +
+            ".eyJpc3MiOiJHYWRnZXRIb3VzZSIsInN1YiI6ImV4YW1wbGUxMjNAZXhhbXBsZS5jb20iLCJpZCI6MTEsInJ" +
+            "vbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MTY4MDA5NDcsImV4cCI6MTcxNzQwNTc0N30" +
+            ".odua7l-MEZmfjsCu4jmAciqLI[lSRdvrD0Jmufd-N56";
+    }
+
+    public static String getRefreshToken() {
+        return "eyJhbGciOiJIUzI1NiJ9" +
+            ".eyJpc3MiOiJHYWRnZXRIb3VzZSIsInN1YiI6ImV4YW1wbGUxMjNAZXhhbXBsZS5jb20iLCJpZCI6MTEsInJ" +
+            "vbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MTY4MDA5NDcsImV4cCI6MTcxNzQwNTc0N30" +
+            ".odua7l-MEZmfjsCu4jmAciqLI[lSRdvrD0Jmufd-N56";
+    }
 
     public static User getUser() {
         return User.builder()
             .id(1L)
             .email("test@mail.com")
             .role(Role.ROLE_USER)
+            .refreshTokenKey(getSecretKey())
+            .createdAt(LocalDateTime.of(2024,1,1,1,1))
             .refreshTokenKey(SECRET_KEY)
             .createdAt(LocalDateTime.of(2024, 1, 1, 1, 1))
             .password("password")
             .phoneNumber("123456789010")
             .build();
+    }
+
+    public static User getNewUser() {
+        User user = getUser();
+        return User.builder()
+            .email(user.getEmail())
+            .password(user.getPassword())
+            .phoneNumber(user.getPhoneNumber())
+            .firstName(user.getFirstName())
+            .lastName(user.getLastName())
+            .role(user.getRole())
+            .build();
+    }
+
+    public static SignUpRequestDto getSignUpRequestDto () {
+        User newUser = getUser();
+        return SignUpRequestDto.builder()
+            .email(newUser.getEmail())
+            .password("Password1234!")
+            .phoneNumber(newUser.getPhoneNumber())
+            .firstName(newUser.getFirstName())
+            .lastName(newUser.getLastName())
+            .build();
+    }
+
+    public static SignInRequestDto getSignInRequestDto () {
+        User user = getUser();
+        return SignInRequestDto.builder()
+            .email(user.getEmail())
+            .password("Password1234!")
+            .build();
+    }
+
+    public static SignUpResponseDto getSignUpResponseDto () {
+        User newUser = getUser();
+        return SignUpResponseDto.builder()
+            .id(newUser.getId())
+            .email(newUser.getEmail())
+            .firstName(newUser.getFirstName())
+            .lastName(newUser.getLastName())
+            .build();
+    }
+
+    public static String getSecretKey() {
+        return "5cZAVF/SKSCmCM2+1azD2XHK7K2PChcSg32vrrEh/Qk=";
     }
 }
