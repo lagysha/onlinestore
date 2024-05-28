@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
@@ -38,11 +39,11 @@ public class ProductControllerTest {
             List.of(Utils.getShortProductResponseDto()), 1, 1, 1);
         when(productService.getAll(pageable, name)).thenReturn(response);
 
-        var responseEntity = productController.getAll(name,pageable);
+        var responseEntity = productController.getAll(name, pageable);
 
-        verify(productService).getAll(eq(pageable),eq(name));
-        assertEquals(OK,responseEntity.getStatusCode());
-        assertEquals(response,responseEntity.getBody());
+        verify(productService).getAll(eq(pageable), eq(name));
+        assertEquals(OK, responseEntity.getStatusCode());
+        assertEquals(response, responseEntity.getBody());
     }
 
     @Test
@@ -54,8 +55,8 @@ public class ProductControllerTest {
         var responseEntity = productController.getById(id);
 
         verify(productService).getById(eq(id));
-        assertEquals(OK,responseEntity.getStatusCode());
-        assertEquals(response,responseEntity.getBody());
+        assertEquals(OK, responseEntity.getStatusCode());
+        assertEquals(response, responseEntity.getBody());
     }
 
     @Test
@@ -67,8 +68,8 @@ public class ProductControllerTest {
         var responseEntity = productController.create(request);
 
         verify(productService).create(eq(request));
-        assertEquals(CREATED,responseEntity.getStatusCode());
-        assertEquals(response,responseEntity.getBody());
+        assertEquals(CREATED, responseEntity.getStatusCode());
+        assertEquals(response, responseEntity.getBody());
     }
 
     @Test
@@ -76,13 +77,13 @@ public class ProductControllerTest {
         var id = 1L;
         var request = Utils.getProductRequestDto();
         var response = Utils.getProductResponseDto();
-        when(productService.update(id,request)).thenReturn(response);
+        when(productService.update(id, request)).thenReturn(response);
 
-        var responseEntity = productController.update(id,request);
+        var responseEntity = productController.update(id, request);
 
-        verify(productService).update(eq(id),eq(request));
-        assertEquals(OK,responseEntity.getStatusCode());
-        assertEquals(response,responseEntity.getBody());
+        verify(productService).update(eq(id), eq(request));
+        assertEquals(OK, responseEntity.getStatusCode());
+        assertEquals(response, responseEntity.getBody());
     }
 
     @Test
@@ -93,7 +94,7 @@ public class ProductControllerTest {
         var responseEntity = productController.delete(id);
 
         verify(productService).deleteById(eq(id));
-        assertEquals(NO_CONTENT,responseEntity.getStatusCode());
-        System.out.println(responseEntity);
+        assertEquals(NO_CONTENT, responseEntity.getStatusCode());
+        assertNull(responseEntity.getBody());
     }
 }

@@ -2,8 +2,6 @@ package io.teamchallenge.repository;
 
 import io.teamchallenge.entity.attributes.AttributeValue;
 import java.util.List;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -16,6 +14,9 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -34,12 +35,12 @@ public class AttributeValueRepositoryTCTest {
 
     @Test
     void findAllByIdInTest() {
-        List<AttributeValue> attributes = attributeValueRepository.findAllByIdIn(List.of(1L,2L));
+        List<AttributeValue> attributes = attributeValueRepository.findAllByIdIn(List.of(1L, 2L));
 
         TestTransaction.end();
 
         assertEquals(attributes.size(), 2);
-        assertEquals(attributes.getFirst().getAttribute().getId(),1L);
+        assertEquals(attributes.getFirst().getAttribute().getId(), 1L);
     }
 
     @Test

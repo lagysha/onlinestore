@@ -29,7 +29,7 @@ public class SecurityControllerTest {
     private SecurityService securityService;
 
     @Test
-    void signUpUserTest(){
+    void signUpUserTest() {
         SignUpRequestDto signUpRequestDto = Utils.getSignUpRequestDto();
         SignUpResponseDto signUpResponseDto = Utils.getSignUpResponseDto();
         when(securityService.signUpUser(signUpRequestDto)).thenReturn(signUpResponseDto);

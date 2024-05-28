@@ -53,7 +53,7 @@ public class AccessTokenJwtAuthenticationFilter extends OncePerRequestFilter {
 
                 ClaimsUsernamePasswordAuthenticationToken
                     authentication = new ClaimsUsernamePasswordAuthenticationToken(email, "",
-                        Collections.singleton(new SimpleGrantedAuthority(role)), claims);
+                    Collections.singleton(new SimpleGrantedAuthority(role)), claims);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (ExpiredJwtException e) {
