@@ -1,6 +1,9 @@
 package io.teamchallenge.util;
 
 import io.teamchallenge.dto.CategoryResponseDto;
+import io.teamchallenge.dto.cart.CartItemResponseDto;
+import io.teamchallenge.dto.cart.CartResponseDto;
+import io.teamchallenge.dto.cart.PatchRequestDto;
 import io.teamchallenge.dto.product.ProductAttributeResponseDto;
 import io.teamchallenge.dto.product.ProductRequestDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
@@ -26,10 +29,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Utils {
-    public final static String SECRET_KEY = "5cZAVF/SKSCmCM2+1azD2XHK7K2PChcSg32vrrEh/Qk=";
-    public final static String ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJHYWRnZXRIb3VzZSIsInN1YiI6InRlc3RAbWF"
-       + "pbC5jb20iLCJpZCI6MSwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTcxNDc1MDAyMiwiZXhwIjoxNzE0Nzg2MDIyfQ.sfkczlafsasfVxm"
-       + "d9asfasfasfasCu8DbWbZAkSWHujs";
     public static Category getCategory() {
         return Category.builder()
             .id(1L)
@@ -200,8 +199,8 @@ public class Utils {
             .email("test@mail.com")
             .role(Role.ROLE_USER)
             .refreshTokenKey(getSecretKey())
-            .createdAt(LocalDateTime.of(2024,1,1,1,1))
-            .refreshTokenKey(SECRET_KEY)
+            .createdAt(LocalDateTime.of(2024, 1, 1, 1, 1))
+            .refreshTokenKey(getSecretKey())
             .createdAt(LocalDateTime.of(2024, 1, 1, 1, 1))
             .password("password")
             .phoneNumber("123456789010")
@@ -220,7 +219,7 @@ public class Utils {
             .build();
     }
 
-    public static SignUpRequestDto getSignUpRequestDto () {
+    public static SignUpRequestDto getSignUpRequestDto() {
         User newUser = getUser();
         return SignUpRequestDto.builder()
             .email(newUser.getEmail())
@@ -231,7 +230,7 @@ public class Utils {
             .build();
     }
 
-    public static SignInRequestDto getSignInRequestDto () {
+    public static SignInRequestDto getSignInRequestDto() {
         User user = getUser();
         return SignInRequestDto.builder()
             .email(user.getEmail())
@@ -239,7 +238,7 @@ public class Utils {
             .build();
     }
 
-    public static SignUpResponseDto getSignUpResponseDto () {
+    public static SignUpResponseDto getSignUpResponseDto() {
         User newUser = getUser();
         return SignUpResponseDto.builder()
             .id(newUser.getId())
