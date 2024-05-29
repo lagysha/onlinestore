@@ -1,5 +1,6 @@
-package io.teamchallenge.service;
+package io.teamchallenge.service.impl;
 
+import io.teamchallenge.config.CloudinaryConfig;
 import io.teamchallenge.constant.ExceptionMessage;
 import io.teamchallenge.dto.PageableDto;
 import io.teamchallenge.dto.product.ProductRequestDto;
@@ -18,17 +19,20 @@ import io.teamchallenge.repository.BrandRepository;
 import io.teamchallenge.repository.CategoryRepository;
 import io.teamchallenge.repository.ProductAttributeRepository;
 import io.teamchallenge.repository.ProductRepository;
+import io.teamchallenge.service.ImageCloudService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import static io.teamchallenge.constant.ExceptionMessage.BRAND_NOT_FOUND_BY_ID;
 import static io.teamchallenge.constant.ExceptionMessage.CATEGORY_NOT_FOUND_BY_ID;
@@ -45,6 +49,10 @@ public class ProductService {
     private final ProductAttributeRepository productAttributeRepository;
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
+    private final ImageCloudService imageCloudService;
+
+    @Value("${cloudinary.product_images_folder_name}")
+    private String product_images_folder_name;
 
     /**
      * Retrieves a pageable list of products based on optional filtering by name and pageable parameters.
@@ -111,7 +119,7 @@ public class ProductService {
      * @throws AlreadyExistsException if the product name is invalid.
      */
     @Transactional
-    public ProductResponseDto create(ProductRequestDto productRequestDto) {
+    public ProductResponseDto create(ProductRequestDto productRequestDto,List<MultipartFile> multipartFiles) {
         var brand = getBrandById(productRequestDto);
         var category = getCategoryById(productRequestDto);
         validateProductName(productRequestDto);
@@ -127,9 +135,11 @@ public class ProductService {
             .productAttributes(new ArrayList<>())
             .build();
 
-        productRequestDto.getImageLinks()
-            .forEach(link -> product
-                .addImage(Image.builder().link(link).build()));
+        //TODO: add to images their order
+        multipartFiles
+            .forEach(multipartFile -> product
+                .addImage(Image.builder().link(imageCloudService
+                    .uploadFile(multipartFile,product_images_folder_name)).build()));
 
 
         productRequestDto.getAttributeValueId()
@@ -157,13 +167,14 @@ public class ProductService {
      *
      * @param id                The identifier of the product to update.
      * @param productRequestDto The ProductRequestDto containing the updated details of the product.
+     * @param multipartFiles
      * @return The ProductResponseDto representing the updated product.
      * @throws PersistenceException   if there is an issue creating the product.
      * @throws NotFoundException      if the brand or category specified in the request is not found.
      * @throws AlreadyExistsException if the product name is invalid.
      */
     @Transactional
-    public ProductResponseDto update(Long id, ProductRequestDto productRequestDto) {
+    public ProductResponseDto update(Long id, ProductRequestDto productRequestDto, List<MultipartFile> multipartFiles) {
         var product = productRepository
             .findByIdWithCollections(id)
             .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID.formatted(id)));
@@ -180,9 +191,9 @@ public class ProductService {
         product.setPrice(productRequestDto.getPrice());
 
         product.clearAllImages();
-        productRequestDto.getImageLinks()
-            .forEach(link -> product
-                .addImage(Image.builder().link(link).build()));
+//        productRequestDto.getImageLinks()
+//            .forEach(link -> product
+//                .addImage(Image.builder().link(link).build()));
 
         try {
             List<Long> idsToFetch = updateProductAttributes(productRequestDto, product);

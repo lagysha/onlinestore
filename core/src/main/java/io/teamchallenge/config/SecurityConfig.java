@@ -1,7 +1,7 @@
 package io.teamchallenge.config;
 
 import io.teamchallenge.security.filter.AccessTokenJwtAuthenticationFilter;
-import io.teamchallenge.service.JwtService;
+import io.teamchallenge.service.impl.JwtService;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

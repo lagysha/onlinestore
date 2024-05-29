@@ -3,7 +3,7 @@ package io.teamchallenge.mapper;
 import io.teamchallenge.dto.security.SignUpRequestDto;
 import io.teamchallenge.entity.User;
 import io.teamchallenge.enumerated.Role;
-import io.teamchallenge.service.JwtService;
+import io.teamchallenge.service.impl.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.AbstractConverter;
 import org.springframework.security.crypto.password.PasswordEncoder;

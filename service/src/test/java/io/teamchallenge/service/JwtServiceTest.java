@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import io.teamchallenge.entity.User;
 import io.teamchallenge.exception.BadTokenException;
+import io.teamchallenge.service.impl.JwtService;
 import io.teamchallenge.util.Utils;
 import jakarta.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;

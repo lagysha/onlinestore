@@ -1,7 +1,7 @@
 package io.teamchallenge.controller;
 
 import io.teamchallenge.dto.PageableDto;
-import io.teamchallenge.service.ProductService;
+import io.teamchallenge.service.impl.ProductService;
 import io.teamchallenge.utils.Utils;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -77,11 +77,11 @@ public class ProductControllerTest {
         var id = 1L;
         var request = Utils.getProductRequestDto();
         var response = Utils.getProductResponseDto();
-        when(productService.update(id, request)).thenReturn(response);
+        when(productService.update(id, request, multipartFiles)).thenReturn(response);
 
         var responseEntity = productController.update(id, request);
 
-        verify(productService).update(eq(id), eq(request));
+        verify(productService).update(eq(id), eq(request), multipartFiles);
         assertEquals(OK, responseEntity.getStatusCode());
         assertEquals(response, responseEntity.getBody());
     }

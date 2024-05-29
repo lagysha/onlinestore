@@ -25,8 +25,6 @@ public class ProductRequestDto {
     private String shortDesc;
     private Long categoryId;
     private List<Long> attributeValueId;
-    @Size(min = 1, max = 10, message = "Pass between 1 and 10 images")
-    private List<String> imageLinks;
     private Long brandId;
     @Size(min = 1,max = 255, message = "name is too long. Max size is 255 chars")
     private String name;

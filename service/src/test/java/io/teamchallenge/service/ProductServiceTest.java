@@ -13,6 +13,7 @@ import io.teamchallenge.repository.BrandRepository;
 import io.teamchallenge.repository.CategoryRepository;
 import io.teamchallenge.repository.ProductAttributeRepository;
 import io.teamchallenge.repository.ProductRepository;
+import io.teamchallenge.service.impl.ProductService;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -260,7 +261,7 @@ class ProductServiceTest {
         when(modelMapper.map(product, ProductResponseDto.class))
             .thenReturn(productResponseDto);
 
-        var actual = productService.update(1L, productRequestDto);
+        var actual = productService.update(1L, productRequestDto, multipartFiles);
 
         verify(brandRepository).findById(eq(1L));
         verify(categoryRepository).findById(eq(1L));
@@ -279,7 +280,7 @@ class ProductServiceTest {
         when(brandRepository.findById(1L))
             .thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> productService.update(1L, productRequestDto),
+        assertThrows(NotFoundException.class, () -> productService.update(1L, productRequestDto, multipartFiles),
             ExceptionMessage.BRAND_NOT_FOUND_BY_ID.formatted(1L));
         verify(brandRepository).findById(eq(1L));
         verify(productRepository).findByIdWithCollections(eq(1L));
@@ -295,7 +296,7 @@ class ProductServiceTest {
         when(categoryRepository.findById(1L)).
             thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> productService.update(1L, productRequestDto),
+        assertThrows(NotFoundException.class, () -> productService.update(1L, productRequestDto, multipartFiles),
             ExceptionMessage.CATEGORY_NOT_FOUND_BY_ID.formatted(1L));
         verify(brandRepository).findById(eq(1L));
         verify(categoryRepository).findById(eq(1L));
@@ -309,7 +310,7 @@ class ProductServiceTest {
         when(productRepository.findByIdWithCollections(1L))
             .thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> productService.update(1L, productRequestDto),
+        assertThrows(NotFoundException.class, () -> productService.update(1L, productRequestDto, multipartFiles),
             ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID.formatted(product.getName()));
         verify(productRepository).findByIdWithCollections(eq(1L));
     }
@@ -327,7 +328,7 @@ class ProductServiceTest {
         when(productRepository.findByNameAndIdNot(productRequestDto.getName(), 1L))
             .thenReturn(Optional.of(product));
 
-        assertThrows(AlreadyExistsException.class, () -> productService.update(1L, productRequestDto),
+        assertThrows(AlreadyExistsException.class, () -> productService.update(1L, productRequestDto, multipartFiles),
             ExceptionMessage.PRODUCT_WITH_NAME_ALREADY_EXISTS.formatted(product.getName()));
         verify(brandRepository).findById(eq(1L));
         verify(categoryRepository).findById(eq(1L));
@@ -355,7 +356,7 @@ class ProductServiceTest {
         when(attributeValueRepository.findAllByIdIn(List.of(3L)))
             .thenThrow(DataIntegrityViolationException.class);
 
-        assertThrows(PersistenceException.class, () -> productService.update(1L, productRequestDto),
+        assertThrows(PersistenceException.class, () -> productService.update(1L, productRequestDto, multipartFiles),
             ExceptionMessage.PRODUCT_PERSISTENCE_EXCEPTION);
         verify(productRepository).findByIdWithCollections(eq(1L));
         verify(brandRepository).findById(eq(1L));

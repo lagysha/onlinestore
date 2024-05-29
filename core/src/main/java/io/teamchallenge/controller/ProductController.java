@@ -1,16 +1,19 @@
 package io.teamchallenge.controller;
 
 import io.teamchallenge.annotation.AllowedSortFields;
+import io.teamchallenge.annotation.ImageValidation;
 import io.teamchallenge.dto.PageableDto;
 import io.teamchallenge.dto.product.ProductRequestDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
 import io.teamchallenge.dto.product.ShortProductResponseDto;
-import io.teamchallenge.service.ProductService;
+import io.teamchallenge.service.impl.ProductService;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,7 +24,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
@@ -68,11 +73,12 @@ public class ProductController {
      * @param productRequestDto The ProductRequestDto containing the details of the product to create.
      * @return ResponseEntity containing the ProductResponseDto representing the created product, with status CREATED.
      */
-    @PostMapping
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ProductResponseDto> create(
-        @RequestBody @Valid ProductRequestDto productRequestDto) {
+        @RequestPart(required = false) @ImageValidation  List<MultipartFile> multipartFiles,
+        @RequestPart @Valid ProductRequestDto productRequestDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(productService.create(productRequestDto));
+            .body(productService.create(productRequestDto,multipartFiles));
     }
 
     /**
@@ -82,11 +88,12 @@ public class ProductController {
      * @param productRequestDto The ProductRequestDto containing the updated details of the product.
      * @return ResponseEntity containing the ProductResponseDto representing the updated product, with status OK.
      */
-    @PutMapping("/{id}")
+    @PutMapping(path = "/{id}",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ProductResponseDto> update(@PathVariable Long id,
-                                                     @RequestBody @Valid ProductRequestDto productRequestDto) {
+                                                     @RequestPart(required = false) @ImageValidation List<MultipartFile> multipartFiles,
+                                                     @RequestPart @Valid ProductRequestDto productRequestDto) {
         return ResponseEntity.status(HttpStatus.OK)
-            .body(productService.update(id, productRequestDto));
+            .body(productService.update(id, productRequestDto, multipartFiles));
     }
 
     /**

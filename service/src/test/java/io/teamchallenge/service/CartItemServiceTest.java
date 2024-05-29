@@ -10,6 +10,7 @@ import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.repository.CartItemRepository;
 import io.teamchallenge.repository.ProductRepository;
 import io.teamchallenge.repository.UserRepository;
+import io.teamchallenge.service.impl.CartItemService;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;

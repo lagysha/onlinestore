@@ -6,7 +6,7 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import io.teamchallenge.security.token.ClaimsUsernamePasswordAuthenticationToken;
-import io.teamchallenge.service.JwtService;
+import io.teamchallenge.service.impl.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
