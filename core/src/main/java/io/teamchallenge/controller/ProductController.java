@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -44,7 +43,7 @@ public class ProductController {
      * @param pageable Pageable object specifying pagination and sorting parameters.
      *                 Defaults to sorting by creation date in descending order if not specified.
      * @return ResponseEntity containing a PageableDto of ProductResponseDto,
-     *         representing the paginated list of products.
+     * representing the paginated list of products.
      */
     @GetMapping
     public ResponseEntity<PageableDto<ShortProductResponseDto>> getAll(@RequestParam(required = false) String name,
@@ -75,10 +74,10 @@ public class ProductController {
      */
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ProductResponseDto> create(
-        @RequestPart(required = false) @ImageValidation  List<MultipartFile> multipartFiles,
+        @RequestPart(required = false) @ImageValidation List<MultipartFile> multipartFiles,
         @RequestPart @Valid ProductRequestDto productRequestDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(productService.create(productRequestDto,multipartFiles));
+            .body(productService.create(productRequestDto, multipartFiles));
     }
 
     /**
@@ -88,9 +87,10 @@ public class ProductController {
      * @param productRequestDto The ProductRequestDto containing the updated details of the product.
      * @return ResponseEntity containing the ProductResponseDto representing the updated product, with status OK.
      */
-    @PutMapping(path = "/{id}",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @PutMapping(path = "/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ProductResponseDto> update(@PathVariable Long id,
-                                                     @RequestPart(required = false) @ImageValidation List<MultipartFile> multipartFiles,
+                                                     @RequestPart(required = false) @ImageValidation
+                                                     List<MultipartFile> multipartFiles,
                                                      @RequestPart @Valid ProductRequestDto productRequestDto) {
         return ResponseEntity.status(HttpStatus.OK)
             .body(productService.update(id, productRequestDto, multipartFiles));

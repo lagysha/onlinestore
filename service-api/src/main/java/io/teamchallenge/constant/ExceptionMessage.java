@@ -23,5 +23,6 @@ public final class ExceptionMessage {
     public static final String CARTITEM_ALREADY_EXISTS =
         "The cartItem with id: %s is already present in database";
     public static final String CARTITEM_NOT_FOUND_BY_ID = "The cartItem with id: %s is not present in database";
-    public static final String IMAGE_EXCEPTION_MESSAGE = "The problem encountered during image persistence";
+    public static final String IMAGE_PERSISTENCE_EXCEPTION_MESSAGE = "The problem encountered during image persistence";
+    public static final String IMAGE_DELETION_EXCEPTION_MESSAGE = "The problem encountered during image deletion";
 }

@@ -1,6 +1,5 @@
 package io.teamchallenge.service.impl;
 
-import io.teamchallenge.config.CloudinaryConfig;
 import io.teamchallenge.constant.ExceptionMessage;
 import io.teamchallenge.dto.PageableDto;
 import io.teamchallenge.dto.product.ProductRequestDto;
@@ -139,7 +138,7 @@ public class ProductService {
         multipartFiles
             .forEach(multipartFile -> product
                 .addImage(Image.builder().link(imageCloudService
-                    .uploadFile(multipartFile,product_images_folder_name)).build()));
+                    .uploadImage(multipartFile,product_images_folder_name)).build()));
 
 
         productRequestDto.getAttributeValueId()

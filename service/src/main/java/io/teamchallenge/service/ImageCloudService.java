@@ -4,5 +4,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface ImageCloudService {
 
-    String uploadFile(MultipartFile file, String folderName);
+    String uploadImage(MultipartFile file, String folderName);
+    String destroyImage(String url);
 }
