@@ -22,6 +22,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
+import static io.teamchallenge.constant.AppConstant.API_V1;
 import static io.teamchallenge.constant.SecurityConstants.ADMIN;
 import static io.teamchallenge.constant.SecurityConstants.USER;
 import static jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN;
@@ -82,28 +83,29 @@ public class SecurityConfig {
                     resp.sendError(SC_FORBIDDEN, "You don't have authorities.")))
             .authorizeHttpRequests(req -> req
                 .requestMatchers(HttpMethod.POST,
-                    "/api/v1/signUp",
-                    "/api/v1/signIn",
-                    "/api/v1/updateAccessToken"
+                    API_V1 + "/signUp",
+                    API_V1 + "/signIn",
+                    API_V1 + "/updateAccessToken"
                 )
                 .permitAll()
                 .requestMatchers(HttpMethod.GET,
-                    "/api/v1/cart-items/{user_id}",
-                    "/api/v1/products",
-                    "/api/v1/products/{id}",
+                    API_V1 + "/categories/{categoryId}/attribute-attributeValues",
+                    API_V1 + "/cart-items/{user_id}",
+                    API_V1 + "/products",
+                    API_V1 + "/products/{id}",
                     "/hello")
                 .hasRole(USER)
                 .requestMatchers(HttpMethod.POST,
-                    "/api/v1/cart-items/{product_id}")
+                    API_V1 + "/cart-items/{product_id}")
                 .hasRole(USER)
                 .requestMatchers(HttpMethod.PATCH,
-                    "/api/v1/cart-items/{product_id}")
+                    API_V1 + "/cart-items/{product_id}")
                 .hasRole(USER)
                 .requestMatchers(HttpMethod.DELETE,
-                    "/api/v1/cart-items/{product_id}")
+                    API_V1 + "/cart-items/{product_id}")
                 .hasRole(USER)
                 .requestMatchers(
-                    "/api/v1/products")
+                    API_V1 + "/products")
                 .hasRole(ADMIN)
                 .anyRequest()
                 .hasRole(ADMIN)

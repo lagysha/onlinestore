@@ -1,6 +1,6 @@
 package io.teamchallenge.util;
 
-import io.teamchallenge.dto.CategoryResponseDto;
+import io.teamchallenge.dto.category.CategoryResponseDto;
 import io.teamchallenge.dto.cart.CartItemResponseDto;
 import io.teamchallenge.dto.cart.CartResponseDto;
 import io.teamchallenge.dto.cart.PatchRequestDto;
@@ -117,6 +117,7 @@ public class Utils {
             .shortDesc(product.getShortDesc())
             .categoryResponseDto(
                 CategoryResponseDto.builder()
+                    .id(product.getCategory().getId())
                     .desc(product.getCategory().getDescription())
                     .name(product.getCategory().getName())
                     .build())

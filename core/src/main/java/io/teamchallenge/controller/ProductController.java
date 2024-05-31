@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @RestController
-@RequestMapping("api/v1/products")
+@RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
 @Validated
 public class ProductController {

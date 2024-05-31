@@ -1,6 +1,6 @@
 package io.teamchallenge.mapper;
 
-import io.teamchallenge.dto.CategoryResponseDto;
+import io.teamchallenge.dto.category.CategoryResponseDto;
 import io.teamchallenge.dto.product.ProductAttributeResponseDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
 import io.teamchallenge.entity.Image;
@@ -27,6 +27,7 @@ public class ProductResponseDtoMapperTest {
             .shortDesc(product.getShortDesc())
             .categoryResponseDto(
                 CategoryResponseDto.builder()
+                    .id(product.getCategory().getId())
                     .desc(product.getCategory().getDescription())
                     .name(product.getCategory().getName())
                     .build())
