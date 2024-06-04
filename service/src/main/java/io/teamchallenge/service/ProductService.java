@@ -1,7 +1,9 @@
 package io.teamchallenge.service;
 
 import io.teamchallenge.constant.ExceptionMessage;
-import io.teamchallenge.dto.PageableDto;
+import io.teamchallenge.dto.filter.ProductFilterDto;
+import io.teamchallenge.dto.pageable.AdvancedPageableDto;
+import io.teamchallenge.dto.product.ProductMinMaxPriceDto;
 import io.teamchallenge.dto.product.ProductRequestDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
 import io.teamchallenge.dto.product.ShortProductResponseDto;
@@ -18,8 +20,12 @@ import io.teamchallenge.repository.BrandRepository;
 import io.teamchallenge.repository.CategoryRepository;
 import io.teamchallenge.repository.ProductAttributeRepository;
 import io.teamchallenge.repository.ProductRepository;
+import jakarta.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -27,6 +33,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +42,11 @@ import static io.teamchallenge.constant.ExceptionMessage.BRAND_NOT_FOUND_BY_ID;
 import static io.teamchallenge.constant.ExceptionMessage.CATEGORY_NOT_FOUND_BY_ID;
 import static io.teamchallenge.constant.ExceptionMessage.PRODUCT_PERSISTENCE_EXCEPTION;
 import static io.teamchallenge.constant.ExceptionMessage.PRODUCT_WITH_NAME_ALREADY_EXISTS;
+import static io.teamchallenge.repository.ProductRepository.Specs.byAttributeValuesIds;
+import static io.teamchallenge.repository.ProductRepository.Specs.byBrandIds;
+import static io.teamchallenge.repository.ProductRepository.Specs.byCategoryId;
+import static io.teamchallenge.repository.ProductRepository.Specs.byName;
+import static io.teamchallenge.repository.ProductRepository.Specs.byPrice;
 
 @Service
 @RequiredArgsConstructor
@@ -53,20 +66,45 @@ public class ProductService {
      * @param name     Optional parameter for filtering products by name.
      * @return PageableDto containing a list of ProductResponseDto representing the paginated list of products.
      */
-    public PageableDto<ShortProductResponseDto> getAll(Pageable pageable, String name) {
-        Page<Long> retrievedProducts =
-            productRepository.findAllIdsByName(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()),
-                name.toLowerCase());
+    public AdvancedPageableDto<ShortProductResponseDto> getAll(Pageable pageable, ProductFilterDto productFilterDto) {
+        Specification<Product> specification = null;
+        Sort sort = pageable.getSort();
+        Page<Long> retrievedProducts;
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
+
+        if (areAllVariablesNull(productFilterDto)) {
+            retrievedProducts =
+                productRepository.findAllProductIds(null,pageable);
+        } else {
+            specification = getSpecificationFromFilterDto(productFilterDto);
+            retrievedProducts =
+                productRepository.findAllProductIds(specification, pageable);
+        }
+
         List<ShortProductResponseDto> content = productRepository
-            .findAllByIdWithImages(retrievedProducts.getContent(), pageable.getSort())
+            .findAllByIdWithImages(retrievedProducts
+                    .getContent(),
+                sort)
             .stream()
             .map(product -> modelMapper.map(product, ShortProductResponseDto.class))
             .collect(Collectors.toList());
-        return new PageableDto<>(
-            content,
-            retrievedProducts.getTotalElements(),
-            retrievedProducts.getPageable().getPageNumber(),
-            retrievedProducts.getTotalPages());
+
+        ProductMinMaxPriceDto productMinMaxPriceDto;
+        if(Objects.isNull(productFilterDto.getPrice())) {
+            productMinMaxPriceDto = productRepository.getProductMinMaxPrice(specification);
+        }else{
+            productMinMaxPriceDto = new ProductMinMaxPriceDto(BigDecimal.valueOf(productFilterDto.getPrice().getFrom()),
+                BigDecimal.valueOf(productFilterDto.getPrice().getTo()));
+        }
+
+        return AdvancedPageableDto.<ShortProductResponseDto>builder()
+            .page(content)
+            .totalElements(retrievedProducts.getNumberOfElements())
+            .currentPage(retrievedProducts.getPageable().getPageNumber())
+            .totalPages(retrievedProducts.getTotalPages())
+            .minPrice(productMinMaxPriceDto.getMin())
+            .maxPrice(productMinMaxPriceDto.getMax())
+            .build();
     }
 
     /**
@@ -243,5 +281,43 @@ public class ProductService {
     private Category getCategoryById(ProductRequestDto productRequestDto) {
         return categoryRepository.findById(productRequestDto.getCategoryId()).orElseThrow(
             () -> new NotFoundException(CATEGORY_NOT_FOUND_BY_ID.formatted(productRequestDto.getCategoryId())));
+    }
+
+    private Specification<Product> getSpecificationFromFilterDto(ProductFilterDto productFilterDto) {
+        List<Specification<Product>> specifications = new ArrayList<>();
+        var name = productFilterDto.getName();
+        if (!Objects.isNull(name)) {
+            specifications.add(byName(name));
+        }
+        var priceFilter = productFilterDto.getPrice();
+        if (!Objects.isNull(priceFilter)) {
+            specifications.add(
+                byPrice(BigDecimal.valueOf(priceFilter.getFrom()), BigDecimal.valueOf(priceFilter.getTo())));
+        }
+        var brandIds = productFilterDto.getBrandIds();
+        if (!Objects.isNull(brandIds)) {
+            specifications.add(byBrandIds(brandIds));
+        }
+        var categoryId = productFilterDto.getCategoryId();
+        if (!Objects.isNull(categoryId)) {
+            specifications.add(byCategoryId(categoryId));
+        }
+        var attributeValueIds = productFilterDto.getAttributeValueIds();
+        if (!Objects.isNull(attributeValueIds)) {
+            specifications.add(byAttributeValuesIds(attributeValueIds));
+        }
+        return Specification.allOf(specifications);
+    }
+
+    public boolean areAllVariablesNull(@NotNull ProductFilterDto obj) {
+        return Arrays.stream(obj.getClass().getDeclaredFields())
+            .peek(field -> field.setAccessible(true))
+            .allMatch(field -> {
+                try {
+                    return field.get(obj) == null;
+                } catch (IllegalAccessException e) {
+                    return false;
+                }
+            });
     }
 }

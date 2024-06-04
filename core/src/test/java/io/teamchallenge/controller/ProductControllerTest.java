@@ -1,6 +1,6 @@
 package io.teamchallenge.controller;
 
-import io.teamchallenge.dto.PageableDto;
+import io.teamchallenge.dto.pageable.PageableDto;
 import io.teamchallenge.service.ProductService;
 import io.teamchallenge.utils.Utils;
 import java.util.List;

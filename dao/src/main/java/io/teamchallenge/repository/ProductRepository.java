@@ -1,16 +1,21 @@
 package io.teamchallenge.repository;
 
 import io.teamchallenge.entity.Product;
+import io.teamchallenge.entity.Product_;
+import io.teamchallenge.entity.attributes.ProductAttribute_;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product>,CustomProductRepository {
     /**
      * Retrieves a Product by its ID along with associated collections if available.
      * If the Product is found, associated collections such as images are eagerly fetched.
@@ -51,7 +56,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      *
      * @param id The ID of the Product to retrieve.
      * @return An Optional containing the Product if found, with associated category, brand,
-     *         and product attributes eagerly fetched.
+     * and product attributes eagerly fetched.
      */
     @Query("select p from Product p "
         + "join fetch p.category "
@@ -87,4 +92,32 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      * @return An Optional containing the Product if found by the provided name and ID not matching the provided ID.
      */
     Optional<Product> findByNameAndIdNot(String name, Long id);
+
+    interface Specs {
+        static Specification<Product> byName(String productName) {
+            return (root, query, builder) ->
+                builder.like(builder.lower(root.get(Product_.name)), "%" + productName.toLowerCase() + "%");
+        }
+
+        static Specification<Product> byPrice(BigDecimal from, BigDecimal to) {
+            return (root, query, builder) ->
+                builder.between(root.get(Product_.price), from, to);
+        }
+
+        static Specification<Product> byBrandIds(List<Long> brandIds) {
+            return (root, query, builder) ->
+                root.get(Product_.brand).get("id").in(brandIds);
+        }
+
+        static Specification<Product> byCategoryId(Long categoryId) {
+            return (root, query, builder) ->
+                root.get(Product_.category).get("id").in(categoryId);
+        }
+
+        static Specification<Product> byAttributeValuesIds(List<Long> attributeValuesIds) {
+            return (root, query, builder) ->
+                root.get(Product_.PRODUCT_ATTRIBUTES).get(ProductAttribute_.ATTRIBUTE_VALUE)
+                    .get("id").in(attributeValuesIds);
+        }
+    }
 }
