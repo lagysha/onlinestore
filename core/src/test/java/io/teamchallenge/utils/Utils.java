@@ -103,7 +103,7 @@ public class Utils {
             .categoryResponseDto(
                 CategoryResponseDto.builder()
                     .id(product.getId())
-                    .desc(product.getCategory().getDescription())
+                    .description(product.getCategory().getDescription())
                     .name(product.getCategory().getName())
                     .build())
             .productAttributeResponseDtos(product.getProductAttributes()
