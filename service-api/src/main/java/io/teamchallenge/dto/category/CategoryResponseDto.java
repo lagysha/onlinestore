@@ -18,5 +18,5 @@ import lombok.ToString;
 public class CategoryResponseDto {
     private Long id;
     private String name;
-    private String desc;
+    private String description;
 }

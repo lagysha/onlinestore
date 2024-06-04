@@ -15,5 +15,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
                  join Attribute a on av.attribute.id = a.id
         where p.category.id = :categoryId
         """)
-    Stream<CategoryAttributeAttributeValueVO> getAttributeAttributeValueByCategory(Long categoryId);
+    Stream<CategoryAttributeAttributeValueVO> findAllAttributeAttributeValueByCategory(Long categoryId);
 }

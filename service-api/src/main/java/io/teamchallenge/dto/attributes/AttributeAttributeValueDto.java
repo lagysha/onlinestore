@@ -16,7 +16,7 @@ import lombok.experimental.SuperBuilder;
 @ToString
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
-public class AttributeAttributeValueDto extends AttributeDto{
+public class AttributeAttributeValueDto extends AttributeDto {
     @JsonProperty("values")
     private List<AttributeValueDto> attributeValueDtos;
 }

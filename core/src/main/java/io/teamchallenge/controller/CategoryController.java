@@ -1,6 +1,7 @@
 package io.teamchallenge.controller;
 
 import io.teamchallenge.dto.attributes.AttributeAttributeValueDto;
+import io.teamchallenge.dto.category.CategoryResponseDto;
 import io.teamchallenge.service.CategoryService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -20,5 +21,10 @@ public class CategoryController {
     public ResponseEntity<List<AttributeAttributeValueDto>> getAttributeAttributeValue(
         @PathVariable Long categoryId) {
         return ResponseEntity.ok(categoryService.getAttributeAttributeValueByCategory(categoryId));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CategoryResponseDto>> getAll(){
+        return ResponseEntity.ok(categoryService.getAll());
     }
 }

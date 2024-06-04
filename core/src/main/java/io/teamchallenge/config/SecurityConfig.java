@@ -90,10 +90,13 @@ public class SecurityConfig {
                 .permitAll()
                 .requestMatchers(HttpMethod.GET,
                     API_V1 + "/categories/{categoryId}/attribute-attributeValues",
-                    API_V1 + "/cart-items/{user_id}",
                     API_V1 + "/products",
+                    API_V1 + "/categories",
                     API_V1 + "/products/{id}",
                     "/hello")
+                .permitAll()
+                .requestMatchers(HttpMethod.GET,
+                    API_V1 + "/cart-items/{product_id}")
                 .hasRole(USER)
                 .requestMatchers(HttpMethod.POST,
                     API_V1 + "/cart-items/{product_id}")
