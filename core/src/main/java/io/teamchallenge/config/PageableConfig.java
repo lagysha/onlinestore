@@ -6,6 +6,9 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * @author Niktia Malov
+ */
 @Configuration
 public class PageableConfig implements WebMvcConfigurer {
     /**

@@ -5,7 +5,7 @@ import io.teamchallenge.entity.User;
 import org.modelmapper.AbstractConverter;
 
 /**
- * Mapper class to convert {@link User} entities to {@link SignUpResponseDto} objects.
+ * @author Denys Liubchenko
  */
 public class UserToSignUpResponseDtoMapper extends AbstractConverter<User, SignUpResponseDto> {
     /**

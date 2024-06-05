@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- * Repository interface for managing Country entities.
+ * @author Denys Liubchenko
  */
 public interface CountryRepository extends JpaRepository<Country, Long> {
     /**

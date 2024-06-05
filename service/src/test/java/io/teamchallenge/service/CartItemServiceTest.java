@@ -26,6 +26,7 @@ import org.springframework.data.domain.Sort;
 import static io.teamchallenge.constant.AppConstant.MAX_NUMBER_OF_UNIQUE_PRODUCTS_IN_CART;
 import static io.teamchallenge.util.Utils.getCartItem;
 import static io.teamchallenge.util.Utils.getCartItemResponseDto;
+import static io.teamchallenge.util.Utils.getCartResponseDto;
 import static io.teamchallenge.util.Utils.getPatchRequestDto;
 import static io.teamchallenge.util.Utils.getProduct;
 import static io.teamchallenge.util.Utils.getUser;
@@ -61,10 +62,7 @@ public class CartItemServiceTest {
         CartItem cartItem = getCartItem();
         var cartItemResponseDto = getCartItemResponseDto();
         List<CartItem> cartItems = List.of(cartItem);
-        var expected = CartResponseDto.builder()
-            .cartItemResponseDtos(List.of(cartItemResponseDto))
-            .totalPrice(cartItemResponseDto.getPrice())
-            .build();
+        var expected = getCartResponseDto();
 
         when(modelMapper.map(cartItem, CartItemResponseDto.class))
             .thenReturn(cartItemResponseDto);

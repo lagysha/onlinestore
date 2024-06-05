@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 
 /**
- * Annotation is used for injecting id of user from claims.
+ * @author Denys Liubchenko
  */
 @Target({ElementType.PARAMETER, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

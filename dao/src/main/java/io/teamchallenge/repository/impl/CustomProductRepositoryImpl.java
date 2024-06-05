@@ -18,13 +18,27 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
+/**
+ *  Implementation of a custom product repository interface that provides additional functionality beyond the standard CRUD operations.
+ *  This implementation directly interacts with the underlying database through the EntityManager.
+ *
+ * @author Niktia Malov
+ */
 @Repository
 @RequiredArgsConstructor
 public class CustomProductRepositoryImpl implements CustomProductRepository {
     private final EntityManager entityManager;
 
+    /**
+     * Finds the minimum and maximum prices of products based on the given specification.
+     * Executes a CriteriaQuery to retrieve the minimum and maximum prices of products.
+     * If a Specification is provided, filters the products based on the given criteria.
+     *
+     * @param specification The Specification to filter products (can be null).
+     * @return A ProductMinMaxPriceDto object containing the minimum and maximum prices.
+     */
     @Override
-    public ProductMinMaxPriceDto getProductMinMaxPrice(@Nullable Specification<Product> specification) {
+    public ProductMinMaxPriceDto findProductMinMaxPrice(@Nullable Specification<Product> specification) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<ProductMinMaxPriceDto> query = cb.createQuery(ProductMinMaxPriceDto.class);
 
@@ -41,6 +55,18 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
 
         return typedQuery.getSingleResult();
     }
+
+    /**
+     * Finds all product IDs based on the given specification and pagination parameters.
+     * Executes a CriteriaQuery to retrieve the IDs of products.
+     * Applies pagination to limit the number of results.
+     * If a Specification is provided, filters the products based on the given criteria.
+     *
+     * @param specification The Specification to filter products (can be null).
+     * @param pageable The pagination parameters.
+     * @return A Page object containing the IDs of products.
+     */
+
 
     @Override
     public Page<Long> findAllProductIds(@Nullable Specification<Product> specification, Pageable pageable) {

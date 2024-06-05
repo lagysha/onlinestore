@@ -4,6 +4,9 @@ import io.teamchallenge.dto.category.CategoryResponseDto;
 import io.teamchallenge.dto.cart.CartItemResponseDto;
 import io.teamchallenge.dto.cart.CartResponseDto;
 import io.teamchallenge.dto.cart.PatchRequestDto;
+import io.teamchallenge.dto.filter.PriceFilter;
+import io.teamchallenge.dto.filter.ProductFilterDto;
+import io.teamchallenge.dto.pageable.AdvancedPageableDto;
 import io.teamchallenge.dto.product.ProductAttributeResponseDto;
 import io.teamchallenge.dto.product.ProductRequestDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
@@ -195,6 +198,30 @@ public class Utils {
         return SignInRequestDto.builder()
             .email("test@mail.com")
             .password("Password1234!")
+            .build();
+    }
+
+    public static AdvancedPageableDto<ShortProductResponseDto> getAdvancedPageableDto(){
+        return AdvancedPageableDto.<ShortProductResponseDto>builder()
+            .page(List.of(getShortProductResponseDto()))
+            .totalElements(1)
+            .currentPage(1)
+            .totalPages(1)
+            .minPrice(BigDecimal.valueOf(2))
+            .maxPrice(BigDecimal.valueOf(3))
+            .build();
+    }
+
+    public static ProductFilterDto getProductFilterDto(){
+        return ProductFilterDto.builder()
+            .name("Sample Product")
+            .price(PriceFilter.builder()
+                .from(100)
+                .to(500)
+                .build())
+            .brandIds(List.of(1L))
+            .categoryId(1L)
+            .attributeValueIds(List.of(2L, 4L))
             .build();
     }
 }

@@ -6,6 +6,9 @@ import java.util.List;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+/**
+ * @author Niktia Malov
+ */
 public interface AttributeValueRepository extends JpaRepository<AttributeValue,Long> {
     /**
      * Retrieves a list of AttributeValues by their IDs, eagerly fetching the associated attribute.

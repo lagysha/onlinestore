@@ -26,6 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 import static io.teamchallenge.constant.AppConstant.MAX_NUMBER_OF_UNIQUE_PRODUCTS_IN_CART;
 import static io.teamchallenge.constant.ExceptionMessage.CARTITEM_ALREADY_EXISTS;
 
+/**
+ * @author Niktia Malov
+ */
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor

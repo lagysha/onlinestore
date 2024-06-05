@@ -9,6 +9,9 @@ import java.util.stream.Collectors;
 import org.modelmapper.AbstractConverter;
 import org.springframework.stereotype.Component;
 
+/**
+ * @author Niktia Malov
+ */
 @Component
 public class ProductResponseDtoMapper extends AbstractConverter<Product, ProductResponseDto> {
     /**

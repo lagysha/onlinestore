@@ -12,6 +12,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+/**
+ * @author Niktia Malov
+ */
 public interface CartItemRepository
     extends JpaRepository<CartItem, CartItemId>, BaseJpaRepository<CartItem, CartItemId> {
     /**

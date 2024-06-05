@@ -1,9 +1,8 @@
 package io.teamchallenge.controller;
 
 import io.teamchallenge.annotation.AllowedSortFields;
-import io.teamchallenge.annotation.ValidProductFilterDto;
-import io.teamchallenge.dto.pageable.PageableDto;
 import io.teamchallenge.dto.filter.ProductFilterDto;
+import io.teamchallenge.dto.pageable.AdvancedPageableDto;
 import io.teamchallenge.dto.product.ProductRequestDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
 import io.teamchallenge.dto.product.ShortProductResponseDto;
@@ -26,6 +25,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
+/**
+ * @author Niktia Malov
+ */
 @RestController
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
@@ -34,23 +36,23 @@ public class ProductController {
     private final ProductService productService;
 
     /**
-     * Retrieves a pageable list of products based on optional filtering by name and pageable parameters.
+     * Handles GET requests for retrieving a paginated list of products with optional filtering and sorting.
      *
-     * @param name     Optional parameter for filtering products by name.
-     * @param pageable Pageable object specifying pagination and sorting parameters.
-     *                 Defaults to sorting by creation date in descending order if not specified.
-     * @return ResponseEntity containing a PageableDto of ProductResponseDto,
-     * representing the paginated list of products.
+     * @param productFilterDto DTO containing optional product filter criteria.
+     * @param pageable Pageable object containing pagination and sorting information.
+     *                 - The default sort field is "price".
+     *                 - The default sort direction is descending.
+     *                 - Only sorting by "price" is allowed.
+     * @return ResponseEntity containing an advanced pageable DTO of ShortProductResponseDto objects.
      */
     @GetMapping
-    public ResponseEntity<PageableDto<ShortProductResponseDto>> getAll(
-        @ValidProductFilterDto ProductFilterDto productFilterDto,
+    public ResponseEntity<AdvancedPageableDto<ShortProductResponseDto>> getAll(
+        @Valid ProductFilterDto productFilterDto,
         @AllowedSortFields(values = {"price"})
-        @PageableDefault(sort = "price",
-            direction = DESC)
-        Pageable pageable) {
+        @PageableDefault(sort = "price", direction = DESC) Pageable pageable) {
         return ResponseEntity.ok(productService.getAll(pageable, productFilterDto));
     }
+
 
     /**
      * Retrieves a product by its unique identifier.

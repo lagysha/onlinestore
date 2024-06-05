@@ -5,6 +5,9 @@ import java.util.List;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+/**
+ * @author Niktia Malov
+ */
 public interface ProductAttributeRepository extends JpaRepository<ProductAttribute, Long> {
     /**
      * Retrieves a list of ProductAttributes by their IDs, eagerly fetching the associated attribute values

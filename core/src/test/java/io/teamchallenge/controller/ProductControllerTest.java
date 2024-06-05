@@ -1,9 +1,7 @@
 package io.teamchallenge.controller;
 
-import io.teamchallenge.dto.pageable.PageableDto;
 import io.teamchallenge.service.ProductService;
 import io.teamchallenge.utils.Utils;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,6 +10,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import static io.teamchallenge.utils.Utils.getAdvancedPageableDto;
+import static io.teamchallenge.utils.Utils.getProductFilterDto;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.eq;
@@ -34,14 +34,13 @@ public class ProductControllerTest {
     @Test
     void getAllTest() {
         var pageable = PageRequest.of(1, 1, Sort.by("price"));
-        var name = "phone";
-        var response = new PageableDto<>(
-            List.of(Utils.getShortProductResponseDto()), 1, 1, 1);
-        when(productService.getAll(pageable, name)).thenReturn(response);
+        var response = getAdvancedPageableDto();
+        var filter = getProductFilterDto();
+        when(productService.getAll(pageable, filter)).thenReturn(response);
 
-        var responseEntity = productController.getAll(name, pageable);
+        var responseEntity = productController.getAll(filter, pageable);
 
-        verify(productService).getAll(eq(pageable), eq(name));
+        verify(productService).getAll(eq(pageable), eq(filter));
         assertEquals(OK, responseEntity.getStatusCode());
         assertEquals(response, responseEntity.getBody());
     }

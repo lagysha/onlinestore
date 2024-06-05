@@ -23,10 +23,10 @@ import io.teamchallenge.repository.ProductRepository;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -48,6 +48,9 @@ import static io.teamchallenge.repository.ProductRepository.Specs.byCategoryId;
 import static io.teamchallenge.repository.ProductRepository.Specs.byName;
 import static io.teamchallenge.repository.ProductRepository.Specs.byPrice;
 
+/**
+ * @author Niktia Malov
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -60,11 +63,13 @@ public class ProductService {
     private final ModelMapper modelMapper;
 
     /**
-     * Retrieves a pageable list of products based on optional filtering by name and pageable parameters.
+     * Retrieves a paginated list of short product response DTOs based on the provided filter criteria and pagination details.
      *
-     * @param pageable Pageable object specifying pagination and sorting parameters.
-     * @param name     Optional parameter for filtering products by name.
-     * @return PageableDto containing a list of ProductResponseDto representing the paginated list of products.
+     * @param pageable         Pageable object containing pagination and sorting information.
+     * @param productFilterDto DTO containing optional product filter criteria.
+     *                         - The filter criteria may include name, price range, brand IDs, category ID, and attribute value IDs.
+     * @return AdvancedPageableDto<ShortProductResponseDto> containing the paginated list of products, total elements,
+     * current page, total pages, and the minimum and maximum price range of the products.
      */
     public AdvancedPageableDto<ShortProductResponseDto> getAll(Pageable pageable, ProductFilterDto productFilterDto) {
         Specification<Product> specification = null;
@@ -74,7 +79,7 @@ public class ProductService {
 
         if (areAllVariablesNull(productFilterDto)) {
             retrievedProducts =
-                productRepository.findAllProductIds(null,pageable);
+                productRepository.findAllProductIds(null, pageable);
         } else {
             specification = getSpecificationFromFilterDto(productFilterDto);
             retrievedProducts =
@@ -90,9 +95,9 @@ public class ProductService {
             .collect(Collectors.toList());
 
         ProductMinMaxPriceDto productMinMaxPriceDto;
-        if(Objects.isNull(productFilterDto.getPrice())) {
-            productMinMaxPriceDto = productRepository.getProductMinMaxPrice(specification);
-        }else{
+        if (Objects.isNull(productFilterDto.getPrice())) {
+            productMinMaxPriceDto = productRepository.findProductMinMaxPrice(specification);
+        } else {
             productMinMaxPriceDto = new ProductMinMaxPriceDto(BigDecimal.valueOf(productFilterDto.getPrice().getFrom()),
                 BigDecimal.valueOf(productFilterDto.getPrice().getTo()));
         }
@@ -309,15 +314,12 @@ public class ProductService {
         return Specification.allOf(specifications);
     }
 
-    public boolean areAllVariablesNull(@NotNull ProductFilterDto obj) {
-        return Arrays.stream(obj.getClass().getDeclaredFields())
-            .peek(field -> field.setAccessible(true))
-            .allMatch(field -> {
-                try {
-                    return field.get(obj) == null;
-                } catch (IllegalAccessException e) {
-                    return false;
-                }
-            });
+    public boolean areAllVariablesNull(@NotNull ProductFilterDto filterDto) {
+        return Stream.of(filterDto.getAttributeValueIds(),
+                filterDto.getBrandIds(),
+                filterDto.getCategoryId(),
+                filterDto.getName(),
+                filterDto.getPrice())
+            .allMatch(Objects::isNull);
     }
 }

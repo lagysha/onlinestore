@@ -9,6 +9,9 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+/**
+ * @author Niktia Malov
+ */
 public class AllowedSortFieldsValidator implements ConstraintValidator<AllowedSortFields, Pageable> {
     static final String PROPERTY_NOT_FOUND_MESSAGE = "The following sort fields [%s] are not within the allowed fields."
         + " Allowed sort fields are: [%s]";

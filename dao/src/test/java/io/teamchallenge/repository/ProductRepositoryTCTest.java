@@ -1,6 +1,9 @@
 package io.teamchallenge.repository;
 
+import io.teamchallenge.dto.product.ProductMinMaxPriceDto;
 import io.teamchallenge.entity.Product;
+import io.teamchallenge.entity.Product_;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -8,9 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.transaction.TestTransaction;
@@ -20,6 +23,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -45,8 +49,6 @@ class ProductRepositoryTCTest {
         assertEquals(product.get().getName(), "Example Smartphone");
     }
 
-    private void assertFalse(boolean empty) {
-    }
 
     @Test
     void findByNameWhenNoProductWithSuchNamePresentTest() {
@@ -118,24 +120,6 @@ class ProductRepositoryTCTest {
     }
 
     @Test
-    void findAllIdsByNameTest() {
-        Page<Long> productsIds = productRepository.
-            findAllIdsByName(Pageable.ofSize(3), "Example T-shirt".toLowerCase());
-
-        TestTransaction.end();
-
-        assertEquals(productsIds.getTotalElements(), 1);
-        assertEquals(productsIds.getContent().getFirst(), 2L);
-    }
-
-    @Test
-    void findAllIdsByNameWhenNoProductWithIdPresentTest() {
-        Page<Long> productsIds = productRepository.
-            findAllIdsByName(Pageable.ofSize(3), "Example T-shirt1");
-        assertTrue(productsIds.isEmpty());
-    }
-
-    @Test
     void findByIdWithCollectionsTest() {
         Optional<Product> product = productRepository.findByIdWithCollections(1L);
 
@@ -152,5 +136,50 @@ class ProductRepositoryTCTest {
     void findByIdWithCollectionsWhenNoProductWithIdPresentTest() {
         Optional<Product> product = productRepository.findByIdWithCollections(3L);
         assertTrue(product.isEmpty());
+    }
+
+    @Test
+    void findProductMinMaxPriceWithoutSpecificationTest() {
+        var actual = productRepository.findProductMinMaxPrice(null);
+        var expected = new ProductMinMaxPriceDto(BigDecimal.valueOf(19.99),BigDecimal.valueOf(599.99));
+        assertEquals(expected,actual);
+    }
+
+    @Test
+    void findProductMinMaxPriceWithSpecificationTest() {
+        Specification<Product> specificationForBrands = (root, query, builder) ->
+            root.get(Product_.brand).get("id").in(1L);
+        Specification<Product> specificationForCategories = (root, query, builder) ->
+            root.get(Product_.category).get("id").in(1L);
+
+        var actual = productRepository.findProductMinMaxPrice(specificationForBrands.and(specificationForCategories));
+        var expected = new ProductMinMaxPriceDto(BigDecimal.valueOf(19.99),BigDecimal.valueOf(19.99));
+        assertEquals(expected,actual);
+    }
+
+    @Test
+    void findAllProductIdsWithoutSpecificationTest() {
+        PageRequest pageable = PageRequest.of(0, 1);
+        var actual = productRepository.findAllProductIds(null, pageable);
+        assertEquals(actual.getContent().size(),2);
+        assertEquals(actual.getTotalPages(),2);
+        assertEquals(actual.getPageable().getPageNumber(),0);
+        assertEquals(actual.getTotalElements(),2);
+    }
+
+    @Test
+    void findAllProductIdsWithSpecificationTest() {
+        PageRequest pageable = PageRequest.of(0, 1);
+        Specification<Product> specificationForBrands = (root, query, builder) ->
+            root.get(Product_.brand).get("id").in(1L);
+        Specification<Product> specificationForCategories = (root, query, builder) ->
+            root.get(Product_.category).get("id").in(1L);
+
+        var actual = productRepository.findAllProductIds(
+            specificationForBrands.and(specificationForCategories),pageable);
+        assertEquals(actual.getContent().size(),1);
+        assertEquals(actual.getTotalPages(),1);
+        assertEquals(actual.getPageable().getPageNumber(),0);
+        assertEquals(actual.getTotalElements(),1);
     }
 }
