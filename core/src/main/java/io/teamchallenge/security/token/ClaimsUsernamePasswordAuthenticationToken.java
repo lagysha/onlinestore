@@ -7,6 +7,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 
 /**
+ * Custom token for authentication.
  * @author Denys Liubchenko
  */
 @Getter

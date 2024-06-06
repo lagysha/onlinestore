@@ -4,6 +4,10 @@ import io.teamchallenge.dto.category.CategoryResponseDto;
 import io.teamchallenge.entity.Category;
 import org.modelmapper.AbstractConverter;
 
+/**
+ * Mapper for {@link Category}.
+ * @author Niktia Malov
+ */
 public class CategoryResponseDtoMapper extends AbstractConverter<Category, CategoryResponseDto> {
     /**
      * Converts a Category entity into a CategoryResponseDto object.

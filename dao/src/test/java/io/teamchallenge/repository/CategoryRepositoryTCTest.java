@@ -1,7 +1,5 @@
 package io.teamchallenge.repository;
 
-import io.teamchallenge.entity.Country;
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -15,15 +13,13 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Testcontainers
 @ActiveProfiles("ts")
 @Sql(scripts = "classpath:data.sql")
-public class CountryRepositoryTCTest {
+public class CategoryRepositoryTCTest {
 
     @Container
     @ServiceConnection
@@ -31,13 +27,15 @@ public class CountryRepositoryTCTest {
         new PostgreSQLContainer<>(DockerImageName.parse("postgres:16-alpine"));
 
     @Autowired
-    private CountryRepository countryRepository;
+    private CategoryRepository categoryRepository;
 
     @Test
-    void findByNameTest() {
-        String name = "Ukraine";
-        Optional<Country> country = countryRepository.findByName(name);
-        assertFalse(country.isEmpty());
-        assertEquals(name, country.get().getName());
+    void findAllAttributeAttributeValueByCategoryTest() {
+        var expected = categoryRepository.findAllAttributeAttributeValueByCategory(1L).toList();
+        assertEquals(2, expected.size());
+        assertEquals(1L, expected.getFirst().getAttributeId());
+        assertEquals(1L, expected.getFirst().getAttributeValueId());
+        assertEquals(3L, expected.get(1).getAttributeId());
+        assertEquals(5L, expected.get(1).getAttributeValueId());
     }
 }

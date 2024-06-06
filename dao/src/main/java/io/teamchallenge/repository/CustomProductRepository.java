@@ -2,12 +2,15 @@ package io.teamchallenge.repository;
 
 import io.teamchallenge.dto.product.ProductMinMaxPriceDto;
 import io.teamchallenge.entity.Product;
+import io.teamchallenge.entity.cartitem.CartItem;
 import jakarta.annotation.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 /**
+ * Repository interface for managing {@link Product} entities.
+ * Provides methods to custom queries.
  * @author Niktia Malov
  */
 public interface CustomProductRepository {

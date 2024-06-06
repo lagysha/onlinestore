@@ -46,9 +46,10 @@ import static io.teamchallenge.repository.ProductRepository.Specs.byAttributeVal
 import static io.teamchallenge.repository.ProductRepository.Specs.byBrandIds;
 import static io.teamchallenge.repository.ProductRepository.Specs.byCategoryId;
 import static io.teamchallenge.repository.ProductRepository.Specs.byName;
-import static io.teamchallenge.repository.ProductRepository.Specs.byPrice;
+import static io.teamchallenge.repository.ProductRepository.Specs.byPriceRange;
 
 /**
+ * Service class for managing products.
  * @author Niktia Malov
  */
 @Service
@@ -63,13 +64,15 @@ public class ProductService {
     private final ModelMapper modelMapper;
 
     /**
-     * Retrieves a paginated list of short product response DTOs based on the provided filter criteria and pagination details.
+     * Retrieves a paginated list of short product response DTOs based on the provided filter
+     * criteria and pagination details.
      *
      * @param pageable         Pageable object containing pagination and sorting information.
      * @param productFilterDto DTO containing optional product filter criteria.
-     *                         - The filter criteria may include name, price range, brand IDs, category ID, and attribute value IDs.
-     * @return AdvancedPageableDto<ShortProductResponseDto> containing the paginated list of products, total elements,
-     * current page, total pages, and the minimum and maximum price range of the products.
+     *                         - The filter criteria may include name, price range, brand IDs, category ID,
+     *                         and attribute value IDs.
+     * @return AdvancedPageableDto of ShortProductResponseDto containing the paginated list of products, total elements,
+     *         current page, total pages, and the minimum and maximum price range of the products.
      */
     public AdvancedPageableDto<ShortProductResponseDto> getAll(Pageable pageable, ProductFilterDto productFilterDto) {
         Specification<Product> specification = null;
@@ -297,7 +300,7 @@ public class ProductService {
         var priceFilter = productFilterDto.getPrice();
         if (!Objects.isNull(priceFilter)) {
             specifications.add(
-                byPrice(BigDecimal.valueOf(priceFilter.getFrom()), BigDecimal.valueOf(priceFilter.getTo())));
+                byPriceRange(BigDecimal.valueOf(priceFilter.getFrom()), BigDecimal.valueOf(priceFilter.getTo())));
         }
         var brandIds = productFilterDto.getBrandIds();
         if (!Objects.isNull(brandIds)) {
@@ -314,7 +317,7 @@ public class ProductService {
         return Specification.allOf(specifications);
     }
 
-    public boolean areAllVariablesNull(@NotNull ProductFilterDto filterDto) {
+    private boolean areAllVariablesNull(@NotNull ProductFilterDto filterDto) {
         return Stream.of(filterDto.getAttributeValueIds(),
                 filterDto.getBrandIds(),
                 filterDto.getCategoryId(),

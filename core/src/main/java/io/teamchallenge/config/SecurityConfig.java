@@ -29,6 +29,7 @@ import static jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 /**
+ * Config for security.
  * @author Denys Liubchenko
  */
 @Configuration

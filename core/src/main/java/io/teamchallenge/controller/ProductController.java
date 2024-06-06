@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
 /**
+ * Controller for products.
  * @author Niktia Malov
  */
 @RestController

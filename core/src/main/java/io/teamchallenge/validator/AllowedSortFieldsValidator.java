@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 /**
+ * Validator for sort fields.
  * @author Niktia Malov
  */
 public class AllowedSortFieldsValidator implements ConstraintValidator<AllowedSortFields, Pageable> {

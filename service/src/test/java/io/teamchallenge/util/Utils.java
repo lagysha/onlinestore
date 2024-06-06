@@ -1,5 +1,6 @@
 package io.teamchallenge.util;
 
+import io.teamchallenge.dto.category.CategoryAttributeAttributeValueVO;
 import io.teamchallenge.dto.category.CategoryResponseDto;
 import io.teamchallenge.dto.cart.CartItemResponseDto;
 import io.teamchallenge.dto.cart.CartResponseDto;
@@ -282,6 +283,25 @@ public class Utils {
             .totalPages(1)
             .minPrice(getProductMinMaxPriceDto().getMin())
             .maxPrice(getProductMinMaxPriceDto().getMax())
+            .build();
+    }
+
+    public static CategoryAttributeAttributeValueVO getAttributeAttributeValueVO(){
+        return CategoryAttributeAttributeValueVO.builder()
+            .attributeId(1L)
+            .attributeName("Size")
+            .attributeValueId(1L)
+            .attributeValueName("Big")
+            .build();
+    }
+
+    public static CategoryResponseDto getCategoryResponseDto(){
+        var category = getCategory();
+        return CategoryResponseDto
+            .builder()
+            .id(category.getId())
+            .name(category.getName())
+            .description(category.getDescription())
             .build();
     }
 }

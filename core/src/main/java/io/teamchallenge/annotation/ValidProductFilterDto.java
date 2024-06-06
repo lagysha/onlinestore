@@ -10,6 +10,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Annotation for {@link ValidProductFilterDtoValidator}.
  * @author Niktia Malov
  */
 @Documented
@@ -17,7 +18,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.PARAMETER)
 @Constraint(validatedBy = {ValidProductFilterDtoValidator.class})
 public @interface ValidProductFilterDto {
-    Class<? extends Payload> [] payload() default{};
-    Class<?>[] groups() default {};
+    /**
+     * The error message to be returned when the product filter DTO is invalid.
+     */
     String message() default "Invalid product filter dto";
 }

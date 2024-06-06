@@ -1,12 +1,13 @@
 package io.teamchallenge.repository;
 
 import io.teamchallenge.entity.attributes.AttributeValue;
-
 import java.util.List;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
+ * Repository interface for managing {@link AttributeValue} entities.
+ * Provides methods to perform CRUD operations and custom queries.
  * @author Niktia Malov
  */
 public interface AttributeValueRepository extends JpaRepository<AttributeValue,Long> {

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
+ * Service class for managing categories.
  * @author Niktia Malov
  */
 @Transactional(readOnly = true)
@@ -25,8 +26,9 @@ public class CategoryService {
     /**
      * Retrieves attribute and attribute values for a specific category.
      *
-     * @param categoryId The ID of the category for which to retrieve attribute attribute values.
-     * @return List of AttributeAttributeValueDto objects representing attribute attribute values for the specified category.
+     * @param categoryId The ID of the category for which to retrieve attribute and attribute values.
+     * @return List of AttributeAttributeValueDto objects representing attribute and attribute values
+     *         for the specified category.
      */
     public List<AttributeAttributeValueDto> getAttributeAttributeValueByCategory(Long categoryId) {
         return categoryRepository.findAllAttributeAttributeValueByCategory(categoryId)

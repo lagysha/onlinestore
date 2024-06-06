@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * Validator for product filter DTO.
  * @author Niktia Malov
  */
 public class ValidProductFilterDtoValidator implements ConstraintValidator<ValidProductFilterDto, ProductFilterDto> {

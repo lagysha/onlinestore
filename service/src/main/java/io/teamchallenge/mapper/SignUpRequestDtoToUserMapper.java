@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 /**
+ * Mapper for {@link SignUpRequestDto}.
  * @author Denys Liubchenko
  */
 @Component

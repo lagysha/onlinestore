@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
+ * Controller for cart categories.
  * @author Niktia Malov
  */
 @RestController
@@ -38,7 +39,7 @@ public class CategoryController {
      * @return ResponseEntity containing a list of CategoryResponseDto objects.
      */
     @GetMapping
-    public ResponseEntity<List<CategoryResponseDto>> getAll(){
+    public ResponseEntity<List<CategoryResponseDto>> getAll() {
         return ResponseEntity.ok(categoryService.getAll());
     }
 }

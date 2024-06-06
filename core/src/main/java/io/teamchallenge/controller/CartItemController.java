@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
+ * Controller for cart items.
  * @author Niktia Malov
  */
 @RestController

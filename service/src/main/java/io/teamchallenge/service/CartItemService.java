@@ -27,6 +27,7 @@ import static io.teamchallenge.constant.AppConstant.MAX_NUMBER_OF_UNIQUE_PRODUCT
 import static io.teamchallenge.constant.ExceptionMessage.CARTITEM_ALREADY_EXISTS;
 
 /**
+ * Service class for managing cart items.
  * @author Niktia Malov
  */
 @Service

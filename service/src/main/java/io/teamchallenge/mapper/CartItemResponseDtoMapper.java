@@ -8,6 +8,7 @@ import org.modelmapper.AbstractConverter;
 import org.springframework.stereotype.Component;
 
 /**
+ * Mapper for {@link CartItem}.
  * @author Niktia Malov
  */
 @Component

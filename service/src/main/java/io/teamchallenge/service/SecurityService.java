@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
+ * Service class for managing security.
  * @author Denys Liubchenko
  */
 @Service

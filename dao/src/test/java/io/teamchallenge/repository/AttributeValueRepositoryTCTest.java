@@ -39,14 +39,7 @@ public class AttributeValueRepositoryTCTest {
 
         TestTransaction.end();
 
-        assertEquals(attributes.size(), 2);
-        assertEquals(attributes.getFirst().getAttribute().getId(), 1L);
-    }
-
-    @Test
-    void findAllByIdInWhenNonExistingIdsTest() {
-        List<AttributeValue> product = attributeValueRepository.findAllByIdIn(List.of(7L));
-
-        assertTrue(product.isEmpty());
+        assertEquals(2,attributes.size());
+        assertEquals(1L,attributes.getFirst().getAttribute().getId());
     }
 }

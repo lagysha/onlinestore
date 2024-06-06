@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static io.teamchallenge.constant.ExceptionMessage.COUNTRY_NOT_FOUND_BY_NAME;
 
 /**
+ * Mapper for {@link AddressDto}.
  * @author Denys Liubchenko
  */
 @Component

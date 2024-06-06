@@ -16,6 +16,6 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode
 @SuperBuilder
 public class AttributeDto {
-   private Long id;
-   private String name;
+    private Long id;
+    private String name;
 }

@@ -19,7 +19,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
 /**
- *  Implementation of a custom product repository interface that provides additional functionality beyond the standard CRUD operations.
+ *  Implementation of a custom product repository interface that provides additional
+ *  functionality beyond the standard CRUD operations.
  *  This implementation directly interacts with the underlying database through the EntityManager.
  *
  * @author Niktia Malov

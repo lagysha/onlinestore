@@ -7,6 +7,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
+ * Config for pageable.
  * @author Niktia Malov
  */
 @Configuration

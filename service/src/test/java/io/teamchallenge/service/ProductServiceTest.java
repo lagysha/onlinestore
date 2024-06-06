@@ -2,7 +2,6 @@ package io.teamchallenge.service;
 
 import io.teamchallenge.constant.ExceptionMessage;
 import io.teamchallenge.dto.filter.ProductFilterDto;
-import io.teamchallenge.dto.pageable.PageableDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
 import io.teamchallenge.dto.product.ShortProductResponseDto;
 import io.teamchallenge.entity.Product;
@@ -96,7 +95,7 @@ class ProductServiceTest {
                 .thenReturn(specification2);
             when(ProductRepository.Specs.byCategoryId(filter.getCategoryId()))
                 .thenReturn(specification3);
-            when(ProductRepository.Specs.byPrice(BigDecimal.valueOf(filter.getPrice().getFrom()),
+            when(ProductRepository.Specs.byPriceRange(BigDecimal.valueOf(filter.getPrice().getFrom()),
                 BigDecimal.valueOf(filter.getPrice().getTo())))
                 .thenReturn(specification4);
             when(ProductRepository.Specs.byAttributeValuesIds(filter.getAttributeValueIds()))

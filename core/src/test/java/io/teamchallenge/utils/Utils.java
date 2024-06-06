@@ -1,5 +1,7 @@
 package io.teamchallenge.utils;
 
+import io.teamchallenge.dto.attributes.AttributeAttributeValueDto;
+import io.teamchallenge.dto.attributes.AttributeValueDto;
 import io.teamchallenge.dto.category.CategoryResponseDto;
 import io.teamchallenge.dto.cart.CartItemResponseDto;
 import io.teamchallenge.dto.cart.CartResponseDto;
@@ -222,6 +224,28 @@ public class Utils {
             .brandIds(List.of(1L))
             .categoryId(1L)
             .attributeValueIds(List.of(2L, 4L))
+            .build();
+    }
+
+    public static AttributeAttributeValueDto getAttributeAttributeValueDto(){
+        return AttributeAttributeValueDto.builder()
+            .id(1L)
+            .name("Size")
+            .attributeValueDtos(
+                List.of((AttributeValueDto
+                    .builder()
+                    .id(1L)
+                    .name("Big")
+                    .build())
+                ))
+            .build();
+    }
+
+    public static CategoryResponseDto getCategoryResponseDto(){
+        return CategoryResponseDto.builder()
+            .id(1L)
+            .name("Laptops")
+            .description("Nothing")
             .build();
     }
 }

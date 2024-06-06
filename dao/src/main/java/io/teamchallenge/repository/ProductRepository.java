@@ -14,9 +14,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 /**
+ * Repository interface for managing {@link Product} entities.
+ * Provides methods to perform CRUD operations and custom queries.
  * @author Niktia Malov
  */
-public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product>,CustomProductRepository {
+public interface ProductRepository
+    extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product>, CustomProductRepository {
     /**
      * Retrieves a Product by its ID along with associated collections if available.
      * If the Product is found, associated collections such as images are eagerly fetched.
@@ -46,7 +49,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
      *
      * @param id The ID of the Product to retrieve.
      * @return An Optional containing the Product if found, with associated category, brand,
-     * and product attributes eagerly fetched.
+     *         and product attributes eagerly fetched.
      */
     @Query("select p from Product p "
         + "join fetch p.category "
@@ -102,13 +105,14 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
          * Generates a specification for filtering products by price range.
          *
          * @param from The minimum price in the range.
-         * @param to The maximum price in the range.
+         * @param to   The maximum price in the range.
          * @return Specification for filtering products by price range.
          */
-        static Specification<Product> byPrice(BigDecimal from, BigDecimal to) {
+        static Specification<Product> byPriceRange(BigDecimal from, BigDecimal to) {
             return (root, query, builder) ->
                 builder.between(root.get(Product_.price), from, to);
         }
+
         /**
          * Generates a specification for filtering products by brand IDs.
          *
@@ -119,6 +123,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
             return (root, query, builder) ->
                 root.get(Product_.brand).get("id").in(brandIds);
         }
+
         /**
          * Generates a specification for filtering products by category ID.
          *
@@ -129,6 +134,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
             return (root, query, builder) ->
                 root.get(Product_.category).get("id").in(categoryId);
         }
+
         /**
          * Generates a specification for filtering products by attribute value IDs.
          *

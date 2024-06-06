@@ -20,6 +20,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 /**
+ * Controller for security.
  * @author Denys Liubchenko
  */
 @RestController

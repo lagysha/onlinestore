@@ -10,6 +10,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Annotation for {@link AllowedSortFieldsValidator}.
  * @author Niktia Malov
  */
 @Documented
@@ -17,8 +18,16 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = {AllowedSortFieldsValidator.class})
 public @interface AllowedSortFields {
+    /**
+     * The error message to be returned when the sort field values are not within the allowed sortable fields.
+     *
+     * @return the error message
+     */
     String message() default "Sort field values provided are not within the allowed fields that are sortable.";
-    Class<?>[] groups() default {};
-    Class<? extends Payload>[] payload() default {};
+    /**
+     * The list of allowed sortable field values.
+     *
+     * @return the array of allowed sortable field values
+     */
     String[] values() default {};
 }

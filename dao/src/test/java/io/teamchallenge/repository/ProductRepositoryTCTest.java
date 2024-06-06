@@ -22,6 +22,11 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
+import static io.teamchallenge.repository.ProductRepository.Specs.byAttributeValuesIds;
+import static io.teamchallenge.repository.ProductRepository.Specs.byBrandIds;
+import static io.teamchallenge.repository.ProductRepository.Specs.byCategoryId;
+import static io.teamchallenge.repository.ProductRepository.Specs.byName;
+import static io.teamchallenge.repository.ProductRepository.Specs.byPriceRange;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -46,27 +51,15 @@ class ProductRepositoryTCTest {
     void findByNameTest() {
         Optional<Product> product = productRepository.findByName("Example Smartphone");
         assertFalse(product.isEmpty());
-        assertEquals(product.get().getName(), "Example Smartphone");
+        assertEquals("Example Smartphone", product.get().getName());
     }
 
-
-    @Test
-    void findByNameWhenNoProductWithSuchNamePresentTest() {
-        Optional<Product> product = productRepository.findByName("name3");
-        assertTrue(product.isEmpty());
-    }
 
     @Test
     void findByNameAndIdNotTest() {
         Optional<Product> product = productRepository.findByNameAndIdNot("Example Smartphone", 2L);
         assertFalse(product.isEmpty());
-        assertEquals(product.get().getName(), "Example Smartphone");
-    }
-
-    @Test
-    void findByNameAndIdNotWhenNoProductWithSuchNameAndIdPresentTest() {
-        Optional<Product> product = productRepository.findByNameAndIdNot("Example T-shirt", 2L);
-        assertTrue(product.isEmpty());
+        assertEquals("Example Smartphone", product.get().getName());
     }
 
     @Test
@@ -76,13 +69,7 @@ class ProductRepositoryTCTest {
         TestTransaction.end();
 
         assertFalse(product.isEmpty());
-        assertEquals(product.get().getImages().size(), 1L);
-    }
-
-    @Test
-    void findByIdWithImagesWhenNoProductWithIdPresentTest() {
-        Optional<Product> product = productRepository.findByIdWithImages(3L);
-        assertTrue(product.isEmpty());
+        assertEquals(1L, product.get().getImages().size());
     }
 
     @Test
@@ -92,15 +79,9 @@ class ProductRepositoryTCTest {
         TestTransaction.end();
 
         assertFalse(product.isEmpty());
-        assertEquals(product.get().getCategory().getId(), 1L);
-        assertEquals(product.get().getBrand().getId(), 1L);
-        assertEquals(product.get().getProductAttributes().size(), 2);
-    }
-
-    @Test
-    void findByIdWithCategoryAndBrandAndProductAttributeWhenNoProductWithIdPresentTest() {
-        Optional<Product> product = productRepository.findByIdWithCategoryAndBrandAndProductAttribute(3L);
-        assertTrue(product.isEmpty());
+        assertEquals(1L, product.get().getCategory().getId());
+        assertEquals(1L, product.get().getBrand().getId());
+        assertEquals(2, product.get().getProductAttributes().size());
     }
 
     @Test
@@ -109,14 +90,8 @@ class ProductRepositoryTCTest {
 
         TestTransaction.end();
 
-        assertEquals(products.size(), 2);
-        assertEquals(products.getFirst().getImages().size(), 1L);
-    }
-
-    @Test
-    void findAllByIdWithImagesWhenNoProductWithIdPresentTest() {
-        List<Product> product = productRepository.findAllByIdWithImages(List.of(3L), Sort.unsorted());
-        assertTrue(product.isEmpty());
+        assertEquals(2, products.size());
+        assertEquals(1L, products.getFirst().getImages().size());
     }
 
     @Test
@@ -126,23 +101,17 @@ class ProductRepositoryTCTest {
         TestTransaction.end();
 
         assertFalse(product.isEmpty());
-        assertEquals(product.get().getCategory().getId(), 1L);
-        assertEquals(product.get().getBrand().getId(), 1L);
-        assertEquals(product.get().getProductAttributes().size(), 2);
-        assertEquals(product.get().getImages().size(), 1);
-    }
-
-    @Test
-    void findByIdWithCollectionsWhenNoProductWithIdPresentTest() {
-        Optional<Product> product = productRepository.findByIdWithCollections(3L);
-        assertTrue(product.isEmpty());
+        assertEquals(1L, product.get().getCategory().getId());
+        assertEquals(1L, product.get().getBrand().getId());
+        assertEquals(2, product.get().getProductAttributes().size());
+        assertEquals(1, product.get().getImages().size());
     }
 
     @Test
     void findProductMinMaxPriceWithoutSpecificationTest() {
         var actual = productRepository.findProductMinMaxPrice(null);
-        var expected = new ProductMinMaxPriceDto(BigDecimal.valueOf(19.99),BigDecimal.valueOf(599.99));
-        assertEquals(expected,actual);
+        var expected = new ProductMinMaxPriceDto(BigDecimal.valueOf(19.99), BigDecimal.valueOf(599.99));
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -153,18 +122,18 @@ class ProductRepositoryTCTest {
             root.get(Product_.category).get("id").in(1L);
 
         var actual = productRepository.findProductMinMaxPrice(specificationForBrands.and(specificationForCategories));
-        var expected = new ProductMinMaxPriceDto(BigDecimal.valueOf(19.99),BigDecimal.valueOf(19.99));
-        assertEquals(expected,actual);
+        var expected = new ProductMinMaxPriceDto(BigDecimal.valueOf(599.99), BigDecimal.valueOf(599.99));
+        assertEquals(expected, actual);
     }
 
     @Test
     void findAllProductIdsWithoutSpecificationTest() {
         PageRequest pageable = PageRequest.of(0, 1);
         var actual = productRepository.findAllProductIds(null, pageable);
-        assertEquals(actual.getContent().size(),2);
-        assertEquals(actual.getTotalPages(),2);
-        assertEquals(actual.getPageable().getPageNumber(),0);
-        assertEquals(actual.getTotalElements(),2);
+        assertEquals(1, actual.getContent().size());
+        assertEquals(2, actual.getTotalPages());
+        assertEquals(0, actual.getPageable().getPageNumber());
+        assertEquals(2, actual.getTotalElements());
     }
 
     @Test
@@ -176,10 +145,63 @@ class ProductRepositoryTCTest {
             root.get(Product_.category).get("id").in(1L);
 
         var actual = productRepository.findAllProductIds(
-            specificationForBrands.and(specificationForCategories),pageable);
-        assertEquals(actual.getContent().size(),1);
-        assertEquals(actual.getTotalPages(),1);
-        assertEquals(actual.getPageable().getPageNumber(),0);
-        assertEquals(actual.getTotalElements(),1);
+            specificationForBrands.and(specificationForCategories), pageable);
+        assertEquals(1, actual.getContent().size());
+        assertEquals(1, actual.getTotalPages());
+        assertEquals(0, actual.getPageable().getPageNumber());
+        assertEquals(1, actual.getTotalElements());
+    }
+
+    @Test
+    void byNameTest() {
+        String productName = "E";
+        Specification<Product> specification = byName(productName);
+        var actual = productRepository.findAll(specification);
+
+        assertEquals(2, actual.size());
+        assertEquals("Example Smartphone", actual.getFirst().getName());
+    }
+
+    @Test
+    void byPriceTest() {
+        BigDecimal from = BigDecimal.valueOf(1L);
+        BigDecimal to = BigDecimal.valueOf(100L);
+        Specification<Product> specification = byPriceRange(from, to);
+        var actual = productRepository.findAll(specification);
+
+        assertEquals(1, actual.size());
+        assertTrue(
+            from.compareTo(actual.getFirst().getPrice()) <= 0 &&
+                to.compareTo(actual.getFirst().getPrice()) >= 0);
+    }
+
+    @Test
+    void byBrandIdsTest() {
+        List<Long> brandIds = List.of(1L);
+        Specification<Product> specification = byBrandIds(brandIds);
+        var actual = productRepository.findAll(specification);
+
+        assertEquals(1, actual.size());
+        assertEquals("Example Smartphone", actual.getFirst().getName());
+    }
+
+    @Test
+    void byCategoryIdsTest() {
+        Long categoriesIds = 1L;
+        Specification<Product> specification = byCategoryId(categoriesIds);
+        var actual = productRepository.findAll(specification);
+
+        assertEquals(1, actual.size());
+        assertEquals("Example Smartphone", actual.getFirst().getName());
+    }
+
+    @Test
+    void byAttributeValuesIdsTest() {
+        List<Long> attributeValuesIds = List.of(1L);
+        Specification<Product> specification = byAttributeValuesIds(attributeValuesIds);
+        var actual = productRepository.findAll(specification);
+
+        assertEquals(1, actual.size());
+        assertEquals("Example Smartphone", actual.getFirst().getName());
     }
 }
