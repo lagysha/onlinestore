@@ -44,16 +44,6 @@ public class AllowedSortFieldsValidatorTest {
             }
 
             @Override
-            public Class<?>[] groups() {
-                return new Class[0];
-            }
-
-            @Override
-            public Class<? extends Payload>[] payload() {
-                return new Class[0];
-            }
-
-            @Override
             public String[] values() {
                 return new String[] {"1", "2"};
             }
