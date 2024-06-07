@@ -1,6 +1,7 @@
 package io.teamchallenge.entity;
 
 import io.teamchallenge.entity.cartitem.CartItem;
+import io.teamchallenge.entity.reviews.Review;
 import io.teamchallenge.enumerated.Role;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -54,11 +55,15 @@ public class User {
     private List<CartItem> carItems = new ArrayList<>();
 
     @Setter(AccessLevel.PRIVATE)
+    @OneToMany(mappedBy = "user")
+    private List<Review> reviews = new ArrayList<>();
+
+    @Setter(AccessLevel.PRIVATE)
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user", optional = false, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Address address;
 
     @Enumerated(EnumType.STRING)
@@ -120,5 +125,27 @@ public class User {
     public void removeCarItem(CartItem cartItem) {
         carItems.remove(cartItem);
         cartItem.setUser(null);
+    }
+
+    /**
+     * Adds a review to the user's list of reviews.
+     * Also sets the user for the added review.
+     *
+     * @param review The cart item to be added.
+     */
+    public void addReview(Review review) {
+        reviews.add(review);
+        review.setUser(this);
+    }
+
+    /**
+     * Removes a review from the user's list of reviews.
+     * Also sets the user of the removed review to null.
+     *
+     * @param review The cart item to be removed.
+     */
+    public void removeReview(Review review) {
+        reviews.remove(review);
+        review.setUser(null);
     }
 }

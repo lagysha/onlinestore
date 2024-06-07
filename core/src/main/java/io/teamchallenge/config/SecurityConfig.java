@@ -81,32 +81,39 @@ public class SecurityConfig {
                 .accessDeniedHandler((req, resp, exc) ->
                     resp.sendError(SC_FORBIDDEN, "You don't have authorities.")))
             .authorizeHttpRequests(req -> req
-                .requestMatchers(HttpMethod.POST,
-                    "/api/v1/signUp",
-                    "/api/v1/signIn",
-                    "/api/v1/updateAccessToken"
-                )
-                .permitAll()
-                .requestMatchers(HttpMethod.GET,
-                    "/api/v1/cart-items/{user_id}",
-                    "/api/v1/products",
-                    "/api/v1/products/{id}",
-                    "/hello")
-                .hasRole(USER)
-                .requestMatchers(HttpMethod.POST,
-                    "/api/v1/cart-items/{product_id}")
-                .hasRole(USER)
-                .requestMatchers(HttpMethod.PATCH,
-                    "/api/v1/cart-items/{product_id}")
-                .hasRole(USER)
-                .requestMatchers(HttpMethod.DELETE,
-                    "/api/v1/cart-items/{product_id}")
-                .hasRole(USER)
-                .requestMatchers(
-                    "/api/v1/products")
-                .hasRole(ADMIN)
-                .anyRequest()
-                .hasRole(ADMIN)
+                    .requestMatchers(HttpMethod.GET,
+                        "/api/v1/products",
+                        "/api/v1/products/{id}",
+                        "/api/v1/reviews/{productId}"
+                    )
+                    .permitAll()
+                    .requestMatchers(HttpMethod.POST,
+                        "/api/v1/signUp",
+                        "/api/v1/signIn",
+                        "/api/v1/updateAccessToken"
+                    )
+                    .permitAll()
+                    .requestMatchers(HttpMethod.GET,
+                        "/api/v1/cart-items",
+                        "/hello"
+                    )
+                    .hasAnyRole(USER, ADMIN)
+                    .requestMatchers(HttpMethod.POST,
+                        "/api/v1/cart-items/{product_id}",
+                        "/api/v1/reviews/{productId}"
+                    )
+                    .hasAnyRole(USER, ADMIN)
+                    .requestMatchers(HttpMethod.PATCH,
+                        "/api/v1/cart-items/{product_id}"
+                    )
+                    .hasAnyRole(USER, ADMIN)
+                    .requestMatchers(HttpMethod.DELETE,
+                        "/api/v1/cart-items/{product_id}",
+                        "/api/v1/reviews/{productId}"
+                    )
+                    .hasAnyRole(USER, ADMIN)
+                    .anyRequest()
+                    .hasRole(ADMIN)
             ).build();
     }
 
