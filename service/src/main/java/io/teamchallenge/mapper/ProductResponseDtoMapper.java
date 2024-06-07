@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Mapper for {@link Product}.
+ *
  * @author Niktia Malov
  */
 @Component
@@ -34,9 +35,12 @@ public class ProductResponseDtoMapper extends AbstractConverter<Product, Product
                     .build())
             .productAttributeResponseDtos(product.getProductAttributes()
                 .stream()
-                .map((pa) -> new ProductAttributeResponseDto(
-                    pa.getAttributeValue().getAttribute().getName(),
-                    pa.getAttributeValue().getValue()))
+                .map((pa) ->
+                    ProductAttributeResponseDto
+                        .builder()
+                        .name(pa.getAttributeValue().getAttribute().getName())
+                        .value(pa.getAttributeValue().getValue())
+                        .build())
                 .collect(Collectors.toList()))
             .images(product.getImages()
                 .stream()
