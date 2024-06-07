@@ -7,14 +7,12 @@ import io.teamchallenge.entity.Image;
 import io.teamchallenge.entity.Product;
 import java.util.stream.Collectors;
 import org.modelmapper.AbstractConverter;
-import org.springframework.stereotype.Component;
 
 /**
  * Mapper for {@link Product}.
  *
  * @author Niktia Malov
  */
-@Component
 public class ProductResponseDtoMapper extends AbstractConverter<Product, ProductResponseDto> {
     /**
      * Converts a Product entity to a corresponding ProductResponseDto object.
