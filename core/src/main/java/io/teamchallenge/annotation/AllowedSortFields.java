@@ -24,6 +24,24 @@ public @interface AllowedSortFields {
      * @return the error message
      */
     String message() default "Sort field values provided are not within the allowed fields that are sortable.";
+
+
+    /**
+     * Defines the validation groups that this constraint belongs to.
+     * The default value is an empty array, indicating that this constraint belongs to no specific group.
+     *
+     * @return An array of classes representing the validation groups.
+     */
+    Class<?>[] groups() default {};
+
+    /**
+     * Defines the payload associated with the constraint.
+     * The default value is an empty array, indicating that no additional payload is associated with the constraint.
+     *
+     * @return An array of classes representing the payload.
+     */
+    Class<? extends Payload>[] payload() default {};
+
     /**
      * The list of allowed sortable field values.
      *

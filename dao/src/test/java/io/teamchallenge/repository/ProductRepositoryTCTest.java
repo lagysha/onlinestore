@@ -86,7 +86,7 @@ class ProductRepositoryTCTest {
 
     @Test
     void findAllByIdWithImagesTest() {
-        List<Product> products = productRepository.findAllByIdWithImages(List.of(1L, 2L), Sort.unsorted());
+        List<Product> products = productRepository.findAllByIdWithImages(List.of(1L, 2L));
 
         TestTransaction.end();
 

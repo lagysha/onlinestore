@@ -24,6 +24,7 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -31,9 +32,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,10 +75,7 @@ public class ProductService {
      */
     public AdvancedPageableDto<ShortProductResponseDto> getAll(Pageable pageable, ProductFilterDto productFilterDto) {
         Specification<Product> specification = null;
-        Sort sort = pageable.getSort();
         Page<Long> retrievedProducts;
-        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
-
         if (areAllVariablesNull(productFilterDto)) {
             retrievedProducts =
                 productRepository.findAllProductIds(null, pageable);
@@ -89,12 +85,13 @@ public class ProductService {
                 productRepository.findAllProductIds(specification, pageable);
         }
 
-        List<ShortProductResponseDto> content = productRepository
-            .findAllByIdWithImages(retrievedProducts
-                    .getContent(),
-                sort)
+        Map<Long, ShortProductResponseDto> productMap = productRepository
+            .findAllByIdWithImages(retrievedProducts.getContent())
             .stream()
             .map(product -> modelMapper.map(product, ShortProductResponseDto.class))
+            .collect(Collectors.toMap(ShortProductResponseDto::getId, product -> product));
+        List<ShortProductResponseDto> content = retrievedProducts.getContent().stream()
+            .map(productMap::get)
             .collect(Collectors.toList());
 
         ProductMinMaxPriceDto productMinMaxPriceDto;

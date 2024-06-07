@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.query.QueryUtils;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -81,12 +82,15 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
             query.where(specification.toPredicate(root, query, cb));
         }
 
+        query.orderBy(QueryUtils.toOrders(pageable.getSort(), root, cb));
+        query.groupBy(root.get("id"));
+
         List<Long> productIds = entityManager.createQuery(query).setFirstResult((int) pageable.getOffset())
             .setMaxResults(pageable.getPageSize()).getResultList();
 
         var countQuery = cb.createQuery(Long.class);
         var rootCount = countQuery.from(Product.class);
-        countQuery.select(cb.count(rootCount));
+        countQuery.select(cb.countDistinct(rootCount));
 
         if (Objects.nonNull(specification)) {
             countQuery.where(specification.toPredicate(rootCount, countQuery, cb));

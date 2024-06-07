@@ -102,7 +102,7 @@ class ProductServiceTest {
                 .thenReturn(specification5);
             when(productRepository.findAllProductIds(specification, pageable))
                 .thenReturn(retrievedIds);
-            when(productRepository.findAllByIdWithImages(productIds, pageable.getSort()))
+            when(productRepository.findAllByIdWithImages(productIds))
                 .thenReturn(List.of(product));
             when(modelMapper.map(product, ShortProductResponseDto.class))
                 .thenReturn(shortProductResponseDto);
@@ -110,7 +110,7 @@ class ProductServiceTest {
             var actual = productService.getAll(pageable, filter);
 
             verify(productRepository).findAllProductIds(eq(specification), eq(pageable));
-            verify(productRepository).findAllByIdWithImages(eq(productIds), eq(pageable.getSort()));
+            verify(productRepository).findAllByIdWithImages(eq(productIds));
             verify(modelMapper).map(eq(product), eq(ShortProductResponseDto.class));
             assertEquals(expected,actual);
 
@@ -133,7 +133,7 @@ class ProductServiceTest {
             .thenReturn(retrievedIds);
         when(productRepository.findProductMinMaxPrice(null))
             .thenReturn(productMinMaxDto);
-        when(productRepository.findAllByIdWithImages(productIds, pageable.getSort()))
+        when(productRepository.findAllByIdWithImages(productIds))
             .thenReturn(List.of(product));
         when(modelMapper.map(product, ShortProductResponseDto.class))
             .thenReturn(shortProductResponseDto);
@@ -142,7 +142,7 @@ class ProductServiceTest {
 
         verify(productRepository).findAllProductIds(eq(null), eq(pageable));
         verify(productRepository).findProductMinMaxPrice(eq(null));
-        verify(productRepository).findAllByIdWithImages(eq(productIds), eq(pageable.getSort()));
+        verify(productRepository).findAllByIdWithImages(eq(productIds));
         verify(modelMapper).map(eq(product), eq(ShortProductResponseDto.class));
         assertEquals(actual, expected);
     }

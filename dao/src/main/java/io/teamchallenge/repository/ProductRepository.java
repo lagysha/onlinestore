@@ -42,7 +42,7 @@ public interface ProductRepository
      * @return A list of Products with associated images eagerly fetched.
      */
     @Query("select p from Product p left join fetch p.images where p.id in :productIds")
-    List<Product> findAllByIdWithImages(@Param("productIds") List<Long> productIds, Sort sort);
+    List<Product> findAllByIdWithImages(@Param("productIds") List<Long> productIds);
 
     /**
      * Retrieves a Product by its ID with associated category, brand, and product attributes eagerly fetched.

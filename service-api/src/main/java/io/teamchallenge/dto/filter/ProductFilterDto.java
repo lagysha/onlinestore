@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ProductFilterDto {
-    @NotBlank
     private String name;
     private PriceFilter price;
     @Size(min = 1)
