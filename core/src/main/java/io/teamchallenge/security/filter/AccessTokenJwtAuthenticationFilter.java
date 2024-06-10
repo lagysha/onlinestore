@@ -22,6 +22,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+/**
+ * Access token filter for JWT.
+ * @author Denys Liubchenko
+ */
 @Slf4j
 @RequiredArgsConstructor
 public class AccessTokenJwtAuthenticationFilter extends OncePerRequestFilter {

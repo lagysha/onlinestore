@@ -1,10 +1,15 @@
 package io.teamchallenge.util;
 
-import io.teamchallenge.dto.CategoryResponseDto;
+import io.teamchallenge.dto.category.CategoryAttributeAttributeValueVO;
+import io.teamchallenge.dto.category.CategoryResponseDto;
 import io.teamchallenge.dto.cart.CartItemResponseDto;
 import io.teamchallenge.dto.cart.CartResponseDto;
 import io.teamchallenge.dto.cart.PatchRequestDto;
+import io.teamchallenge.dto.filter.PriceFilter;
+import io.teamchallenge.dto.filter.ProductFilterDto;
+import io.teamchallenge.dto.pageable.AdvancedPageableDto;
 import io.teamchallenge.dto.product.ProductAttributeResponseDto;
+import io.teamchallenge.dto.product.ProductMinMaxPriceDto;
 import io.teamchallenge.dto.product.ProductRequestDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
 import io.teamchallenge.dto.product.ShortProductResponseDto;
@@ -47,6 +52,19 @@ public class Utils {
             .build();
     }
 
+    public static ProductFilterDto getProductFilterDto(){
+        return ProductFilterDto.builder()
+            .name("Sample Product")
+            .price(PriceFilter.builder()
+                .from(1)
+                .to(2)
+                .build())
+            .brandIds(List.of(1L))
+            .categoryId(1L)
+            .attributeValueIds(List.of(2L, 4L))
+            .build();
+    }
+
     public static PatchRequestDto getPatchRequestDto() {
         return PatchRequestDto
             .builder()
@@ -57,8 +75,8 @@ public class Utils {
     public static CartResponseDto getCartResponseDto() {
         return CartResponseDto
             .builder()
-            .cartItemResponseDtos(new ArrayList<>())
-            .totalPrice(BigDecimal.ZERO)
+            .cartItemResponseDtos(List.of(getCartItemResponseDto()))
+            .totalPrice(getCartItemResponseDto().getPrice())
             .build();
     }
 
@@ -117,7 +135,8 @@ public class Utils {
             .shortDesc(product.getShortDesc())
             .categoryResponseDto(
                 CategoryResponseDto.builder()
-                    .desc(product.getCategory().getDescription())
+                    .id(product.getCategory().getId())
+                    .description(product.getCategory().getDescription())
                     .name(product.getCategory().getName())
                     .build())
             .productAttributeResponseDtos(product.getProductAttributes()
@@ -250,5 +269,39 @@ public class Utils {
 
     public static String getSecretKey() {
         return "5cZAVF/SKSCmCM2+1azD2XHK7K2PChcSg32vrrEh/Qk=";
+    }
+
+    public static ProductMinMaxPriceDto getProductMinMaxPriceDto(){
+        return new ProductMinMaxPriceDto(BigDecimal.ONE,BigDecimal.TWO);
+    }
+
+    public static AdvancedPageableDto<ShortProductResponseDto> getAdvancedPageableDto(){
+        return AdvancedPageableDto.<ShortProductResponseDto>builder()
+            .page(List.of(getShortProductResponseDto()))
+            .totalElements(1)
+            .currentPage(0)
+            .totalPages(1)
+            .minPrice(getProductMinMaxPriceDto().getMin())
+            .maxPrice(getProductMinMaxPriceDto().getMax())
+            .build();
+    }
+
+    public static CategoryAttributeAttributeValueVO getAttributeAttributeValueVO(){
+        return CategoryAttributeAttributeValueVO.builder()
+            .attributeId(1L)
+            .attributeName("Size")
+            .attributeValueId(1L)
+            .attributeValueName("Big")
+            .build();
+    }
+
+    public static CategoryResponseDto getCategoryResponseDto(){
+        var category = getCategory();
+        return CategoryResponseDto
+            .builder()
+            .id(category.getId())
+            .name(category.getName())
+            .description(category.getDescription())
+            .build();
     }
 }

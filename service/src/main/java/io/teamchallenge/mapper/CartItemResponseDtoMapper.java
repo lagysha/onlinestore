@@ -7,8 +7,17 @@ import java.util.stream.Collectors;
 import org.modelmapper.AbstractConverter;
 import org.springframework.stereotype.Component;
 
-@Component
+/**
+ * Mapper for {@link CartItem}.
+ * @author Niktia Malov
+ */
 public class CartItemResponseDtoMapper extends AbstractConverter<CartItem, CartItemResponseDto> {
+    /**
+     * Converts a CartItem entity into a CartItemResponseDto object.
+     *
+     * @param cartItem The CartItem entity to convert.
+     * @return The converted CartItemResponseDto object.
+     */
     @Override
     protected CartItemResponseDto convert(CartItem cartItem) {
         return CartItemResponseDto.builder()

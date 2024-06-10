@@ -6,6 +6,10 @@ import lombok.Getter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
+/**
+ * Custom token for authentication.
+ * @author Denys Liubchenko
+ */
 @Getter
 public class ClaimsUsernamePasswordAuthenticationToken extends UsernamePasswordAuthenticationToken {
     private final Claims claims;

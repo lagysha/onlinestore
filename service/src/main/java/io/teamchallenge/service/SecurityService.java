@@ -19,7 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Service class for user security-related operations such as sign-up and sign-in.
+ * Service class for managing security.
+ * @author Denys Liubchenko
  */
 @Service
 @Slf4j
