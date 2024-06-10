@@ -14,7 +14,7 @@ import io.teamchallenge.dto.security.SignInRequestDto;
 import io.teamchallenge.dto.security.SignInResponseDto;
 import io.teamchallenge.dto.security.SignUpRequestDto;
 import io.teamchallenge.dto.security.SignUpResponseDto;
-import io.teamchallenge.dto.user.UserPreviewDto;
+import io.teamchallenge.dto.user.ReviewerDto;
 import io.teamchallenge.entity.Brand;
 import io.teamchallenge.entity.Category;
 import io.teamchallenge.entity.Image;
@@ -23,7 +23,6 @@ import io.teamchallenge.entity.attributes.Attribute;
 import io.teamchallenge.entity.attributes.AttributeValue;
 import io.teamchallenge.entity.attributes.ProductAttribute;
 import io.teamchallenge.entity.reviews.ReviewId;
-import io.teamchallenge.enumerated.Role;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -208,11 +207,9 @@ public class Utils {
             .text("test text")
             .rate((short) 4)
             .createdAt(LocalDateTime.of(1,1,1,1,1))
-            .user(UserPreviewDto.builder()
-                .id(1L)
+            .user(ReviewerDto.builder()
                 .firstName("test name")
                 .lastName("test surname")
-                .role(Role.ROLE_USER)
                 .build())
             .build();
     }

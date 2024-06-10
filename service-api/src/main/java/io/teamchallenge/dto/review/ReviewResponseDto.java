@@ -1,7 +1,6 @@
 package io.teamchallenge.dto.review;
 
-import io.teamchallenge.dto.user.UserPreviewDto;
-import io.teamchallenge.enumerated.Role;
+import io.teamchallenge.dto.user.ReviewerDto;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewResponseDto {
-    private UserPreviewDto user;
+    private ReviewerDto user;
 
     private String text;
 

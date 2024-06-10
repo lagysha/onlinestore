@@ -23,4 +23,6 @@ public final class ExceptionMessage {
     public static final String CARTITEM_ALREADY_EXISTS =
         "The cartItem with id: %s is already present in database";
     public static final String CARTITEM_NOT_FOUND_BY_ID = "The cartItem with id: %s is not present in database";
+    public static final String REVIEW_NOT_FOUND_BY_ID =
+        "The review from user with id: %s on product with id: %s is not present in database";
 }

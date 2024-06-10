@@ -9,10 +9,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface ReviewRepository extends JpaRepository<Review, ReviewId> {
-    @Query("""
-        SELECT r FROM Review r
-        LEFT JOIN FETCH r.user u
-        WHERE r.product.id = :productId
-        """)
+    /**
+     * Retrieves a page of reviews for a specific product by its ID, including the associated user details.
+     *
+     * @param productId the ID of the product whose reviews are to be retrieved
+     * @param pageable  the pagination information
+     * @return a {@link Page} of {@link Review} entities for the specified product ID
+     */
+    @Query("SELECT r FROM Review r "
+           + "LEFT JOIN FETCH r.user u "
+           + "WHERE r.product.id = :productId")
     Page<Review> findAllByProductId(Long productId, Pageable pageable);
 }

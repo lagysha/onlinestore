@@ -1,7 +1,7 @@
 package io.teamchallenge.mapper;
 
 import io.teamchallenge.dto.review.ReviewResponseDto;
-import io.teamchallenge.dto.user.UserPreviewDto;
+import io.teamchallenge.dto.user.ReviewerDto;
 import io.teamchallenge.entity.reviews.Review;
 import org.modelmapper.AbstractConverter;
 
@@ -12,11 +12,9 @@ public class ReviewToReviewResponseDtoMapper extends AbstractConverter<Review, R
             .text(source.getText())
             .rate(source.getRate())
             .createdAt(source.getCreatedAt())
-            .user(UserPreviewDto.builder()
-                .id(source.getUser().getId())
+            .user(ReviewerDto.builder()
                 .firstName(source.getUser().getFirstName())
                 .lastName(source.getUser().getLastName())
-                .role(source.getUser().getRole())
                 .build())
             .build();
     }

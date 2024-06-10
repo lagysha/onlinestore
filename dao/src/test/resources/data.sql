@@ -50,3 +50,8 @@ VALUES (1, 1, 1),
        (3, 2, 1),
        (4, 2, 3),
        (5, 3, 3);
+INSERT INTO Reviews (user_id, product_id, text, rate, created_at)
+VALUES (1,1,'test text1', 1, '2024-05-11 14:00:00'),
+       (2,2,'test text2', 4, '2024-05-12 14:00:00'),
+       (1,2,'test text3', 5, '2024-05-13 14:00:00'),
+       (2,1,'test text4', 3, '2024-05-13 14:00:00');

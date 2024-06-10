@@ -24,8 +24,8 @@ import org.hibernate.annotations.CreationTimestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"address","orders","carItems"})
-@EqualsAndHashCode(exclude = {"address","orders","carItems"})
+@ToString(exclude = {"address", "orders", "carItems"})
+@EqualsAndHashCode(exclude = {"address", "orders", "carItems"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,7 +63,8 @@ public class User {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @OneToOne(mappedBy = "user", optional = false, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user", optional = false,
+        cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Address address;
 
     @Enumerated(EnumType.STRING)
