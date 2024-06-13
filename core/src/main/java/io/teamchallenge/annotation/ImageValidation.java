@@ -16,5 +16,5 @@ import java.lang.annotation.Target;
 public @interface ImageValidation {
     Class<? extends Payload> [] payload() default{};
     Class<?>[] groups() default {};
-    String message() default "Only jpeg,png,jpg files are allowed";
+    String message() default "No more than 5 jpeg,png,jpg files are allowed";
 }

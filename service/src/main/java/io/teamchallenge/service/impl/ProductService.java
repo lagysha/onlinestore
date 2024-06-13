@@ -118,7 +118,7 @@ public class ProductService {
      * @throws AlreadyExistsException if the product name is invalid.
      */
     @Transactional
-    public ProductResponseDto create(ProductRequestDto productRequestDto,List<MultipartFile> multipartFiles) {
+    public ProductResponseDto create(ProductRequestDto productRequestDto, List<MultipartFile> multipartFiles) {
         var brand = getBrandById(productRequestDto);
         var category = getCategoryById(productRequestDto);
         validateProductName(productRequestDto);
@@ -134,13 +134,6 @@ public class ProductService {
             .productAttributes(new ArrayList<>())
             .build();
 
-        //TODO: add to images their order
-        multipartFiles
-            .forEach(multipartFile -> product
-                .addImage(Image.builder().link(imageCloudService
-                    .uploadImage(multipartFile,product_images_folder_name)).build()));
-
-
         productRequestDto.getAttributeValueId()
             .forEach(attributeValueId ->
                 product.addProductAttribute(ProductAttribute
@@ -152,6 +145,7 @@ public class ProductService {
 
         try {
             var savedProduct = productRepository.save(product);
+            addNewImages(multipartFiles, product);
             productAttributeRepository.findAllByIdIn(productRequestDto.getAttributeValueId());
 
             return modelMapper.map(savedProduct, ProductResponseDto.class);
@@ -189,17 +183,30 @@ public class ProductService {
         product.setShortDesc(productRequestDto.getShortDesc());
         product.setPrice(productRequestDto.getPrice());
 
-        product.clearAllImages();
-//        productRequestDto.getImageLinks()
-//            .forEach(link -> product
-//                .addImage(Image.builder().link(link).build()));
-
         try {
             List<Long> idsToFetch = updateProductAttributes(productRequestDto, product);
             attributeValueRepository.findAllByIdIn(idsToFetch);
+            productRepository.saveAndFlush(product);
+            if(!multipartFiles.isEmpty()) {
+                List<String> imagesUrls = product.getImages().stream().map(Image::getLink).toList();
+                imageCloudService.deleteImages(imagesUrls);
+                product.clearAllImages();
+                addNewImages(multipartFiles, product);
+            }
             return modelMapper.map(product, ProductResponseDto.class);
         } catch (DataIntegrityViolationException e) {
             throw new PersistenceException(PRODUCT_PERSISTENCE_EXCEPTION, e);
+        }
+    }
+
+    private void addNewImages(List<MultipartFile> multipartFiles, Product product) {
+        for (short i = 0; i < multipartFiles.size(); i++) {
+            short j = (short) (i + 1);
+            product
+                .addImage(Image.builder().link(imageCloudService
+                        .uploadImage(multipartFiles.get(i), product_images_folder_name))
+                    .order(j)
+                    .build());
         }
     }
 

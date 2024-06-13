@@ -20,7 +20,8 @@ public class ImageValidator implements ConstraintValidator<ImageValidation, List
         if (images.isEmpty()) {
             return true;
         } else {
-            return images.stream().allMatch(image -> validType.contains(image.getContentType()));
+            return (images.stream().allMatch(image -> validType.contains(image.getContentType())) &&
+                images.size()<6);
         }
     }
 }

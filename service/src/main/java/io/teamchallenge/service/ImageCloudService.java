@@ -1,9 +1,10 @@
 package io.teamchallenge.service;
 
+import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface ImageCloudService {
 
     String uploadImage(MultipartFile file, String folderName);
-    String destroyImage(String url);
+    void deleteImages(List<String> urls);
 }
