@@ -21,6 +21,7 @@ import static io.teamchallenge.constant.ExceptionMessage.IMAGE_PERSISTENCE_EXCEP
 public class ImageUploadServiceImpl implements ImageCloudService {
     private final Cloudinary cloudinary;
 
+    @Override
     public String uploadImage(MultipartFile file, String folderName) {
         try{
             HashMap<Object, Object> options = new HashMap<>();
@@ -34,16 +35,15 @@ public class ImageUploadServiceImpl implements ImageCloudService {
     }
 
     @Override
-    public void deleteImages(List<String> urls) {
+    public void deleteImages(List<String> urls,String folderName) {
         try{
             List<String> publicIds = new ArrayList<>();
             urls.forEach(url -> {
                 var splitUrl = url.split("/");
                 String publicId = splitUrl[splitUrl.length - 1];
-                publicIds.add(publicId);
+                publicIds.add(folderName+"/"+publicId);
                 }
             );
-            //TODO: verify why resources are not deleted
             cloudinary.api().deleteResources(publicIds,ObjectUtils.emptyMap());
         }catch (Exception e){
             throw new ImageDeletionException(IMAGE_DELETION_EXCEPTION_MESSAGE,e);

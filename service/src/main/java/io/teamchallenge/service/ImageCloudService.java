@@ -6,5 +6,5 @@ import org.springframework.web.multipart.MultipartFile;
 public interface ImageCloudService {
 
     String uploadImage(MultipartFile file, String folderName);
-    void deleteImages(List<String> urls);
+    void deleteImages(List<String> urls, String folderName);
 }

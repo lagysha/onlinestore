@@ -189,7 +189,7 @@ public class ProductService {
             productRepository.saveAndFlush(product);
             if(!multipartFiles.isEmpty()) {
                 List<String> imagesUrls = product.getImages().stream().map(Image::getLink).toList();
-                imageCloudService.deleteImages(imagesUrls);
+                imageCloudService.deleteImages(imagesUrls,product_images_folder_name);
                 product.clearAllImages();
                 addNewImages(multipartFiles, product);
             }
