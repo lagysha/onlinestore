@@ -213,8 +213,9 @@ public class Utils {
 
     public static String getSecretKey() {
         return "5cZAVF/SKSCmCM2+1azD2XHK7K2PChcSg32vrrEh/Qk=";
+    }
 
-    public static AdvancedPageableDto<ShortProductResponseDto> getAdvancedPageableDto(){
+    public static AdvancedPageableDto<ShortProductResponseDto> getAdvancedPageableDto() {
         return AdvancedPageableDto.<ShortProductResponseDto>builder()
             .page(List.of(getShortProductResponseDto()))
             .totalElements(1)
@@ -225,7 +226,7 @@ public class Utils {
             .build();
     }
 
-    public static ProductFilterDto getProductFilterDto(){
+    public static ProductFilterDto getProductFilterDto() {
         return ProductFilterDto.builder()
             .name("Sample Product")
             .price(PriceFilter.builder()
@@ -238,7 +239,7 @@ public class Utils {
             .build();
     }
 
-    public static AttributeAttributeValueDto getAttributeAttributeValueDto(){
+    public static AttributeAttributeValueDto getAttributeAttributeValueDto() {
         return AttributeAttributeValueDto.builder()
             .id(1L)
             .name("Size")
@@ -252,7 +253,7 @@ public class Utils {
             .build();
     }
 
-    public static CategoryResponseDto getCategoryResponseDto(){
+    public static CategoryResponseDto getCategoryResponseDto() {
         return CategoryResponseDto.builder()
             .id(1L)
             .name("Laptops")
