@@ -1,6 +1,6 @@
 package io.teamchallenge.dto.product;
 
-import io.teamchallenge.dto.CategoryResponseDto;
+import io.teamchallenge.dto.category.CategoryResponseDto;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
