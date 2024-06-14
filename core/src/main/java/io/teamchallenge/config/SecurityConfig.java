@@ -35,6 +35,8 @@ public class SecurityConfig {
     private final JwtService jwtService;
     private final AuthenticationConfiguration authenticationConfiguration;
 
+    private final AccessTokenJwtAuthenticationFilter accessTokenJwtAuthenticationFilter;
+
     /**
      * Constructor for SecurityConfig.
      *
@@ -44,10 +46,12 @@ public class SecurityConfig {
      */
     @Autowired
     public SecurityConfig(@Value("${ALLOWED_ORIGINS}") String[] allowedOrigins, JwtService jwtService,
-                          AuthenticationConfiguration authenticationConfiguration) {
+                          AuthenticationConfiguration authenticationConfiguration,
+                          AccessTokenJwtAuthenticationFilter accessTokenJwtAuthenticationFilter) {
         this.allowedOrigins = List.of(allowedOrigins);
         this.jwtService = jwtService;
         this.authenticationConfiguration = authenticationConfiguration;
+        this.accessTokenJwtAuthenticationFilter = accessTokenJwtAuthenticationFilter;
     }
 
     /**
@@ -73,7 +77,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterAfter(
-                new AccessTokenJwtAuthenticationFilter(jwtService),
+                accessTokenJwtAuthenticationFilter,
                 BasicAuthenticationFilter.class)
             .exceptionHandling(exception -> exception
                 .authenticationEntryPoint((req, resp, exc) ->

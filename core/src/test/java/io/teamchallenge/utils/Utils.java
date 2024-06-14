@@ -196,4 +196,15 @@ public class Utils {
             .password("Password1234!")
             .build();
     }
+
+    public static String getAccessToken() {
+        return "eyJhbGciOiJIUzI1NiJ9" +
+               ".eyJpc3MiOiJHYWRnZXRIb3VzZSIsInN1YiI6ImV4YW1wbGUxMjNAZXhhbXBsZS5jb20iLCJpZCI6MTEsInJ" +
+               "vbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MTY4MDA5NDcsImV4cCI6MTcxNzQwNTc0N30" +
+               ".odua7l-MEZmfjsCu4jmAciqLI[lSRdvrD0Jmufd-N56";
+    }
+
+    public static String getSecretKey() {
+        return "5cZAVF/SKSCmCM2+1azD2XHK7K2PChcSg32vrrEh/Qk=";
+    }
 }
