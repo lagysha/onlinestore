@@ -1,5 +1,6 @@
 package io.teamchallenge.controller;
 
+import io.teamchallenge.annotation.CurrentUserId;
 import java.util.Optional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,7 +19,7 @@ public class HelloController {
      * @return A greeting message with the provided name, or "Hello, Unknown" if no name is provided.
      */
     @GetMapping("/hello")
-    public String greetings(@RequestParam Optional<String> name) {
-        return "Hello, " + name.orElse("Unknown");
+    public String greetings(@RequestParam Optional<String> name, @CurrentUserId Long userId) {
+        return "Hello, " + name.orElse("Unknown") + userId;
     }
 }

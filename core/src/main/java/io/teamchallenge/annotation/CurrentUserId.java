@@ -14,6 +14,6 @@ import org.springframework.security.core.annotation.CurrentSecurityContext;
 @Target({ElementType.PARAMETER, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@CurrentSecurityContext(expression = "authentication.getClaims().get('id')")
+@CurrentSecurityContext(expression = "authentication.getUserId()")
 public @interface CurrentUserId {
 }

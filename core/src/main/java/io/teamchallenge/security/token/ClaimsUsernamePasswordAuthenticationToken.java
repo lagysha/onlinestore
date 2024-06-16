@@ -29,4 +29,13 @@ public class ClaimsUsernamePasswordAuthenticationToken extends UsernamePasswordA
         super(principal, credentials, authorities);
         this.claims = claims;
     }
+
+    /**
+     * Retrieves the user ID from the JWT claims.
+     *
+     * @return the user ID as a {@link Long}
+     */
+    public Long getUserId() {
+        return claims.get("id", Long.class);
+    }
 }
