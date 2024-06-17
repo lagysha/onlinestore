@@ -1,6 +1,7 @@
 package io.teamchallenge.repository;
 
 import io.hypersistence.utils.spring.repository.BaseJpaRepository;
+import io.teamchallenge.entity.attributes.AttributeValue;
 import io.teamchallenge.entity.cartitem.CartItem;
 import io.teamchallenge.entity.cartitem.CartItemId;
 import java.util.List;
@@ -12,6 +13,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+/**
+ * Repository interface for managing {@link CartItem} entities.
+ * Provides methods to perform CRUD operations and custom queries.
+ * @author Niktia Malov
+ */
 public interface CartItemRepository
     extends JpaRepository<CartItem, CartItemId>, BaseJpaRepository<CartItem, CartItemId> {
     /**

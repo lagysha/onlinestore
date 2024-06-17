@@ -1,19 +1,16 @@
 package io.teamchallenge.controller;
 
 import io.teamchallenge.annotation.AllowedSortFields;
-import io.teamchallenge.annotation.ImageValidation;
 import io.teamchallenge.dto.PageableDto;
 import io.teamchallenge.dto.product.ProductRequestDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
 import io.teamchallenge.dto.product.ShortProductResponseDto;
-import io.teamchallenge.service.impl.ProductService;
+import io.teamchallenge.service.ProductService;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,14 +18,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
+/**
+ * Controller for products.
+ * @author Niktia Malov
+ */
 @RestController
 @RequestMapping("api/v1/products")
 @RequiredArgsConstructor
@@ -37,23 +37,22 @@ public class ProductController {
     private final ProductService productService;
 
     /**
-     * Retrieves a pageable list of products based on optional filtering by name and pageable parameters.
+     * Handles GET requests for retrieving a paginated list of products with optional filtering and sorting.
      *
      * @param name     Optional parameter for filtering products by name.
      * @param pageable Pageable object specifying pagination and sorting parameters.
      *                 Defaults to sorting by creation date in descending order if not specified.
      * @return ResponseEntity containing a PageableDto of ProductResponseDto,
-     * representing the paginated list of products.
+     *         representing the paginated list of products.
      */
     @GetMapping
-    public ResponseEntity<PageableDto<ShortProductResponseDto>> getAll(@RequestParam(required = false) String name,
-                                                                       @AllowedSortFields(values = {"name", "quantity",
-                                                                           "price", "createdAt"})
-                                                                       @PageableDefault(sort = "createdAt",
-                                                                           direction = DESC)
-                                                                       Pageable pageable) {
-        return ResponseEntity.ok(productService.getAll(pageable, name));
+    public ResponseEntity<AdvancedPageableDto<ShortProductResponseDto>> getAll(
+        @Valid ProductFilterDto productFilterDto,
+        @AllowedSortFields(values = {"price"})
+        @PageableDefault(sort = "price", direction = DESC) Pageable pageable) {
+        return ResponseEntity.ok(productService.getAll(pageable, productFilterDto));
     }
+
 
     /**
      * Retrieves a product by its unique identifier.

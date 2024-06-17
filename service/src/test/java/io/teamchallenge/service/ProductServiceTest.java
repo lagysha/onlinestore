@@ -1,9 +1,10 @@
 package io.teamchallenge.service;
 
 import io.teamchallenge.constant.ExceptionMessage;
-import io.teamchallenge.dto.PageableDto;
+import io.teamchallenge.dto.filter.ProductFilterDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
 import io.teamchallenge.dto.product.ShortProductResponseDto;
+import io.teamchallenge.entity.Product;
 import io.teamchallenge.entity.attributes.AttributeValue;
 import io.teamchallenge.exception.AlreadyExistsException;
 import io.teamchallenge.exception.NotFoundException;
@@ -14,6 +15,7 @@ import io.teamchallenge.repository.CategoryRepository;
 import io.teamchallenge.repository.ProductAttributeRepository;
 import io.teamchallenge.repository.ProductRepository;
 import io.teamchallenge.service.impl.ProductService;
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -26,18 +28,25 @@ import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 
+import static io.teamchallenge.util.Utils.getAdvancedPageableDto;
 import static io.teamchallenge.util.Utils.getAttributeValue;
 import static io.teamchallenge.util.Utils.getBrand;
 import static io.teamchallenge.util.Utils.getCategory;
 import static io.teamchallenge.util.Utils.getProduct;
+import static io.teamchallenge.util.Utils.getProductFilterDto;
+import static io.teamchallenge.util.Utils.getProductMinMaxPriceDto;
 import static io.teamchallenge.util.Utils.getProductRequestDto;
 import static io.teamchallenge.util.Utils.getProductResponseDto;
 import static io.teamchallenge.util.Utils.getShortProductResponseDto;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -64,23 +73,77 @@ class ProductServiceTest {
         List<Long> productIds = List.of(1L);
         PageImpl<Long> retrievedIds = new PageImpl<>(productIds, pageable, 1);
         var product = getProduct();
+        var filter = getProductFilterDto();
         ShortProductResponseDto shortProductResponseDto = getShortProductResponseDto();
-        var expected = new PageableDto<>(
-            List.of(shortProductResponseDto),
-            retrievedIds.getTotalElements(),
-            retrievedIds.getPageable().getPageNumber(),
-            retrievedIds.getTotalPages());
-        when(productRepository.findAllIdsByName(pageable, "name"))
+        var expected = getAdvancedPageableDto();
+        Specification<Product> specification1 = mock(Specification.class);
+        Specification<Product> specification2 = mock(Specification.class);
+        Specification<Product> specification3 = mock(Specification.class);
+        Specification<Product> specification4 = mock(Specification.class);
+        Specification<Product> specification5 = mock(Specification.class);
+        List<Specification<Product>> specifications =
+            List.of(specification1, specification2, specification3, specification4, specification5);
+        Specification<Product> specification =
+            Specification.allOf(specifications);
+
+        try (var mockStaticSpecification = mockStatic(Specification.class);
+             var specs = mockStatic(ProductRepository.Specs.class)) {
+            when(Specification.allOf((Iterable<Specification<Product>>)any())).thenReturn(specification);
+
+            when(ProductRepository.Specs.byName(filter.getName()))
+                .thenReturn(specification1);
+            when(ProductRepository.Specs.byBrandIds(filter.getBrandIds()))
+                .thenReturn(specification2);
+            when(ProductRepository.Specs.byCategoryId(filter.getCategoryId()))
+                .thenReturn(specification3);
+            when(ProductRepository.Specs.byPriceRange(BigDecimal.valueOf(filter.getPrice().getFrom()),
+                BigDecimal.valueOf(filter.getPrice().getTo())))
+                .thenReturn(specification4);
+            when(ProductRepository.Specs.byAttributeValuesIds(filter.getAttributeValueIds()))
+                .thenReturn(specification5);
+            when(productRepository.findAllProductIds(specification, pageable))
+                .thenReturn(retrievedIds);
+            when(productRepository.findAllByIdWithImages(productIds))
+                .thenReturn(List.of(product));
+            when(modelMapper.map(product, ShortProductResponseDto.class))
+                .thenReturn(shortProductResponseDto);
+
+            var actual = productService.getAll(pageable, filter);
+
+            verify(productRepository).findAllProductIds(eq(specification), eq(pageable));
+            verify(productRepository).findAllByIdWithImages(eq(productIds));
+            verify(modelMapper).map(eq(product), eq(ShortProductResponseDto.class));
+            assertEquals(expected,actual);
+
+        }
+    }
+
+    @Test
+    void getAllWithEmptyFilterTest() {
+        PageRequest pageable = PageRequest.of(0, 1);
+        List<Long> productIds = List.of(1L);
+        PageImpl<Long> retrievedIds = new PageImpl<>(productIds, pageable, 1);
+        var product = getProduct();
+        ProductFilterDto filter = new ProductFilterDto();
+        ShortProductResponseDto shortProductResponseDto = getShortProductResponseDto();
+        var expected = getAdvancedPageableDto();
+        var productMinMaxDto = getProductMinMaxPriceDto();
+
+
+        when(productRepository.findAllProductIds(null, pageable))
             .thenReturn(retrievedIds);
-        when(productRepository.findAllByIdWithImages(productIds, pageable.getSort()))
+        when(productRepository.findProductMinMaxPrice(null))
+            .thenReturn(productMinMaxDto);
+        when(productRepository.findAllByIdWithImages(productIds))
             .thenReturn(List.of(product));
         when(modelMapper.map(product, ShortProductResponseDto.class))
             .thenReturn(shortProductResponseDto);
 
-        var actual = productService.getAll(pageable, "name");
+        var actual = productService.getAll(pageable, filter);
 
-        verify(productRepository).findAllIdsByName(eq(pageable), eq("name"));
-        verify(productRepository).findAllByIdWithImages(eq(productIds), eq(pageable.getSort()));
+        verify(productRepository).findAllProductIds(eq(null), eq(pageable));
+        verify(productRepository).findProductMinMaxPrice(eq(null));
+        verify(productRepository).findAllByIdWithImages(eq(productIds));
         verify(modelMapper).map(eq(product), eq(ShortProductResponseDto.class));
         assertEquals(actual, expected);
     }

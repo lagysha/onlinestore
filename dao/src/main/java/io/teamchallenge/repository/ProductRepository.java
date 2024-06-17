@@ -1,16 +1,25 @@
 package io.teamchallenge.repository;
 
 import io.teamchallenge.entity.Product;
+import io.teamchallenge.entity.Product_;
+import io.teamchallenge.entity.attributes.ProductAttribute_;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface ProductRepository extends JpaRepository<Product, Long> {
+/**
+ * Repository interface for managing {@link Product} entities.
+ * Provides methods to perform CRUD operations and custom queries.
+ * @author Niktia Malov
+ */
+public interface ProductRepository
+    extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product>, CustomProductRepository {
     /**
      * Retrieves a Product by its ID along with associated collections if available.
      * If the Product is found, associated collections such as images are eagerly fetched.
@@ -27,24 +36,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     }
 
     /**
-     * Retrieves a page of Product IDs by name, optionally filtering by name.
-     *
-     * @param pageable The Pageable object containing pagination and sorting information.
-     * @param name     The name to filter the products by (can be null).
-     * @return A Page containing the IDs of products matching the provided name.
-     */
-    @Query("select p.id from Product p "
-        + "where (:name is NULL or lower(p.name) like %:name%)")
-    Page<Long> findAllIdsByName(Pageable pageable, String name);
-
-    /**
      * Retrieves all Products by their IDs with associated images eagerly fetched.
      *
      * @param productIds The list of IDs of the Products to retrieve.
      * @return A list of Products with associated images eagerly fetched.
      */
     @Query("select p from Product p left join fetch p.images where p.id in :productIds")
-    List<Product> findAllByIdWithImages(@Param("productIds") List<Long> productIds, Sort sort);
+    List<Product> findAllByIdWithImages(@Param("productIds") List<Long> productIds);
 
     /**
      * Retrieves a Product by its ID with associated category, brand, and product attributes eagerly fetched.
@@ -87,4 +85,66 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      * @return An Optional containing the Product if found by the provided name and ID not matching the provided ID.
      */
     Optional<Product> findByNameAndIdNot(String name, Long id);
+
+    /**
+     * Specifications for filtering products based on various criteria.
+     */
+    interface Specs {
+        /**
+         * Generates a specification for filtering products by name.
+         *
+         * @param productName The name of the product to filter by.
+         * @return Specification for filtering products by name.
+         */
+        static Specification<Product> byName(String productName) {
+            return (root, query, builder) ->
+                builder.like(builder.lower(root.get(Product_.name)), "%" + productName.toLowerCase() + "%");
+        }
+
+        /**
+         * Generates a specification for filtering products by price range.
+         *
+         * @param from The minimum price in the range.
+         * @param to   The maximum price in the range.
+         * @return Specification for filtering products by price range.
+         */
+        static Specification<Product> byPriceRange(BigDecimal from, BigDecimal to) {
+            return (root, query, builder) ->
+                builder.between(root.get(Product_.price), from, to);
+        }
+
+        /**
+         * Generates a specification for filtering products by brand IDs.
+         *
+         * @param brandIds List of brand IDs to filter by.
+         * @return Specification for filtering products by brand IDs.
+         */
+        static Specification<Product> byBrandIds(List<Long> brandIds) {
+            return (root, query, builder) ->
+                root.get(Product_.brand).get("id").in(brandIds);
+        }
+
+        /**
+         * Generates a specification for filtering products by category ID.
+         *
+         * @param categoryId The ID of the category to filter by.
+         * @return Specification for filtering products by category ID.
+         */
+        static Specification<Product> byCategoryId(Long categoryId) {
+            return (root, query, builder) ->
+                root.get(Product_.category).get("id").in(categoryId);
+        }
+
+        /**
+         * Generates a specification for filtering products by attribute value IDs.
+         *
+         * @param attributeValuesIds List of attribute value IDs to filter by.
+         * @return Specification for filtering products by attribute value IDs.
+         */
+        static Specification<Product> byAttributeValuesIds(List<Long> attributeValuesIds) {
+            return (root, query, builder) ->
+                root.get(Product_.PRODUCT_ATTRIBUTES).get(ProductAttribute_.ATTRIBUTE_VALUE)
+                    .get("id").in(attributeValuesIds);
+        }
+    }
 }

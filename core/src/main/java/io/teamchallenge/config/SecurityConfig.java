@@ -22,11 +22,16 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
+import static io.teamchallenge.constant.AppConstant.API_V1;
 import static io.teamchallenge.constant.SecurityConstants.ADMIN;
 import static io.teamchallenge.constant.SecurityConstants.USER;
 import static jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
+/**
+ * Config for security.
+ * @author Denys Liubchenko
+ */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalAuthentication
@@ -34,6 +39,8 @@ public class SecurityConfig {
     private final List<String> allowedOrigins;
     private final JwtService jwtService;
     private final AuthenticationConfiguration authenticationConfiguration;
+
+    private final AccessTokenJwtAuthenticationFilter accessTokenJwtAuthenticationFilter;
 
     /**
      * Constructor for SecurityConfig.
@@ -44,10 +51,12 @@ public class SecurityConfig {
      */
     @Autowired
     public SecurityConfig(@Value("${ALLOWED_ORIGINS}") String[] allowedOrigins, JwtService jwtService,
-                          AuthenticationConfiguration authenticationConfiguration) {
+                          AuthenticationConfiguration authenticationConfiguration,
+                          AccessTokenJwtAuthenticationFilter accessTokenJwtAuthenticationFilter) {
         this.allowedOrigins = List.of(allowedOrigins);
         this.jwtService = jwtService;
         this.authenticationConfiguration = authenticationConfiguration;
+        this.accessTokenJwtAuthenticationFilter = accessTokenJwtAuthenticationFilter;
     }
 
     /**
@@ -73,7 +82,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterAfter(
-                new AccessTokenJwtAuthenticationFilter(jwtService),
+                accessTokenJwtAuthenticationFilter,
                 BasicAuthenticationFilter.class)
             .exceptionHandling(exception -> exception
                 .authenticationEntryPoint((req, resp, exc) ->
@@ -82,28 +91,32 @@ public class SecurityConfig {
                     resp.sendError(SC_FORBIDDEN, "You don't have authorities.")))
             .authorizeHttpRequests(req -> req
                 .requestMatchers(HttpMethod.POST,
-                    "/api/v1/signUp",
-                    "/api/v1/signIn",
-                    "/api/v1/updateAccessToken"
+                    API_V1 + "/signUp",
+                    API_V1 + "/signIn",
+                    API_V1 + "/updateAccessToken"
                 )
                 .permitAll()
                 .requestMatchers(HttpMethod.GET,
-                    "/api/v1/cart-items/{user_id}",
-                    "/api/v1/products",
-                    "/api/v1/products/{id}",
+                    API_V1 + "/categories/{categoryId}/attribute-attributeValues",
+                    API_V1 + "/products",
+                    API_V1 + "/categories",
+                    API_V1 + "/products/{id}",
                     "/hello")
-                .hasAnyRole(USER,ADMIN)
+                .permitAll()
+                .requestMatchers(HttpMethod.GET,
+                    API_V1 + "/cart-items/{product_id}")
+                .hasRole(USER)
                 .requestMatchers(HttpMethod.POST,
-                    "/api/v1/cart-items/{product_id}")
-                .hasAnyRole(USER,ADMIN)
+                    API_V1 + "/cart-items/{product_id}")
+                .hasRole(USER)
                 .requestMatchers(HttpMethod.PATCH,
-                    "/api/v1/cart-items/{product_id}")
-                .hasAnyRole(USER,ADMIN)
+                    API_V1 + "/cart-items/{product_id}")
+                .hasRole(USER)
                 .requestMatchers(HttpMethod.DELETE,
-                    "/api/v1/cart-items/{product_id}")
-                .hasAnyRole(USER,ADMIN)
+                    API_V1 + "/cart-items/{product_id}")
+                .hasRole(USER)
                 .requestMatchers(
-                    "/api/v1/products")
+                    API_V1 + "/products")
                 .hasRole(ADMIN)
                 .anyRequest()
                 .hasRole(ADMIN)

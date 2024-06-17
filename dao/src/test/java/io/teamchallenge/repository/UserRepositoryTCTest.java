@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ActiveProfiles("ts")
 @Sql(scripts = "classpath:data.sql")
 public class UserRepositoryTCTest {
+
     @Container
     @ServiceConnection
     static PostgreSQLContainer<?> postgresqlContainer =

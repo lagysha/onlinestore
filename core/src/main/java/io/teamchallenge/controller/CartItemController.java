@@ -11,6 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controller for cart items.
+ * @author Niktia Malov
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/cart-items")

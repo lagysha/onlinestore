@@ -10,7 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 /**
- * This class maps a {@link SignUpRequestDto} object to an {@link User} entity.
+ * Mapper for {@link SignUpRequestDto}.
+ * @author Denys Liubchenko
  */
 @Component
 @RequiredArgsConstructor

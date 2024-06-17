@@ -29,6 +29,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+/**
+ * Global exception handler for handling exceptions across the whole application.
+ * Uses Spring's {@link ControllerAdvice} to provide centralized exception handling.
+ * Extends {@link ResponseEntityExceptionHandler} to leverage its handling of standard Spring MVC exceptions.
+ * Utilizes {@link ErrorAttributes} to include additional error details in the response.
+ * @author Niktia Malov
+ * @author Denys Liubchenko
+ */
 @ControllerAdvice
 @Slf4j
 @RequiredArgsConstructor

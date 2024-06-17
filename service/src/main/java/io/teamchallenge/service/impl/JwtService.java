@@ -30,7 +30,8 @@ import static io.teamchallenge.constant.ExceptionMessage.TOKEN_HAS_BEEN_EXPIRED;
 import static io.teamchallenge.constant.ExceptionMessage.TOKEN_WAS_NOT_SIGNED_BY_USER;
 
 /**
- * Service class for handling JWT (JSON Web Token) operations.
+ * Service class for managing JWT tokens.
+ * @author Denys Liubchenko
  */
 @Service
 @Slf4j
