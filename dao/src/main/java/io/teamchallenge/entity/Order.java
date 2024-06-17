@@ -1,11 +1,32 @@
 package io.teamchallenge.entity;
 
-import jakarta.persistence.*;
-import java.math.BigDecimal;
+import io.teamchallenge.enumerated.DeliveryMethod;
+import io.teamchallenge.enumerated.DeliveryStatus;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
@@ -14,27 +35,39 @@ import org.hibernate.annotations.CreationTimestamp;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"user","orderItems"})
+@ToString(exclude = {"address","postAddress", "orderItems"})
 @Builder
-@EqualsAndHashCode(exclude = {"user", "orderItems"})
+@EqualsAndHashCode(exclude = {"address","postAddress", "orderItems"})
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Embedded
+    private ContactInfo contactInfo;
 
-    @Column(nullable = false)
-    private String status;
+    @OneToOne(cascade = CascadeType.ALL, optional = false, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id")
+    private Address address;
 
-    @Column(nullable = false)
-    private BigDecimal total;
+    @OneToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_address_id")
+    private PostAddress postAddress;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Setter(AccessLevel.PRIVATE)
     private List<OrderItem> orderItems = new ArrayList<>();
+
+    @Column(nullable = false)
+    private Boolean isPaid;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "delivery_status", nullable = false)
+    private DeliveryStatus deliveryStatus;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "delivery_method", nullable = false)
+    private DeliveryMethod deliveryMethod;
 
     @Setter(AccessLevel.PRIVATE)
     @Column(name = "created_at", updatable = false)

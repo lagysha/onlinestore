@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="add-table-users_orders" author="Denys Liubchenko">
+        <createTable tableName="users_orders">
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="order_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="users_orders" baseColumnNames="user_id"
+                                 constraintName="FK_users_orders_users"
+                                 referencedTableName="users" referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="users_orders" baseColumnNames="order_id"
+                                 constraintName="FK_users_orders_orders"
+                                 referencedTableName="orders" referencedColumnNames="id"/>
+
+        <createIndex tableName="users_orders" indexName="FK_users_orders_users">
+            <column name="user_id"/>
+        </createIndex>
+
+        <createIndex tableName="users_orders" indexName="FK_users_orders_orders">
+            <column name="order_id"/>
+        </createIndex>
+
+        <addPrimaryKey tableName="users_orders" columnNames="user_id,order_id" constraintName="PK_users_orders"/>
+    </changeSet>
+</databaseChangeLog>

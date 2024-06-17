@@ -1,6 +1,7 @@
 package io.teamchallenge.entity;
 
 import jakarta.persistence.*;
+import java.math.BigDecimal;
 import lombok.*;
 
 @Entity
@@ -27,4 +28,7 @@ public class OrderItem {
 
     @Column(nullable = false)
     private Integer quantity;
+
+    @Column(name = "price",nullable = false)
+    private BigDecimal price;
 }
