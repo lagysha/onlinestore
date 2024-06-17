@@ -31,7 +31,12 @@ public interface CartItemRepository
      * @param sort the sorting criteria for the result list.
      * @return a list of {@link CartItem} entities with associated product images and products.
      */
+    //TODO : Verify that we retrieve only the first(Main) image
     @EntityGraph(attributePaths = {"product.images", "product"})
-    @Query(value = "select ci from CartItem ci where ci.id in :cartItemIds")
+    @Query(value = "select ci from CartItem ci "
+        + "left join fetch ci.product p "
+        + "left join fetch p.images img "
+        + "where ci.id in :cartItemIds "
+        + "and img.order = 1")
     List<CartItem> findAllByIdWithImagesAndProducts(@Param("cartItemIds") List<CartItemId> cartItemIds, Sort sort);
 }

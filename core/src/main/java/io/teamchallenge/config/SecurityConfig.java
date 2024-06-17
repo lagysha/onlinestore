@@ -92,16 +92,16 @@ public class SecurityConfig {
                     "/api/v1/products",
                     "/api/v1/products/{id}",
                     "/hello")
-                .hasRole(USER)
+                .hasAnyRole(USER,ADMIN)
                 .requestMatchers(HttpMethod.POST,
                     "/api/v1/cart-items/{product_id}")
-                .hasRole(USER)
+                .hasAnyRole(USER,ADMIN)
                 .requestMatchers(HttpMethod.PATCH,
                     "/api/v1/cart-items/{product_id}")
-                .hasRole(USER)
+                .hasAnyRole(USER,ADMIN)
                 .requestMatchers(HttpMethod.DELETE,
                     "/api/v1/cart-items/{product_id}")
-                .hasRole(USER)
+                .hasAnyRole(USER,ADMIN)
                 .requestMatchers(
                     "/api/v1/products")
                 .hasRole(ADMIN)

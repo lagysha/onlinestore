@@ -21,6 +21,7 @@ import io.teamchallenge.repository.ProductRepository;
 import io.teamchallenge.service.ImageCloudService;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -187,7 +188,7 @@ public class ProductService {
             List<Long> idsToFetch = updateProductAttributes(productRequestDto, product);
             attributeValueRepository.findAllByIdIn(idsToFetch);
             productRepository.saveAndFlush(product);
-            if(!multipartFiles.isEmpty()) {
+            if(Objects.nonNull(multipartFiles) && !multipartFiles.isEmpty()) {
                 List<String> imagesUrls = product.getImages().stream().map(Image::getLink).toList();
                 imageCloudService.deleteImages(imagesUrls,product_images_folder_name);
                 product.clearAllImages();

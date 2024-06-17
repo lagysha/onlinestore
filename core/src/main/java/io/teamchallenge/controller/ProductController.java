@@ -74,10 +74,10 @@ public class ProductController {
      */
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ProductResponseDto> create(
-        @RequestPart(required = false) @ImageValidation List<MultipartFile> multipartFiles,
+        @RequestPart @ImageValidation List<MultipartFile> images,
         @RequestPart @Valid ProductRequestDto productRequestDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(productService.create(productRequestDto, multipartFiles));
+            .body(productService.create(productRequestDto, images));
     }
 
     /**
@@ -90,10 +90,10 @@ public class ProductController {
     @PutMapping(path = "/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ProductResponseDto> update(@PathVariable Long id,
                                                      @RequestPart(required = false) @ImageValidation
-                                                     List<MultipartFile> multipartFiles,
+                                                     List<MultipartFile> images,
                                                      @RequestPart @Valid ProductRequestDto productRequestDto) {
         return ResponseEntity.status(HttpStatus.OK)
-            .body(productService.update(id, productRequestDto, multipartFiles));
+            .body(productService.update(id, productRequestDto, images));
     }
 
     /**

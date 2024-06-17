@@ -20,6 +20,7 @@ import lombok.ToString;
 public class CartItemResponseDto {
     private Long productId;
     private Integer quantity;
+    //TODO: refactor to one link with main imagine
     private List<String> images;
     private String name;
     private BigDecimal price;

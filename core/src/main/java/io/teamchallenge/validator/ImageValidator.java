@@ -5,6 +5,7 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.web.multipart.MultipartFile;
 
 public class ImageValidator implements ConstraintValidator<ImageValidation, List<MultipartFile>> {
@@ -17,7 +18,7 @@ public class ImageValidator implements ConstraintValidator<ImageValidation, List
 
     @Override
     public boolean isValid(List<MultipartFile> images, ConstraintValidatorContext constraintValidatorContext) {
-        if (images.isEmpty()) {
+        if (Objects.isNull(images) || images.isEmpty()) {
             return true;
         } else {
             return (images.stream().allMatch(image -> validType.contains(image.getContentType())) &&
