@@ -1,6 +1,7 @@
 FROM alpine/git as clone
 WORKDIR /app
-RUN git clone -b dev https://github.com/lagysha/onlinestore
+ARG BRANCH
+RUN git clone -b $BRANCH https://github.com/lagysha/onlinestore
 
 FROM maven:3.9-amazoncorretto-21 as build
 WORKDIR /app
