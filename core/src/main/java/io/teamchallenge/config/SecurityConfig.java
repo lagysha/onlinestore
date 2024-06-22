@@ -104,17 +104,17 @@ public class SecurityConfig {
                     "/hello")
                 .permitAll()
                 .requestMatchers(HttpMethod.GET,
-                    API_V1 + "/cart-items/{product_id}")
-                .hasRole(USER)
+                    API_V1 + "/cart-items")
+                .hasAnyRole(USER,ADMIN)
                 .requestMatchers(HttpMethod.POST,
                     API_V1 + "/cart-items/{product_id}")
-                .hasRole(USER)
+                .hasAnyRole(USER,ADMIN)
                 .requestMatchers(HttpMethod.PATCH,
                     API_V1 + "/cart-items/{product_id}")
-                .hasRole(USER)
+                .hasAnyRole(USER,ADMIN)
                 .requestMatchers(HttpMethod.DELETE,
                     API_V1 + "/cart-items/{product_id}")
-                .hasRole(USER)
+                .hasAnyRole(USER,ADMIN)
                 .requestMatchers(
                     API_V1 + "/products")
                 .hasRole(ADMIN)

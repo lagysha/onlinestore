@@ -1,5 +1,6 @@
 package io.teamchallenge.util;
 
+import io.teamchallenge.dto.ImageDto;
 import io.teamchallenge.dto.category.CategoryAttributeAttributeValueVO;
 import io.teamchallenge.dto.category.CategoryResponseDto;
 import io.teamchallenge.dto.cart.CartItemResponseDto;
@@ -85,7 +86,7 @@ public class Utils {
             .builder()
             .productId(1L)
             .quantity(1)
-            .images(new ArrayList<>())
+            .image("ddd")
             .name("name")
             .price(BigDecimal.ONE)
             .build();
@@ -122,8 +123,12 @@ public class Utils {
             .id(product.getId())
             .name(product.getName())
             .price(product.getPrice())
-            .images(product.getImages().stream()
-                .map(Image::getLink)
+            .images(product.getImages()
+                .stream()
+                .map(img -> ImageDto.builder()
+                    .link(img.getLink())
+                    .order(img.getOrder())
+                    .build())
                 .collect(Collectors.toList()))
             .build();
     }
@@ -147,7 +152,10 @@ public class Utils {
                 .collect(Collectors.toList()))
             .images(product.getImages()
                 .stream()
-                .map(Image::getLink)
+                .map(img -> ImageDto.builder()
+                    .link(img.getLink())
+                    .order(img.getOrder())
+                    .build())
                 .collect(Collectors.toList()))
             .brand(product.getBrand().getName())
             .name(product.getName())

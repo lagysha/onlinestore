@@ -9,19 +9,21 @@ import java.util.Objects;
 import org.springframework.web.multipart.MultipartFile;
 
 public class ImageValidator implements ConstraintValidator<ImageValidation, List<MultipartFile>> {
-    private final List<String> validType = Arrays.asList("image/jpeg", "image/png", "image/jpg");
+    private static final List<String> VALID_TYPES = Arrays.asList("image/jpeg", "image/png", "image/jpg");
 
-    @Override
-    public void initialize(ImageValidation constraintAnnotation) {
-        // Initializes the validator in preparation for #isValid calls
-    }
-
+    /**
+     * Validates the list of image files.
+     *
+     * @param images                       The list of image files to validate.
+     * @param constraintValidatorContext   Context in which the constraint is evaluated.
+     * @return true if the list is valid; false otherwise.
+     */
     @Override
     public boolean isValid(List<MultipartFile> images, ConstraintValidatorContext constraintValidatorContext) {
         if (Objects.isNull(images) || images.isEmpty()) {
             return true;
         } else {
-            return (images.stream().allMatch(image -> validType.contains(image.getContentType())) &&
+            return (images.stream().allMatch(image -> VALID_TYPES.contains(image.getContentType())) &&
                 images.size()<6);
         }
     }

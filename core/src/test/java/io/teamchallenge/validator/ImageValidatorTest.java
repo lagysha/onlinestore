@@ -3,22 +3,20 @@ package io.teamchallenge.validator;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.multipart.MultipartFile;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@ExtendWith(SpringExtension.class)
 public class ImageValidatorTest {
 
     @InjectMocks
     private ImageValidator imageValidator;
-
-    @Test
-    void initializeTest() {
-        imageValidator.initialize(null);
-    }
 
     @Test
     void isValidWithEmptyImagesReturnsTrue() {

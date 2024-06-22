@@ -1,5 +1,6 @@
 package io.teamchallenge.mapper;
 
+import io.teamchallenge.dto.ImageDto;
 import io.teamchallenge.dto.category.CategoryResponseDto;
 import io.teamchallenge.dto.product.ProductAttributeResponseDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
@@ -39,7 +40,10 @@ public class ProductResponseDtoMapperTest {
                 .collect(Collectors.toList()))
             .images(product.getImages()
                 .stream()
-                .map(Image::getLink)
+                .map(img -> ImageDto.builder()
+                    .link(img.getLink())
+                    .order(img.getOrder())
+                    .build())
                 .collect(Collectors.toList()))
             .brand(product.getBrand().getName())
             .name(product.getName())

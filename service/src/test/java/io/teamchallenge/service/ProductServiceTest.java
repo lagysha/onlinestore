@@ -14,21 +14,28 @@ import io.teamchallenge.repository.BrandRepository;
 import io.teamchallenge.repository.CategoryRepository;
 import io.teamchallenge.repository.ProductAttributeRepository;
 import io.teamchallenge.repository.ProductRepository;
-import io.teamchallenge.service.impl.ProductService;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.multipart.MultipartFile;
+import io.teamchallenge.service.ProductService;
 
 import static io.teamchallenge.util.Utils.getAdvancedPageableDto;
 import static io.teamchallenge.util.Utils.getAttributeValue;
@@ -52,20 +59,28 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
-    @Mock
-    private ProductRepository productRepository;
-    @Mock
-    private BrandRepository brandRepository;
-    @Mock
-    private AttributeValueRepository attributeValueRepository;
-    @Mock
-    private ProductAttributeRepository productAttributeRepository;
-    @Mock
-    private CategoryRepository categoryRepository;
-    @Mock
-    private ModelMapper modelMapper;
-    @InjectMocks
+    private final ProductRepository productRepository;
+    private final BrandRepository brandRepository;
+    private final AttributeValueRepository attributeValueRepository;
+    private final ProductAttributeRepository productAttributeRepository;
+    private final CategoryRepository categoryRepository;
+    private final ImageCloudService imageCloudService;
+    private final ModelMapper modelMapper;
+
     private ProductService productService;
+
+    public ProductServiceTest() {
+        productRepository = mock(ProductRepository.class);
+        brandRepository = mock(BrandRepository.class);
+        attributeValueRepository = mock(AttributeValueRepository.class);
+        productAttributeRepository = mock(ProductAttributeRepository.class);
+        categoryRepository = mock(CategoryRepository.class);
+        imageCloudService = mock(ImageCloudService.class);
+        modelMapper = mock(ModelMapper.class);
+        productService = new ProductService(productRepository, brandRepository, attributeValueRepository,
+            productAttributeRepository, categoryRepository, modelMapper,imageCloudService);
+        ReflectionTestUtils.setField(productService, "product_images_folder_name", "productImages");
+    }
 
     @Test
     void getAllTest() {
@@ -201,9 +216,17 @@ class ProductServiceTest {
     void createTest() {
         var product = getProduct();
         product.setId(null);
+        MockMultipartFile file = new MockMultipartFile(
+            "file",
+            "test.fdsf",
+            "image/fdsf",
+            new byte[0]
+        );
+        List<MultipartFile> multipartFiles = List.of(file);
         var savedProduct = getProduct();
         var productRequestDto = getProductRequestDto();
         var productResponseDto = getProductResponseDto();
+//        when(imageCloudService.uploadImage(file)
         when(productRepository.save(product))
             .thenReturn(savedProduct);
         when(productRepository.findByName(product.getName()))
@@ -219,7 +242,7 @@ class ProductServiceTest {
         when(modelMapper.map(savedProduct, ProductResponseDto.class))
             .thenReturn(productResponseDto);
 
-        var actual = productService.create(productRequestDto);
+        var actual = productService.create(productRequestDto,multipartFiles);
 
         verify(brandRepository).findById(eq(1L));
         verify(categoryRepository).findById(eq(1L));
@@ -234,24 +257,36 @@ class ProductServiceTest {
 
     @Test
     void createThrowsNotFoundExceptionWhenBrandIdNotExistsTest() {
+        List<MultipartFile> multipartFiles = List.of(new MockMultipartFile(
+            "file",
+            "test.fdsf",
+            "image/fdsf",
+            new byte[0]
+        ));
         when(brandRepository.findById(1L))
             .thenReturn(Optional.empty());
         var productRequestDto = getProductRequestDto();
 
-        assertThrows(NotFoundException.class, () -> productService.create(productRequestDto),
+        assertThrows(NotFoundException.class, () -> productService.create(productRequestDto,multipartFiles),
             ExceptionMessage.BRAND_NOT_FOUND_BY_ID.formatted(1L));
         verify(brandRepository).findById(eq(1L));
     }
 
     @Test
     void createThrowsNotFoundExceptionWhenCategoryIdNotExistsTest() {
+        List<MultipartFile> multipartFiles = List.of(new MockMultipartFile(
+            "file",
+            "test.fdsf",
+            "image/fdsf",
+            new byte[0]
+        ));
         when(brandRepository.findById(1L))
             .thenReturn(Optional.of(getBrand()));
         when(categoryRepository.findById(1L)).
             thenReturn(Optional.empty());
         var productRequestDto = getProductRequestDto();
 
-        assertThrows(NotFoundException.class, () -> productService.create(productRequestDto),
+        assertThrows(NotFoundException.class, () -> productService.create(productRequestDto,multipartFiles),
             ExceptionMessage.CATEGORY_NOT_FOUND_BY_ID.formatted(1L));
         verify(brandRepository).findById(eq(1L));
         verify(categoryRepository).findById(eq(1L));
@@ -259,6 +294,12 @@ class ProductServiceTest {
 
     @Test
     void createThrowsAlreadyExistsExceptionWhenProductNameExistsTest() {
+        List<MultipartFile> multipartFiles = List.of(new MockMultipartFile(
+            "file",
+            "test.fdsf",
+            "image/fdsf",
+            new byte[0]
+        ));
         var product = getProduct();
         when(brandRepository.findById(1L))
             .thenReturn(Optional.of(getBrand()));
@@ -268,7 +309,7 @@ class ProductServiceTest {
             .thenReturn(Optional.of(product));
         var productRequestDto = getProductRequestDto();
 
-        assertThrows(AlreadyExistsException.class, () -> productService.create(productRequestDto),
+        assertThrows(AlreadyExistsException.class, () -> productService.create(productRequestDto,multipartFiles),
             ExceptionMessage.PRODUCT_WITH_NAME_ALREADY_EXISTS.formatted(product.getName()));
         verify(brandRepository).findById(eq(1L));
         verify(categoryRepository).findById(eq(1L));
@@ -277,6 +318,12 @@ class ProductServiceTest {
 
     @Test
     void createThrowsPersistenceExceptionWhenProductWithIncorrectAttributesTest() {
+        List<MultipartFile> multipartFiles = List.of(new MockMultipartFile(
+            "file",
+            "test.fdsf",
+            "image/fdsf",
+            new byte[0]
+        ));
         var product = getProduct();
         product.setId(null);
         Long duplicatedOrNonExistingAttributeValueId = 1L;
@@ -295,7 +342,7 @@ class ProductServiceTest {
         when(attributeValueRepository.getReferenceById(1L))
             .thenReturn(getAttributeValue());
 
-        assertThrows(PersistenceException.class, () -> productService.create(productRequestDto),
+        assertThrows(PersistenceException.class, () -> productService.create(productRequestDto,multipartFiles),
             ExceptionMessage.PRODUCT_PERSISTENCE_EXCEPTION);
 
         verify(brandRepository).findById(eq(1L));
@@ -308,6 +355,12 @@ class ProductServiceTest {
 
     @Test
     void updateTest() {
+        List<MultipartFile> multipartFiles = List.of(new MockMultipartFile(
+            "file",
+            "test.fdsf",
+            "image/fdsf",
+            new byte[0]
+        ));
         var product = getProduct();
         var productRequestDto = getProductRequestDto();
         var productResponseDto = getProductResponseDto();
@@ -337,6 +390,12 @@ class ProductServiceTest {
 
     @Test
     void updateThrowsNotFoundExceptionWhenBrandIdNotExistsTest() {
+        List<MultipartFile> multipartFiles = List.of(new MockMultipartFile(
+            "file",
+            "test.fdsf",
+            "image/fdsf",
+            new byte[0]
+        ));
         var productRequestDto = getProductRequestDto();
         when(productRepository.findByIdWithCollections(1L))
             .thenReturn(Optional.of(getProduct()));
@@ -351,6 +410,12 @@ class ProductServiceTest {
 
     @Test
     void updateThrowsNotFoundExceptionWhenCategoryIdNotExistsTest() {
+        List<MultipartFile> multipartFiles = List.of(new MockMultipartFile(
+            "file",
+            "test.fdsf",
+            "image/fdsf",
+            new byte[0]
+        ));
         var productRequestDto = getProductRequestDto();
         when(productRepository.findByIdWithCollections(1L))
             .thenReturn(Optional.of(getProduct()));
@@ -368,6 +433,12 @@ class ProductServiceTest {
 
     @Test
     void updateThrowsNotFoundExceptionWhenProductIdNotExistsTest() {
+        List<MultipartFile> multipartFiles = List.of(new MockMultipartFile(
+            "file",
+            "test.fdsf",
+            "image/fdsf",
+            new byte[0]
+        ));
         var product = getProduct();
         var productRequestDto = getProductRequestDto();
         when(productRepository.findByIdWithCollections(1L))
@@ -380,6 +451,12 @@ class ProductServiceTest {
 
     @Test
     void updateThrowsAlreadyExistsExceptionWhenProductNameExistsTest() {
+        List<MultipartFile> multipartFiles = List.of(new MockMultipartFile(
+            "file",
+            "test.fdsf",
+            "image/fdsf",
+            new byte[0]
+        ));
         var productRequestDto = getProductRequestDto();
         var product = getProduct();
         when(productRepository.findByIdWithCollections(1L))
@@ -401,6 +478,12 @@ class ProductServiceTest {
 
     @Test
     void updateThrowsPersistenceExceptionWhenProductWithIncorrectAttributesTest() {
+        List<MultipartFile> multipartFiles = List.of(new MockMultipartFile(
+            "file",
+            "test.fdsf",
+            "image/fdsf",
+            new byte[0]
+        ));
         var product = getProduct();
         var productRequestDto = getProductRequestDto();
         productRequestDto.setAttributeValueId(List.of(3L, 1L));

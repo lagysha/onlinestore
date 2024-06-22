@@ -1,5 +1,6 @@
 package io.teamchallenge.dto.product;
 
+import io.teamchallenge.dto.ImageDto;
 import java.math.BigDecimal;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -21,5 +22,5 @@ public class ShortProductResponseDto {
     private Long id;
     private String name;
     private BigDecimal price;
-    private List<String> images;
+    private List<ImageDto> images;
 }

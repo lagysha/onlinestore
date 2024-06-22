@@ -23,11 +23,6 @@ public class ValidProductFilterDtoValidatorTest {
     private ConstraintValidatorContext context;
 
     @Test
-    void initializeTest() {
-        validProductFilterDtoValidator.initialize(null);
-    }
-
-    @Test
     void isValidReturnsTrueWhenProductFilterDtoIsNull(){
         assertTrue(validProductFilterDtoValidator.isValid(null,context));
     }
