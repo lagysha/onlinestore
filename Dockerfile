@@ -1,16 +1,14 @@
 FROM alpine/git as clone
 WORKDIR /app
+RUN git clone -b dev https://github.com/lagysha/onlinestore
 
-RUN git clone -b main https://github.com/lagysha/onlinestore
-
-FROM jelastic/maven:3.9.5-openjdk-21 as build
+FROM maven:3.9-amazoncorretto-21 as build
 WORKDIR /app
-COPY --from=clone /app/onlinestore/ /app/
-EXPOSE 80
+COPY --from=clone /app/onlinestore /app
 RUN mvn package -DskipTests
 
-FROM eclipse-temurin:21
+FROM openjdk:22-ea-21-jdk-slim
 WORKDIR /app
-COPY --from=build /app/target/*.jar /app/
+COPY --from=build /app/core/target/*.jar /app
 ENTRYPOINT ["sh", "-c"]
 CMD ["java -jar *.jar"]
