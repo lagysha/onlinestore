@@ -7,6 +7,7 @@ import io.teamchallenge.dto.product.ProductResponseDto;
 import io.teamchallenge.dto.product.ShortProductResponseDto;
 import io.teamchallenge.service.ProductService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -47,7 +48,7 @@ public class ProductController {
                                                                            "price", "createdAt"})
                                                                        @PageableDefault(sort = "createdAt",
                                                                            direction = DESC)
-                                                                       Pageable pageable) {
+                                                                       @Size Pageable pageable) {
         return ResponseEntity.ok(productService.getAll(pageable, name));
     }
 

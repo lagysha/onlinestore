@@ -34,4 +34,11 @@ public interface CartItemRepository
     @EntityGraph(attributePaths = {"product.images", "product"})
     @Query(value = "select ci from CartItem ci where ci.id in :cartItemIds")
     List<CartItem> findAllByIdWithImagesAndProducts(@Param("cartItemIds") List<CartItemId> cartItemIds, Sort sort);
+
+    /**
+     * Deletes all {@link CartItem} entities by user ID.
+     *
+     * @param userId id of {@link io.teamchallenge.entity.User}.
+     */
+    void deleteByIdUserId(Long userId);
 }

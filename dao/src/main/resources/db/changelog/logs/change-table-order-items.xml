@@ -10,5 +10,10 @@
                 <constraints nullable="false"/>
             </column>
         </addColumn>
+        <dropColumn tableName="order_items">
+            <column name="id"/>
+        </dropColumn>
+
+        <addPrimaryKey tableName="order_items" columnNames="order_id,product_id" constraintName="PK_order_items"/>
     </changeSet>
 </databaseChangeLog>

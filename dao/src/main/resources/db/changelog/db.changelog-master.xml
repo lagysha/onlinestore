@@ -31,5 +31,6 @@
     <include file="/db/changelog/logs/add-table-post_addresses.xml" relativeToChangelogFile="false"/>
     <include file="/db/changelog/logs/change-table-orders.xml" relativeToChangelogFile="false"/>
     <include file="/db/changelog/logs/change-table-order-items.xml" relativeToChangelogFile="false"/>
+    <include file="/db/changelog/logs/change-table-orders-drop-columns.xml" relativeToChangelogFile="false"/>
 
 </databaseChangeLog>

@@ -1,5 +1,6 @@
 package io.teamchallenge.entity;
 
+import io.teamchallenge.entity.orderitem.OrderItem;
 import io.teamchallenge.enumerated.DeliveryMethod;
 import io.teamchallenge.enumerated.DeliveryStatus;
 import jakarta.persistence.CascadeType;
@@ -73,4 +74,24 @@ public class Order {
     @Column(name = "created_at", updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    /**
+     * Adds an order item to the user's list of order items.
+     *
+     * @param orderItem The order item to be added.
+     */
+    public void addOrderItem(OrderItem orderItem) {
+        orderItems.add(orderItem);
+        orderItem.setOrder(this);
+    }
+
+    /**
+     * Removes an order item from the user's list of order item.
+     *
+     * @param orderItem The order item to be removed.
+     */
+    public void removeOrderItem(OrderItem orderItem) {
+        orderItems.remove(orderItem);
+        orderItem.setOrder(null);
+    }
 }

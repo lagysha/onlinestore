@@ -2,10 +2,25 @@ package io.teamchallenge.entity;
 
 import io.teamchallenge.entity.cartitem.CartItem;
 import io.teamchallenge.enumerated.Role;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,10 +66,10 @@ public class User {
 
     @Setter(AccessLevel.PRIVATE)
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinTable(name="users_orders",
-        joinColumns={@JoinColumn(name="user_id")},
-        inverseJoinColumns={@JoinColumn(name="order_id")})
-    private List<Order> orders = new ArrayList<>();
+    @JoinTable(name = "users_orders",
+        joinColumns = {@JoinColumn(name = "user_id")},
+        inverseJoinColumns = {@JoinColumn(name = "order_id")})
+    private Set<Order> orders = new HashSet<>();
 
     @Setter(AccessLevel.PRIVATE)
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
@@ -92,5 +107,23 @@ public class User {
     public void removeCarItem(CartItem cartItem) {
         cartItems.remove(cartItem);
         cartItem.setUser(null);
+    }
+
+    /**
+     * Adds an order to the user's list of orders.
+     *
+     * @param order The order to be added.
+     */
+    public void addOrder(Order order) {
+        orders.add(order);
+    }
+
+    /**
+     * Removes an order from the user's list of orders.
+     *
+     * @param order The order to be removed.
+     */
+    public void removeOrder(Order order) {
+        orders.remove(order);
     }
 }

@@ -84,7 +84,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST,
                     "/api/v1/signUp",
                     "/api/v1/signIn",
-                    "/api/v1/updateAccessToken"
+                    "/api/v1/updateAccessToken",
+                    "/api/v1/orders"
                 )
                 .permitAll()
                 .requestMatchers(HttpMethod.GET,
