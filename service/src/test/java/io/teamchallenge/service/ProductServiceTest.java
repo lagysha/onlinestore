@@ -14,6 +14,7 @@ import io.teamchallenge.repository.BrandRepository;
 import io.teamchallenge.repository.CategoryRepository;
 import io.teamchallenge.repository.ProductAttributeRepository;
 import io.teamchallenge.repository.ProductRepository;
+import io.teamchallenge.service.impl.ProductService;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
@@ -61,7 +62,7 @@ class ProductServiceTest {
     private final ImageCloudService imageCloudService;
     private final ModelMapper modelMapper;
 
-    private io.teamchallenge.service.ProductService productService;
+    private ProductService productService;
 
     public ProductServiceTest() {
         productRepository = mock(ProductRepository.class);
@@ -71,7 +72,7 @@ class ProductServiceTest {
         categoryRepository = mock(CategoryRepository.class);
         imageCloudService = mock(ImageCloudService.class);
         modelMapper = mock(ModelMapper.class);
-        productService = new io.teamchallenge.service.ProductService(productRepository, brandRepository, attributeValueRepository,
+        productService = new ProductService(productRepository, brandRepository, attributeValueRepository,
             productAttributeRepository, categoryRepository, modelMapper,imageCloudService);
         ReflectionTestUtils.setField(productService, "product_images_folder_name", PRODUCT_IMAGES_FOLDER_NAME);
     }
