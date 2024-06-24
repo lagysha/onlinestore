@@ -1,4 +1,4 @@
-package io.teamchallenge.service;
+package io.teamchallenge.service.impl;
 
 import io.teamchallenge.constant.ExceptionMessage;
 import io.teamchallenge.dto.filter.ProductFilterDto;
@@ -20,6 +20,7 @@ import io.teamchallenge.repository.BrandRepository;
 import io.teamchallenge.repository.CategoryRepository;
 import io.teamchallenge.repository.ProductAttributeRepository;
 import io.teamchallenge.repository.ProductRepository;
+import io.teamchallenge.service.ImageCloudService;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -51,6 +52,7 @@ import static io.teamchallenge.repository.ProductRepository.Specs.byPriceRange;
 
 /**
  * Service class for managing products.
+ *
  * @author Niktia Malov
  */
 @Service
@@ -66,7 +68,7 @@ public class ProductService {
     private final ImageCloudService imageCloudService;
 
     @Value("${cloudinary.product_images_folder_name}")
-    private String product_images_folder_name;
+    private String productImagesFolderName;
 
     /**
      * Retrieves a paginated list of short product response DTOs based on the provided filter
@@ -228,9 +230,9 @@ public class ProductService {
             List<Long> idsToFetch = updateProductAttributes(productRequestDto, product);
             attributeValueRepository.findAllByIdIn(idsToFetch);
             productRepository.saveAndFlush(product);
-            if(Objects.nonNull(multipartFiles) && !multipartFiles.isEmpty()) {
+            if (Objects.nonNull(multipartFiles) && !multipartFiles.isEmpty()) {
                 List<String> imagesUrls = product.getImages().stream().map(Image::getLink).toList();
-                imageCloudService.deleteImages(imagesUrls,product_images_folder_name);
+                imageCloudService.deleteImages(imagesUrls, productImagesFolderName);
                 product.clearAllImages();
                 addNewImages(multipartFiles, product);
             }
@@ -245,7 +247,7 @@ public class ProductService {
             short j = (short) (i + 1);
             product
                 .addImage(Image.builder().link(imageCloudService
-                        .uploadImage(multipartFiles.get(i), product_images_folder_name))
+                        .uploadImage(multipartFiles.get(i), productImagesFolderName))
                     .order(j)
                     .build());
         }

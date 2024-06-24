@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Utils {
+
+    public static final String PRODUCT_IMAGES_FOLDER_NAME = "productImages";
     public static Category getCategory() {
         return Category.builder()
             .id(1L)

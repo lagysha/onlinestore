@@ -18,14 +18,8 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -35,8 +29,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
-import io.teamchallenge.service.ProductService;
 
+import static io.teamchallenge.util.Utils.PRODUCT_IMAGES_FOLDER_NAME;
 import static io.teamchallenge.util.Utils.getAdvancedPageableDto;
 import static io.teamchallenge.util.Utils.getAttributeValue;
 import static io.teamchallenge.util.Utils.getBrand;
@@ -67,7 +61,7 @@ class ProductServiceTest {
     private final ImageCloudService imageCloudService;
     private final ModelMapper modelMapper;
 
-    private ProductService productService;
+    private io.teamchallenge.service.ProductService productService;
 
     public ProductServiceTest() {
         productRepository = mock(ProductRepository.class);
@@ -77,9 +71,9 @@ class ProductServiceTest {
         categoryRepository = mock(CategoryRepository.class);
         imageCloudService = mock(ImageCloudService.class);
         modelMapper = mock(ModelMapper.class);
-        productService = new ProductService(productRepository, brandRepository, attributeValueRepository,
+        productService = new io.teamchallenge.service.ProductService(productRepository, brandRepository, attributeValueRepository,
             productAttributeRepository, categoryRepository, modelMapper,imageCloudService);
-        ReflectionTestUtils.setField(productService, "product_images_folder_name", "productImages");
+        ReflectionTestUtils.setField(productService, "product_images_folder_name", PRODUCT_IMAGES_FOLDER_NAME);
     }
 
     @Test

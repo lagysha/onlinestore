@@ -1,4 +1,4 @@
-package io.teamchallenge.service;
+package io.teamchallenge.service.impl;
 
 import io.teamchallenge.dto.attributes.AttributeAttributeValueDto;
 import io.teamchallenge.dto.attributes.AttributeDto;
