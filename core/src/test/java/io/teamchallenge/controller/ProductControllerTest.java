@@ -1,6 +1,6 @@
 package io.teamchallenge.controller;
 
-import io.teamchallenge.service.ProductService;
+import io.teamchallenge.service.impl.ProductService;
 import io.teamchallenge.utils.Utils;
 import java.util.List;
 import org.junit.jupiter.api.Test;

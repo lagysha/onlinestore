@@ -7,7 +7,7 @@ import io.teamchallenge.dto.pageable.AdvancedPageableDto;
 import io.teamchallenge.dto.product.ProductRequestDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
 import io.teamchallenge.dto.product.ShortProductResponseDto;
-import io.teamchallenge.service.ProductService;
+import io.teamchallenge.service.impl.ProductService;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
