@@ -1,7 +1,8 @@
 package io.teamchallenge.controller;
 
-import io.teamchallenge.service.ProductService;
+import io.teamchallenge.service.impl.ProductService;
 import io.teamchallenge.utils.Utils;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -9,6 +10,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import static io.teamchallenge.utils.Utils.getAdvancedPageableDto;
 import static io.teamchallenge.utils.Utils.getProductFilterDto;
@@ -62,11 +65,17 @@ public class ProductControllerTest {
     void createTest() {
         var request = Utils.getProductRequestDto();
         var response = Utils.getProductResponseDto();
-        when(productService.create(request)).thenReturn(response);
+        List<MultipartFile> multipartFiles = List.of(new MockMultipartFile(
+            "file",
+            "test.fdsf",
+            "image/fdsf",
+            new byte[0]
+        ));
+        when(productService.create(request,multipartFiles)).thenReturn(response);
 
-        var responseEntity = productController.create(request);
+        var responseEntity = productController.create(multipartFiles,request);
 
-        verify(productService).create(eq(request));
+        verify(productService).create(eq(request),eq(multipartFiles));
         assertEquals(CREATED, responseEntity.getStatusCode());
         assertEquals(response, responseEntity.getBody());
     }
@@ -74,13 +83,19 @@ public class ProductControllerTest {
     @Test
     void updateTest() {
         var id = 1L;
+        List<MultipartFile> multipartFiles = List.of(new MockMultipartFile(
+            "file",
+            "test.fdsf",
+            "image/fdsf",
+            new byte[0]
+        ));
         var request = Utils.getProductRequestDto();
         var response = Utils.getProductResponseDto();
-        when(productService.update(id, request)).thenReturn(response);
+        when(productService.update(id, request, multipartFiles)).thenReturn(response);
 
-        var responseEntity = productController.update(id, request);
+        var responseEntity = productController.update(id, multipartFiles, request);
 
-        verify(productService).update(eq(id), eq(request));
+        verify(productService).update(eq(id), eq(request), eq(multipartFiles));
         assertEquals(OK, responseEntity.getStatusCode());
         assertEquals(response, responseEntity.getBody());
     }

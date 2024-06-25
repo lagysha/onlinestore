@@ -4,7 +4,7 @@ import io.teamchallenge.annotation.CurrentUserId;
 import io.teamchallenge.dto.cart.CartItemResponseDto;
 import io.teamchallenge.dto.cart.CartResponseDto;
 import io.teamchallenge.dto.cart.PatchRequestDto;
-import io.teamchallenge.service.CartItemService;
+import io.teamchallenge.service.impl.CartItemService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

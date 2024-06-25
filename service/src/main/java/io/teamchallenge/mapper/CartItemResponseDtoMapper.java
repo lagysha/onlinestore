@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
  * Mapper for {@link CartItem}.
  * @author Niktia Malov
  */
+@Component
 public class CartItemResponseDtoMapper extends AbstractConverter<CartItem, CartItemResponseDto> {
     /**
      * Converts a CartItem entity into a CartItemResponseDto object.
@@ -24,10 +25,9 @@ public class CartItemResponseDtoMapper extends AbstractConverter<CartItem, CartI
             .productId(cartItem.getProduct().getId())
             .name(cartItem.getProduct().getName())
             .price(cartItem.getProduct().getPrice())
-            .images(cartItem.getProduct().getImages()
-                .stream()
-                .map(Image::getLink)
-                .collect(Collectors.toList()))
+            .image(cartItem.getProduct().getImages()
+                .getFirst()
+                .getLink())
             .quantity(cartItem.getQuantity())
             .build();
     }

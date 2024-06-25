@@ -1,7 +1,7 @@
 package io.teamchallenge.config;
 
 import io.teamchallenge.security.filter.AccessTokenJwtAuthenticationFilter;
-import io.teamchallenge.service.JwtService;
+import io.teamchallenge.service.impl.JwtService;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,17 +104,17 @@ public class SecurityConfig {
                     "/hello")
                 .permitAll()
                 .requestMatchers(HttpMethod.GET,
-                    API_V1 + "/cart-items/{product_id}")
-                .hasRole(USER)
+                    API_V1 + "/cart-items")
+                .hasAnyRole(USER,ADMIN)
                 .requestMatchers(HttpMethod.POST,
                     API_V1 + "/cart-items/{product_id}")
-                .hasRole(USER)
+                .hasAnyRole(USER,ADMIN)
                 .requestMatchers(HttpMethod.PATCH,
                     API_V1 + "/cart-items/{product_id}")
-                .hasRole(USER)
+                .hasAnyRole(USER,ADMIN)
                 .requestMatchers(HttpMethod.DELETE,
                     API_V1 + "/cart-items/{product_id}")
-                .hasRole(USER)
+                .hasAnyRole(USER,ADMIN)
                 .requestMatchers(
                     API_V1 + "/products")
                 .hasRole(ADMIN)

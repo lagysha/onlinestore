@@ -20,7 +20,7 @@ import lombok.ToString;
 public class CartItemResponseDto {
     private Long productId;
     private Integer quantity;
-    private List<String> images;
+    private String image;
     private String name;
     private BigDecimal price;
 }

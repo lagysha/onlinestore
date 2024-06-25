@@ -8,7 +8,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.impl.DefaultHeader;
 import io.jsonwebtoken.impl.DefaultJwtParserBuilder;
 import io.jsonwebtoken.security.Keys;
-import io.teamchallenge.service.JwtService;
+import io.teamchallenge.service.impl.JwtService;
 import io.teamchallenge.utils.Utils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

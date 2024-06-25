@@ -1,18 +1,20 @@
 package io.teamchallenge.mapper;
 
+import io.teamchallenge.dto.ImageDto;
 import io.teamchallenge.dto.category.CategoryResponseDto;
 import io.teamchallenge.dto.product.ProductAttributeResponseDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
-import io.teamchallenge.entity.Image;
 import io.teamchallenge.entity.Product;
 import java.util.stream.Collectors;
 import org.modelmapper.AbstractConverter;
+import org.springframework.stereotype.Component;
 
 /**
  * Mapper for {@link Product}.
  *
  * @author Niktia Malov
  */
+@Component
 public class ProductResponseDtoMapper extends AbstractConverter<Product, ProductResponseDto> {
     /**
      * Converts a Product entity to a corresponding ProductResponseDto object.
@@ -42,7 +44,10 @@ public class ProductResponseDtoMapper extends AbstractConverter<Product, Product
                 .collect(Collectors.toList()))
             .images(product.getImages()
                 .stream()
-                .map(Image::getLink)
+                .map(img -> ImageDto.builder()
+                    .link(img.getLink())
+                    .order(img.getOrder())
+                    .build())
                 .collect(Collectors.toList()))
             .brand(product.getBrand().getName())
             .name(product.getName())

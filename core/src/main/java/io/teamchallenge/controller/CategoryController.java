@@ -2,7 +2,7 @@ package io.teamchallenge.controller;
 
 import io.teamchallenge.dto.attributes.AttributeAttributeValueDto;
 import io.teamchallenge.dto.category.CategoryResponseDto;
-import io.teamchallenge.service.CategoryService;
+import io.teamchallenge.service.impl.CategoryService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

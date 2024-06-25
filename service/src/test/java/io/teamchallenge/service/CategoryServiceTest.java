@@ -4,6 +4,7 @@ import io.teamchallenge.dto.attributes.AttributeAttributeValueDto;
 import io.teamchallenge.dto.attributes.AttributeValueDto;
 import io.teamchallenge.dto.category.CategoryResponseDto;
 import io.teamchallenge.repository.CategoryRepository;
+import io.teamchallenge.service.impl.CategoryService;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;

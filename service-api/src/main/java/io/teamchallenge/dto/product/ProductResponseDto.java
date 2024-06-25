@@ -1,5 +1,6 @@
 package io.teamchallenge.dto.product;
 
+import io.teamchallenge.dto.ImageDto;
 import io.teamchallenge.dto.category.CategoryResponseDto;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -24,7 +25,7 @@ public class ProductResponseDto {
     private String shortDesc;
     private CategoryResponseDto categoryResponseDto;
     private List<ProductAttributeResponseDto> productAttributeResponseDtos;
-    private List<String> images;
+    private List<ImageDto> images;
     private String brand;
     private String name;
     private String description;

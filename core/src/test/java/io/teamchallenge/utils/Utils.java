@@ -1,5 +1,6 @@
 package io.teamchallenge.utils;
 
+import io.teamchallenge.dto.ImageDto;
 import io.teamchallenge.dto.attributes.AttributeAttributeValueDto;
 import io.teamchallenge.dto.attributes.AttributeValueDto;
 import io.teamchallenge.dto.category.CategoryResponseDto;
@@ -57,7 +58,7 @@ public class Utils {
             .builder()
             .productId(1L)
             .quantity(1)
-            .images(new ArrayList<>())
+            .image("dddd")
             .name("name")
             .price(BigDecimal.ONE)
             .build();
@@ -94,8 +95,12 @@ public class Utils {
             .id(product.getId())
             .name(product.getName())
             .price(product.getPrice())
-            .images(product.getImages().stream()
-                .map(Image::getLink)
+            .images(product.getImages()
+                .stream()
+                .map(img -> ImageDto.builder()
+                    .link(img.getLink())
+                    .order(img.getOrder())
+                    .build())
                 .collect(Collectors.toList()))
             .build();
     }
@@ -119,7 +124,10 @@ public class Utils {
                 .collect(Collectors.toList()))
             .images(product.getImages()
                 .stream()
-                .map(Image::getLink)
+                .map(img -> ImageDto.builder()
+                    .link(img.getLink())
+                    .order(img.getOrder())
+                    .build())
                 .collect(Collectors.toList()))
             .brand(product.getBrand().getName())
             .name(product.getName())
@@ -136,7 +144,6 @@ public class Utils {
             .shortDesc("shortDesc")
             .categoryId(1L)
             .attributeValueId(List.of(1L))
-            .imageLinks(List.of("https://image.jpg"))
             .brandId(1L)
             .name("name")
             .description("desc")
@@ -260,4 +267,6 @@ public class Utils {
             .description("Nothing")
             .build();
     }
+
+
 }

@@ -23,4 +23,7 @@ public class Image {
 
     @Column(nullable = false, unique = true)
     private String link;
+
+    @Column(nullable = false, unique = true,name = "image_order")
+    private Short order;
 }

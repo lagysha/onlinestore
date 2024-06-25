@@ -20,9 +20,9 @@ VALUES (1, 'Smartphone', 1, 1, 'Example Smartphone', 'This is an example smartph
 INSERT INTO Addresses (user_id, address_line, city, postal_code, country_id)
 VALUES (1, '123 Main St', 'New York', '10001', 1),
        (2, '456 High St', 'London', 'SW1A 1AA', 2);
-INSERT INTO Images (id, product_id, link)
-VALUES (1, 1, 'https://example.com/image1.jpg'),
-       (2, 2, 'https://example.com/image2.jpg');
+INSERT INTO Images (id, product_id, link, image_order)
+VALUES (1, 1, 'https://example.com/image1.jpg', 1),
+       (2, 2, 'https://example.com/image2.jpg', 1);
 INSERT INTO Orders (id, user_id, status, total, created_at)
 VALUES (1, 1, 'Pending', 599.99, '2024-05-10 12:00:00'),
        (2, 2, 'Pending', 19.99, '2024-05-10 13:00:00');

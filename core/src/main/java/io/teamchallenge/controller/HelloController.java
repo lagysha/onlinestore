@@ -19,7 +19,7 @@ public class HelloController {
      * @return A greeting message with the provided name, or "Hello, Unknown" if no name is provided.
      */
     @GetMapping("/hello")
-    public String greetings(@RequestParam Optional<String> name, @CurrentUserId Long userId) {
-        return "Hello, " + name.orElse("Unknown") + userId;
+    public String greetings(@RequestParam Optional<String> name) {
+        return "Hello, " + name.orElse("Unknown");
     }
 }

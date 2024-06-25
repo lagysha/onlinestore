@@ -1,4 +1,4 @@
-package io.teamchallenge.service;
+package io.teamchallenge.service.impl;
 
 import io.teamchallenge.constant.ExceptionMessage;
 import io.teamchallenge.dto.filter.ProductFilterDto;
@@ -20,22 +20,25 @@ import io.teamchallenge.repository.BrandRepository;
 import io.teamchallenge.repository.CategoryRepository;
 import io.teamchallenge.repository.ProductAttributeRepository;
 import io.teamchallenge.repository.ProductRepository;
+import io.teamchallenge.service.ImageCloudService;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import static io.teamchallenge.constant.ExceptionMessage.BRAND_NOT_FOUND_BY_ID;
 import static io.teamchallenge.constant.ExceptionMessage.CATEGORY_NOT_FOUND_BY_ID;
@@ -49,6 +52,7 @@ import static io.teamchallenge.repository.ProductRepository.Specs.byPriceRange;
 
 /**
  * Service class for managing products.
+ *
  * @author Niktia Malov
  */
 @Service
@@ -61,6 +65,10 @@ public class ProductService {
     private final ProductAttributeRepository productAttributeRepository;
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
+    private final ImageCloudService imageCloudService;
+
+    @Value("${cloudinary.product_images_folder_name}")
+    private String productImagesFolderName;
 
     /**
      * Retrieves a paginated list of short product response DTOs based on the provided filter
@@ -154,7 +162,7 @@ public class ProductService {
      * @throws AlreadyExistsException if the product name is invalid.
      */
     @Transactional
-    public ProductResponseDto create(ProductRequestDto productRequestDto) {
+    public ProductResponseDto create(ProductRequestDto productRequestDto, List<MultipartFile> multipartFiles) {
         var brand = getBrandById(productRequestDto);
         var category = getCategoryById(productRequestDto);
         validateProductName(productRequestDto);
@@ -170,11 +178,6 @@ public class ProductService {
             .productAttributes(new ArrayList<>())
             .build();
 
-        productRequestDto.getImageLinks()
-            .forEach(link -> product
-                .addImage(Image.builder().link(link).build()));
-
-
         productRequestDto.getAttributeValueId()
             .forEach(attributeValueId ->
                 product.addProductAttribute(ProductAttribute
@@ -186,6 +189,7 @@ public class ProductService {
 
         try {
             var savedProduct = productRepository.save(product);
+            addNewImages(multipartFiles, product);
             productAttributeRepository.findAllByIdIn(productRequestDto.getAttributeValueId());
 
             return modelMapper.map(savedProduct, ProductResponseDto.class);
@@ -206,7 +210,7 @@ public class ProductService {
      * @throws AlreadyExistsException if the product name is invalid.
      */
     @Transactional
-    public ProductResponseDto update(Long id, ProductRequestDto productRequestDto) {
+    public ProductResponseDto update(Long id, ProductRequestDto productRequestDto, List<MultipartFile> multipartFiles) {
         var product = productRepository
             .findByIdWithCollections(id)
             .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID.formatted(id)));
@@ -222,17 +226,30 @@ public class ProductService {
         product.setShortDesc(productRequestDto.getShortDesc());
         product.setPrice(productRequestDto.getPrice());
 
-        product.clearAllImages();
-        productRequestDto.getImageLinks()
-            .forEach(link -> product
-                .addImage(Image.builder().link(link).build()));
-
         try {
             List<Long> idsToFetch = updateProductAttributes(productRequestDto, product);
             attributeValueRepository.findAllByIdIn(idsToFetch);
+            productRepository.saveAndFlush(product);
+            if (Objects.nonNull(multipartFiles) && !multipartFiles.isEmpty()) {
+                List<String> imagesUrls = product.getImages().stream().map(Image::getLink).toList();
+                imageCloudService.deleteImages(imagesUrls, productImagesFolderName);
+                product.clearAllImages();
+                addNewImages(multipartFiles, product);
+            }
             return modelMapper.map(product, ProductResponseDto.class);
         } catch (DataIntegrityViolationException e) {
             throw new PersistenceException(PRODUCT_PERSISTENCE_EXCEPTION, e);
+        }
+    }
+
+    private void addNewImages(List<MultipartFile> multipartFiles, Product product) {
+        for (short i = 0; i < multipartFiles.size(); i++) {
+            short j = (short) (i + 1);
+            product
+                .addImage(Image.builder().link(imageCloudService
+                        .uploadImage(multipartFiles.get(i), productImagesFolderName))
+                    .order(j)
+                    .build());
         }
     }
 
