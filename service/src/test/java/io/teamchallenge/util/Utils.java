@@ -33,10 +33,22 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 public class Utils {
 
     public static final String PRODUCT_IMAGES_FOLDER_NAME = "productImages";
+    public static final String SAMPLE_URL = "https://example.com";
+
+    public static MultipartFile getMultipartFile(){
+        return new MockMultipartFile(
+            "file",
+            "test.fdsf",
+            "image/fdsf",
+            new byte[0]
+        );
+    }
     public static Category getCategory() {
         return Category.builder()
             .id(1L)
