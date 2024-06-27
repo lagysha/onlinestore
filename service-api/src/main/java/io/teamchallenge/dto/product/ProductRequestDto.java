@@ -24,9 +24,9 @@ import lombok.ToString;
 public class ProductRequestDto {
     @Size(min = 1,max = 255, message = "shortDesc is too long. Max size is 255 chars")
     private String shortDesc;
-    private Long categoryId;
+    private String categoryName;
     private List<Long> attributeValueId;
-    private Long brandId;
+    private String brandName;
     @Size(min = 1,max = 255, message = "name is too long. Max size is 255 chars")
     private String name;
     @NotBlank

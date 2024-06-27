@@ -163,8 +163,16 @@ public class ProductService {
      */
     @Transactional
     public ProductResponseDto create(ProductRequestDto productRequestDto, List<MultipartFile> multipartFiles) {
-        var brand = getBrandById(productRequestDto);
-        var category = getCategoryById(productRequestDto);
+        var brand = brandRepository.findByName(productRequestDto.getName())
+            .orElseGet(() -> Brand
+                .builder()
+                .name(productRequestDto.getName())
+                .build());
+        var category = categoryRepository.findByName(productRequestDto.getName())
+            .orElseGet(() -> Category
+                .builder()
+                .name(productRequestDto.getName())
+                .build());
         validateProductName(productRequestDto);
         var product = Product.builder()
             .name(productRequestDto.getName())
@@ -178,6 +186,11 @@ public class ProductService {
             .productAttributes(new ArrayList<>())
             .build();
 
+        //Here we can add additional list
+        // We have Dto in it with Attribute name and AttributeValue
+        // In structure attributeName, attributeValue , isNewAttribute
+        // If new attribute we create It along with Category Attribute,
+        // If flag is false we just create AttributeValue
         productRequestDto.getAttributeValueId()
             .forEach(attributeValueId ->
                 product.addProductAttribute(ProductAttribute
@@ -214,8 +227,16 @@ public class ProductService {
         var product = productRepository
             .findByIdWithCollections(id)
             .orElseThrow(() -> new NotFoundException(ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID.formatted(id)));
-        var brand = getBrandById(productRequestDto);
-        var category = getCategoryById(productRequestDto);
+        var brand = brandRepository.findByName(productRequestDto.getName())
+            .orElseGet(() -> Brand
+                .builder()
+                .name(productRequestDto.getName())
+                .build());
+        var category = categoryRepository.findByName(productRequestDto.getName())
+            .orElseGet(() -> Category
+                .builder()
+                .name(productRequestDto.getName())
+                .build());
         validateProductNameWhereIdNotEquals(productRequestDto, id);
 
         product.setBrand(brand);
@@ -293,16 +314,6 @@ public class ProductService {
             throw new AlreadyExistsException(
                 PRODUCT_WITH_NAME_ALREADY_EXISTS.formatted(productRequestDto.getName()));
         }
-    }
-
-    private Brand getBrandById(ProductRequestDto productRequestDto) {
-        return brandRepository.findById(productRequestDto.getBrandId()).orElseThrow(
-            () -> new NotFoundException(BRAND_NOT_FOUND_BY_ID.formatted(productRequestDto.getBrandId())));
-    }
-
-    private Category getCategoryById(ProductRequestDto productRequestDto) {
-        return categoryRepository.findById(productRequestDto.getCategoryId()).orElseThrow(
-            () -> new NotFoundException(CATEGORY_NOT_FOUND_BY_ID.formatted(productRequestDto.getCategoryId())));
     }
 
     private Specification<Product> getSpecificationFromFilterDto(ProductFilterDto productFilterDto) {

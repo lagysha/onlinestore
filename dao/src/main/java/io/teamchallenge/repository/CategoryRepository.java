@@ -1,8 +1,10 @@
 package io.teamchallenge.repository;
 
 import io.teamchallenge.dto.category.CategoryAttributeAttributeValueVO;
+import io.teamchallenge.entity.Brand;
 import io.teamchallenge.entity.Category;
 import io.teamchallenge.entity.cartitem.CartItem;
+import java.util.Optional;
 import java.util.stream.Stream;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -33,4 +35,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
         + "join Attribute a on av.attribute.id = a.id "
         + "where p.category.id = :categoryId")
     Stream<CategoryAttributeAttributeValueVO> findAllAttributeAttributeValueByCategory(Long categoryId);
+
+    Optional<Category> findByName(String name);
 }
