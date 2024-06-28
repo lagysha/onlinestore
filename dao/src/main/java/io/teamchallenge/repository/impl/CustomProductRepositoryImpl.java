@@ -74,16 +74,14 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
     public Page<Long> findAllProductIds(@Nullable Specification<Product> specification, Pageable pageable) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Long> query = cb.createQuery(Long.class);
-
         Root<Product> root = query.from(Product.class);
-        query.select(root.get("id"));
 
+        query.select(root.get("id"));
         if (Objects.nonNull(specification)) {
             query.where(specification.toPredicate(root, query, cb));
         }
-
-        query.orderBy(QueryUtils.toOrders(pageable.getSort(), root, cb));
         query.groupBy(root.get("id"));
+        addSortPartToQuery(pageable, query, root, cb);
 
         List<Long> productIds = entityManager.createQuery(query).setFirstResult((int) pageable.getOffset())
             .setMaxResults(pageable.getPageSize()).getResultList();
@@ -99,5 +97,16 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
         Long count = entityManager.createQuery(countQuery).getSingleResult();
 
         return new PageImpl<>(productIds, pageable, count);
+    }
+
+    private void addSortPartToQuery(Pageable pageable, CriteriaQuery<Long> query, Root<Product> root,
+                                  CriteriaBuilder cb) {
+        if(Objects.nonNull(pageable.getSort().getOrderFor("price"))){
+            query.orderBy(QueryUtils.toOrders(pageable.getSort(), root, cb));
+        } else if (Objects.nonNull(pageable.getSort().getOrderFor("popularity"))) {
+            System.out.println("Popularity sorting");
+        }else{
+            System.out.println("Rating sorting");
+        }
     }
 }
