@@ -96,6 +96,17 @@ public class SecurityConfig {
                     API_V1 + "/updateAccessToken"
                 )
                 .permitAll()
+                .requestMatchers(HttpMethod.OPTIONS, "/**")
+                .permitAll()
+                .requestMatchers(
+                    "/v3/api-docs/**",
+                    "/swagger.json",
+                    "/swagger-ui.html",
+                    "/swagger-ui/index.html",
+                    "/swagger-ui/**",
+                    "/swagger-resources/**",
+                    "/webjars/**")
+                .permitAll()
                 .requestMatchers(HttpMethod.GET,
                     API_V1 + "/categories/{categoryId}/attribute-attributeValues",
                     API_V1 + "/products",
