@@ -185,7 +185,7 @@ public class Utils {
             .builder()
             .shortDesc("shortDesc")
             .categoryId(1L)
-            .attributeValueId(List.of(1L))
+            .attributeValueIds(List.of(1L))
             .brandId(1L)
             .name("name")
             .description("desc")

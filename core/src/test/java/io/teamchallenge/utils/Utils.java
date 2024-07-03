@@ -2,7 +2,12 @@ package io.teamchallenge.utils;
 
 import io.teamchallenge.dto.ImageDto;
 import io.teamchallenge.dto.attributes.AttributeAttributeValueDto;
+import io.teamchallenge.dto.attributes.AttributeRequestDto;
+import io.teamchallenge.dto.attributes.AttributeResponseDto;
 import io.teamchallenge.dto.attributes.AttributeValueDto;
+import io.teamchallenge.dto.brand.BrandRequestDto;
+import io.teamchallenge.dto.brand.BrandResponseDto;
+import io.teamchallenge.dto.category.CategoryRequestDto;
 import io.teamchallenge.dto.category.CategoryResponseDto;
 import io.teamchallenge.dto.cart.CartItemResponseDto;
 import io.teamchallenge.dto.cart.CartResponseDto;
@@ -143,7 +148,7 @@ public class Utils {
             .builder()
             .shortDesc("shortDesc")
             .categoryId(1L)
-            .attributeValueId(List.of(1L))
+            .attributeValueIds(List.of(1L))
             .brandId(1L)
             .name("name")
             .description("desc")
@@ -268,5 +273,37 @@ public class Utils {
             .build();
     }
 
+    public static CategoryRequestDto getCategoryRequestDto() {
+        return CategoryRequestDto.builder()
+            .name("Laptops")
+            .description("Nothing")
+            .build();
+    }
 
+    public static BrandRequestDto getBrandRequestDto() {
+        return BrandRequestDto.builder()
+            .name("Laptops")
+            .build();
+    }
+
+    public static BrandResponseDto getBrandResponseDto() {
+        return BrandResponseDto.builder()
+            .id(1L)
+            .name("Laptops")
+            .build();
+    }
+
+    public static AttributeRequestDto getAttributeRequestDto() {
+        return AttributeRequestDto.builder()
+            .categoryId(1L)
+            .name("Laptops")
+            .build();
+    }
+
+    public static AttributeResponseDto getAttributeResponseDto() {
+        return AttributeResponseDto.builder()
+            .id(1L)
+            .name("Laptops")
+            .build();
+    }
 }

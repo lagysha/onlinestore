@@ -99,6 +99,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET,
                     API_V1 + "/categories/{categoryId}/attribute-attributeValues",
                     API_V1 + "/products",
+                    API_V1 + "/brands",
+                    API_V1 + "/attributes",
                     API_V1 + "/categories",
                     API_V1 + "/products/{id}",
                     "/hello")
@@ -115,11 +117,14 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.DELETE,
                     API_V1 + "/cart-items/{product_id}")
                 .hasAnyRole(USER,ADMIN)
-                .requestMatchers(
-                    API_V1 + "/products")
+                .requestMatchers(HttpMethod.POST,
+                    API_V1 + "/cart-items/{product_id}",
+                    API_V1 + "/brands",
+                    API_V1 + "/categories",
+                    API_V1 + "/attributes")
                 .hasRole(ADMIN)
                 .anyRequest()
-                .hasRole(ADMIN)
+                .hasAnyRole(ADMIN)
             ).build();
     }
 

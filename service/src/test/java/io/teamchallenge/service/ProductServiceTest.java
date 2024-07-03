@@ -10,6 +10,7 @@ import io.teamchallenge.entity.attributes.AttributeValue;
 import io.teamchallenge.exception.AlreadyExistsException;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.exception.PersistenceException;
+import io.teamchallenge.repository.AttributeRepository;
 import io.teamchallenge.repository.AttributeValueRepository;
 import io.teamchallenge.repository.BrandRepository;
 import io.teamchallenge.repository.CategoryRepository;
@@ -64,6 +65,7 @@ class ProductServiceTest {
     private final CategoryRepository categoryRepository;
     private final ImageCloudService imageCloudService;
     private final ModelMapper modelMapper;
+    private final AttributeRepository attributeRepository;
 
     private ProductService productService;
 
@@ -75,7 +77,8 @@ class ProductServiceTest {
         categoryRepository = mock(CategoryRepository.class);
         imageCloudService = mock(ImageCloudService.class);
         modelMapper = mock(ModelMapper.class);
-        productService = new ProductService(productRepository, brandRepository, attributeValueRepository,
+        attributeRepository = mock(AttributeRepository.class);
+        productService = new ProductService(productRepository,attributeRepository, brandRepository, attributeValueRepository,
             productAttributeRepository, categoryRepository, modelMapper,imageCloudService);
         ReflectionTestUtils.setField(productService, "productImagesFolderName", PRODUCT_IMAGES_FOLDER_NAME);
     }
@@ -231,7 +234,7 @@ class ProductServiceTest {
             thenReturn(Optional.of(product.getCategory()));
         when(attributeValueRepository.getReferenceById(1L))
             .thenReturn(getAttributeValue());
-        when(productAttributeRepository.findAllByIdIn(productRequestDto.getAttributeValueId()))
+        when(productAttributeRepository.findAllByIdIn(productRequestDto.getAttributeValueIds()))
             .thenReturn(product.getProductAttributes());
         when(modelMapper.map(savedProduct, ProductResponseDto.class))
             .thenReturn(productResponseDto);
@@ -245,7 +248,7 @@ class ProductServiceTest {
         verify(productRepository).save(eq(product));
         verify(productRepository).findByName(eq(product.getName()));
         verify(attributeValueRepository).getReferenceById(eq(1L));
-        verify(productAttributeRepository).findAllByIdIn(eq(productRequestDto.getAttributeValueId()));
+        verify(productAttributeRepository).findAllByIdIn(eq(productRequestDto.getAttributeValueIds()));
         verify(modelMapper).map(eq(savedProduct), eq(ProductResponseDto.class));
         assertEquals(productResponseDto, actual);
     }
@@ -305,7 +308,7 @@ class ProductServiceTest {
         var savedProduct = getProduct();
         savedProduct.setId(1L);
         var productRequestDto = getProductRequestDto();
-        productRequestDto.setAttributeValueId(List.of(duplicatedOrNonExistingAttributeValueId));
+        productRequestDto.setAttributeValueIds(List.of(duplicatedOrNonExistingAttributeValueId));
         when(productRepository.save(product))
             .thenThrow(DataIntegrityViolationException.class);
         when(productRepository.findByName(product.getName()))
@@ -472,7 +475,7 @@ class ProductServiceTest {
         List<MultipartFile> multipartFiles = List.of(getMultipartFile());
         var product = getProduct();
         var productRequestDto = getProductRequestDto();
-        productRequestDto.setAttributeValueId(List.of(3L, 1L));
+        productRequestDto.setAttributeValueIds(List.of(3L, 1L));
         AttributeValue attributeValue = getAttributeValue();
         attributeValue.setId(3L);
         when(productRepository.findByIdWithCollections(1L))

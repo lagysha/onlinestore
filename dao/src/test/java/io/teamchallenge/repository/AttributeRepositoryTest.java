@@ -1,5 +1,7 @@
 package io.teamchallenge.repository;
 
+import io.teamchallenge.entity.attributes.Attribute;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -13,13 +15,14 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Testcontainers
 @ActiveProfiles("ts")
 @Sql(scripts = "classpath:data.sql")
-public class CategoryRepositoryTCTest {
+public class AttributeRepositoryTest {
 
     @Container
     @ServiceConnection
@@ -27,15 +30,13 @@ public class CategoryRepositoryTCTest {
         new PostgreSQLContainer<>(DockerImageName.parse("postgres:16-alpine"));
 
     @Autowired
-    private CategoryRepository categoryRepository;
+    private  AttributeRepository attributeRepository;
 
     @Test
-    void findAllAttributeAttributeValueByCategoryInProductsTest() {
-        var expected = categoryRepository.findAllAttributeAttributeValueByCategoryInProducts(1L).toList();
-        assertEquals(2, expected.size());
-        assertEquals(1L, expected.getFirst().getAttributeId());
-        assertEquals(1L, expected.getFirst().getAttributeValueId());
-        assertEquals(3L, expected.get(1).getAttributeId());
-        assertEquals(5L, expected.get(1).getAttributeValueId());
+    void findNameTest() {
+        String name = "Size";
+        Optional<Attribute> attribute = attributeRepository.findByName(name);
+        assertFalse(attribute.isEmpty());
+        assertEquals(name, attribute.get().getName());
     }
 }

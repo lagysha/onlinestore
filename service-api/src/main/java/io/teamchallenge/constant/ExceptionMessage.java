@@ -16,6 +16,8 @@ public final class ExceptionMessage {
     public static final String PRODUCT_PERSISTENCE_EXCEPTION
         = "The product with such attributes can't be created due to following reasons: "
         + "attributes duplication or non-existence";
+    public static final String ATTRIBUTE_PERSISTENCE_EXCEPTION
+        = "The pair of attribute and category already exists";
     public static final String TOKEN_HAS_BEEN_EXPIRED = "Token has been expired";
     public static final String TOKEN_DOES_NOT_CONTAIN_SUBJECT = "Token does not contain subject";
     public static final String TOKEN_WAS_NOT_SIGNED_BY_USER = "Token was not signed using user's key";

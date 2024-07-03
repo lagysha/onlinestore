@@ -11,10 +11,12 @@ import io.teamchallenge.entity.Brand;
 import io.teamchallenge.entity.Category;
 import io.teamchallenge.entity.Image;
 import io.teamchallenge.entity.Product;
+import io.teamchallenge.entity.attributes.AttributeValue;
 import io.teamchallenge.entity.attributes.ProductAttribute;
 import io.teamchallenge.exception.AlreadyExistsException;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.exception.PersistenceException;
+import io.teamchallenge.repository.AttributeRepository;
 import io.teamchallenge.repository.AttributeValueRepository;
 import io.teamchallenge.repository.BrandRepository;
 import io.teamchallenge.repository.CategoryRepository;
@@ -52,7 +54,6 @@ import static io.teamchallenge.repository.ProductRepository.Specs.byPriceRange;
 
 /**
  * Service class for managing products.
- *
  * @author Niktia Malov
  */
 @Service
@@ -60,6 +61,7 @@ import static io.teamchallenge.repository.ProductRepository.Specs.byPriceRange;
 @Transactional(readOnly = true)
 public class ProductService {
     private final ProductRepository productRepository;
+    private final AttributeRepository attributeRepository;
     private final BrandRepository brandRepository;
     private final AttributeValueRepository attributeValueRepository;
     private final ProductAttributeRepository productAttributeRepository;
@@ -153,13 +155,12 @@ public class ProductService {
 
 
     /**
-     * Creates a new product based on the provided ProductRequestDto.
+     * Creates a new product.
      *
-     * @param productRequestDto The ProductRequestDto containing the details of the product to create.
-     * @return The ProductResponseDto representing the created product.
-     * @throws PersistenceException   if there is an issue creating the product.
-     * @throws NotFoundException      if the brand or category specified in the request is not found.
-     * @throws AlreadyExistsException if the product name is invalid.
+     * @param productRequestDto the DTO containing the details of the product to create
+     * @param multipartFiles the list of multipart files to be associated with the product
+     * @return a {@link ProductResponseDto} containing the details of the created product
+     * @throws PersistenceException if there is a data integrity violation during the save operation
      */
     @Transactional
     public ProductResponseDto create(ProductRequestDto productRequestDto, List<MultipartFile> multipartFiles) {
@@ -177,20 +178,13 @@ public class ProductService {
             .images(new ArrayList<>())
             .productAttributes(new ArrayList<>())
             .build();
-
-        productRequestDto.getAttributeValueId()
-            .forEach(attributeValueId ->
-                product.addProductAttribute(ProductAttribute
-                    .builder()
-                    .attributeValue(attributeValueRepository
-                        .getReferenceById(attributeValueId))
-                    .build())
-            );
+        insertExistingAttributes(productRequestDto, product);
+        insertNewAttributes(productRequestDto, product);
 
         try {
             var savedProduct = productRepository.save(product);
             addNewImages(multipartFiles, product);
-            productAttributeRepository.findAllByIdIn(productRequestDto.getAttributeValueId());
+            productAttributeRepository.findAllByIdIn(productRequestDto.getAttributeValueIds());
 
             return modelMapper.map(savedProduct, ProductResponseDto.class);
         } catch (DataIntegrityViolationException e) {
@@ -198,16 +192,15 @@ public class ProductService {
         }
     }
 
-
     /**
-     * Updates an existing product with the provided ID using the details from the ProductRequestDto.
+     * Updates an existing product.
      *
-     * @param id                The identifier of the product to update.
-     * @param productRequestDto The ProductRequestDto containing the updated details of the product.
-     * @return The ProductResponseDto representing the updated product.
-     * @throws PersistenceException   if there is an issue creating the product.
-     * @throws NotFoundException      if the brand or category specified in the request is not found.
-     * @throws AlreadyExistsException if the product name is invalid.
+     * @param id the ID of the product to update
+     * @param productRequestDto the DTO containing the updated details of the product
+     * @param multipartFiles the list of multipart files to be associated with the product
+     * @return a {@link ProductResponseDto} containing the details of the updated product
+     * @throws NotFoundException if the product with the given ID is not found
+     * @throws PersistenceException if there is a data integrity violation during the update operation
      */
     @Transactional
     public ProductResponseDto update(Long id, ProductRequestDto productRequestDto, List<MultipartFile> multipartFiles) {
@@ -225,9 +218,10 @@ public class ProductService {
         product.setQuantity(productRequestDto.getQuantity());
         product.setShortDesc(productRequestDto.getShortDesc());
         product.setPrice(productRequestDto.getPrice());
+        insertNewAttributes(productRequestDto,product);
 
+        List<Long> idsToFetch = updateProductAttributes(productRequestDto, product);
         try {
-            List<Long> idsToFetch = updateProductAttributes(productRequestDto, product);
             attributeValueRepository.findAllByIdIn(idsToFetch);
             productRepository.saveAndFlush(product);
             if (Objects.nonNull(multipartFiles) && !multipartFiles.isEmpty()) {
@@ -236,6 +230,7 @@ public class ProductService {
                 product.clearAllImages();
                 addNewImages(multipartFiles, product);
             }
+
             return modelMapper.map(product, ProductResponseDto.class);
         } catch (DataIntegrityViolationException e) {
             throw new PersistenceException(PRODUCT_PERSISTENCE_EXCEPTION, e);
@@ -257,7 +252,7 @@ public class ProductService {
     private List<Long> updateProductAttributes(ProductRequestDto productRequestDto, Product product) {
         product.getProductAttributes()
             .stream().filter(
-                productAttribute -> !productRequestDto.getAttributeValueId()
+                productAttribute -> !productRequestDto.getAttributeValueIds()
                     .contains(productAttribute.getAttributeValue().getId()))
             .toList()
             .forEach(product::removeProductAttribute);
@@ -265,7 +260,7 @@ public class ProductService {
             .stream().map(productAttribute -> productAttribute.getAttributeValue().getId())
             .toList();
         List<Long> idsToFetch = new ArrayList<>();
-        for (Long attributeId : productRequestDto.getAttributeValueId()) {
+        for (Long attributeId : productRequestDto.getAttributeValueIds()) {
             if (!productAttributeAttributeValueIds.contains(attributeId)) {
                 product.addProductAttribute(ProductAttribute
                     .builder()
@@ -338,5 +333,34 @@ public class ProductService {
                 filterDto.getName(),
                 filterDto.getPrice())
             .allMatch(Objects::isNull);
+    }
+
+    private void insertNewAttributes(ProductRequestDto productRequestDto, Product product) {
+        if(Objects.nonNull(productRequestDto.getAttributeAttributeValueRequestDtos())) {
+            productRequestDto.getAttributeAttributeValueRequestDtos()
+                .forEach(entry ->
+                    product.addProductAttribute(ProductAttribute
+                        .builder()
+                        .attributeValue(attributeValueRepository
+                            .save(AttributeValue.builder()
+                                .value(entry.getAttributeValue())
+                                .attribute(attributeRepository.getReferenceById(entry.getAttributeId()))
+                                .build()))
+                        .build())
+                );
+        }
+    }
+
+    private void insertExistingAttributes(ProductRequestDto productRequestDto, Product product) {
+        if(Objects.nonNull(productRequestDto.getAttributeValueIds())) {
+            productRequestDto.getAttributeValueIds()
+                .forEach(attributeValueId ->
+                    product.addProductAttribute(ProductAttribute
+                        .builder()
+                        .attributeValue(attributeValueRepository
+                            .getReferenceById(attributeValueId))
+                        .build())
+                );
+        }
     }
 }

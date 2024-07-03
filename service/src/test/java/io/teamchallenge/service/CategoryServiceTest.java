@@ -45,12 +45,12 @@ public class CategoryServiceTest {
                 .name("Big")
                 .build()))
             .build());
-        when(categoryRepository.findAllAttributeAttributeValueByCategory(categoryId))
+        when(categoryRepository.findAllAttributeAttributeValueByCategoryInProducts(categoryId))
             .thenReturn(Stream.of(getAttributeAttributeValueVO()));
 
-        var actual = categoryService.getAttributeAttributeValueByCategory(categoryId);
+        var actual = categoryService.getAttributeAttributeValueByCategoryInProducts(categoryId);
 
-        verify(categoryRepository).findAllAttributeAttributeValueByCategory(eq(categoryId));
+        verify(categoryRepository).findAllAttributeAttributeValueByCategoryInProducts(eq(categoryId));
         assertEquals(expected,actual);
     }
 
@@ -64,7 +64,7 @@ public class CategoryServiceTest {
         when(modelMapper.map(category, CategoryResponseDto.class))
             .thenReturn(getCategoryResponseDto());
 
-        var actual = categoryService.getAll();
+        var actual = categoryService.findAll();
 
         verify(categoryRepository).findAll();
         assertEquals(expected,actual);
