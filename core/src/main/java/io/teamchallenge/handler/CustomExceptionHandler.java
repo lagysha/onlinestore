@@ -3,6 +3,7 @@ package io.teamchallenge.handler;
 import io.teamchallenge.exception.AlreadyExistsException;
 import io.teamchallenge.exception.BadCredentialsException;
 import io.teamchallenge.exception.BadTokenException;
+import io.teamchallenge.exception.ConflictException;
 import io.teamchallenge.exception.ExceptionResponse;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.exception.PersistenceException;
@@ -178,6 +179,21 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(webRequest));
         log.trace(e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(exceptionResponse);
+    }
+
+    /**
+     * Exception handler method to handle ConflictException.
+     *
+     * @param e          The ConflictException instance that occurred.
+     * @param webRequest The WebRequest associated with the request.
+     * @return A ResponseEntity containing the ExceptionResponse with HttpStatus.CONFLICT.
+     */
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ExceptionResponse> handleConflictException(ConflictException e, WebRequest webRequest) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(webRequest));
+        log.trace(e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.CONFLICT)
             .body(exceptionResponse);
     }
 

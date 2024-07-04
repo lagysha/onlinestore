@@ -12,6 +12,7 @@ import io.teamchallenge.entity.orderitem.OrderItem;
 import io.teamchallenge.entity.orderitem.OrderItemId;
 import io.teamchallenge.enumerated.DeliveryMethod;
 import io.teamchallenge.enumerated.DeliveryStatus;
+import io.teamchallenge.exception.ConflictException;
 import io.teamchallenge.exception.ForbiddenException;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.repository.CartItemRepository;
@@ -23,11 +24,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static io.teamchallenge.constant.ExceptionMessage.PRODUCT_QUANTITY_CONFLICT;
 import static io.teamchallenge.constant.ExceptionMessage.USER_NOT_FOUND_BY_EMAIL;
+import static io.teamchallenge.constant.ExceptionMessage.USER_WITH_EMAIL_ALREADY_EXISTS;
 import static io.teamchallenge.constant.ExceptionMessage.USER_WITH_PHONE_NUMBER_ALREADY_EXISTS;
 
 @Service
@@ -51,26 +55,15 @@ public class OrderService {
      */
     @Transactional
     public Long create(OrderRequestDto orderRequestDto, Principal userPrincipal) {
-        Order order = Order.builder()
-            .contactInfo(ContactInfo.builder()
-                .email(orderRequestDto.getEmail())
-                .firstName(orderRequestDto.getFirstName())
-                .lastName(orderRequestDto.getLastName())
-                .phoneNumber(orderRequestDto.getPhoneNumber())
-                .build())
-            .address(modelMapper.map(orderRequestDto.getAddress(), Address.class))
-            .deliveryMethod(orderRequestDto.getDeliveryMethod())
-            .deliveryStatus(DeliveryStatus.PROCESSING)
-            .orderItems(new ArrayList<>())
-            .isPaid(false)
-            .build();
+        Order order = createOrderSample(orderRequestDto);
 
         if (userPrincipal == null) {
             if (userRepository.existsByEmail(orderRequestDto.getEmail())) {
-                throw new ForbiddenException(USER_NOT_FOUND_BY_EMAIL);
+                throw new ForbiddenException(USER_WITH_EMAIL_ALREADY_EXISTS.formatted(orderRequestDto.getEmail()));
             }
             if (userRepository.existsByPhoneNumber(orderRequestDto.getPhoneNumber())) {
-                throw new ForbiddenException(USER_WITH_PHONE_NUMBER_ALREADY_EXISTS);
+                throw new ForbiddenException(USER_WITH_PHONE_NUMBER_ALREADY_EXISTS.formatted(
+                    orderRequestDto.getPhoneNumber()));
             }
         } else {
             String email = userPrincipal.getName();
@@ -78,11 +71,12 @@ public class OrderService {
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND_BY_EMAIL.formatted(email)));
             if (userRepository.existsByEmail(orderRequestDto.getEmail())
                 && !orderRequestDto.getEmail().equals(user.getEmail())) {
-                throw new ForbiddenException(USER_NOT_FOUND_BY_EMAIL);
+                throw new ForbiddenException(USER_WITH_EMAIL_ALREADY_EXISTS.formatted(orderRequestDto.getEmail()));
             }
             if (userRepository.existsByPhoneNumber(orderRequestDto.getPhoneNumber())
                 && !orderRequestDto.getPhoneNumber().equals(user.getPhoneNumber())) {
-                throw new ForbiddenException(USER_WITH_PHONE_NUMBER_ALREADY_EXISTS);
+                throw new ForbiddenException(USER_WITH_PHONE_NUMBER_ALREADY_EXISTS.formatted(
+                    orderRequestDto.getPhoneNumber()));
             }
             cartItemRepository.deleteByIdUserId(user.getId());
             user.addOrder(order);
@@ -97,12 +91,16 @@ public class OrderService {
         List<Product> products = productRepository.findAllById(orderRequestDto.getCartItems().stream()
             .map(CartItemRequestDto::getProductId)
             .collect(Collectors.toList()));
+
         Order savedOrder = orderRepository.save(order);
         orderRequestDto.getCartItems().stream().map(cartItem -> {
             Product product = products.stream()
-                .filter(p -> p.getId()
-                    .equals(cartItem.getProductId()))
-                .findAny().get();
+                .filter(p -> p.getId().equals(cartItem.getProductId()) && cartItem.getQuantity() <= p.getQuantity())
+                .findAny()
+                .orElseThrow(() -> new ConflictException(PRODUCT_QUANTITY_CONFLICT.formatted(cartItem.getProductId())));
+
+            product.setQuantity(product.getQuantity()-cartItem.getQuantity());
+
             return OrderItem.builder()
                 .id(OrderItemId.builder()
                     .orderId(savedOrder.getId())
@@ -114,7 +112,21 @@ public class OrderService {
                 .order(savedOrder)
                 .build();
         }).forEach(order::addOrderItem);
-        orderRepository.save(order);
         return savedOrder.getId();
+    }
+
+    private Order createOrderSample(OrderRequestDto orderRequestDto) {
+        return Order.builder()
+            .contactInfo(ContactInfo.builder()
+                .email(orderRequestDto.getEmail())
+                .firstName(orderRequestDto.getFirstName())
+                .lastName(orderRequestDto.getLastName())
+                .phoneNumber(orderRequestDto.getPhoneNumber())
+                .build())
+            .deliveryMethod(orderRequestDto.getDeliveryMethod())
+            .deliveryStatus(DeliveryStatus.PROCESSING)
+            .orderItems(new ArrayList<>())
+            .isPaid(false)
+            .build();
     }
 }

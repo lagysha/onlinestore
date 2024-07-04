@@ -1,14 +1,16 @@
 package io.teamchallenge.utils;
 
 import io.teamchallenge.dto.ImageDto;
+import io.teamchallenge.dto.address.AddressDto;
 import io.teamchallenge.dto.attributes.AttributeAttributeValueDto;
 import io.teamchallenge.dto.attributes.AttributeValueDto;
-import io.teamchallenge.dto.category.CategoryResponseDto;
 import io.teamchallenge.dto.cart.CartItemResponseDto;
 import io.teamchallenge.dto.cart.CartResponseDto;
 import io.teamchallenge.dto.cart.PatchRequestDto;
+import io.teamchallenge.dto.category.CategoryResponseDto;
 import io.teamchallenge.dto.filter.PriceFilter;
 import io.teamchallenge.dto.filter.ProductFilterDto;
+import io.teamchallenge.dto.order.OrderRequestDto;
 import io.teamchallenge.dto.pageable.AdvancedPageableDto;
 import io.teamchallenge.dto.product.ProductAttributeResponseDto;
 import io.teamchallenge.dto.product.ProductRequestDto;
@@ -25,6 +27,7 @@ import io.teamchallenge.entity.Product;
 import io.teamchallenge.entity.attributes.Attribute;
 import io.teamchallenge.entity.attributes.AttributeValue;
 import io.teamchallenge.entity.attributes.ProductAttribute;
+import io.teamchallenge.enumerated.DeliveryMethod;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -269,4 +272,27 @@ public class Utils {
     }
 
 
+
+    public static OrderRequestDto getOrderRequestDtoCourier() {
+        return OrderRequestDto.builder()
+            .firstName("FirstName")
+            .lastName("LastName")
+            .address(AddressDto.builder()
+                .addressLine("address line")
+                .city("Kyiv")
+                .postalCode("12322")
+                .countryName("Ukraine")
+                .build())
+            .deliveryMethod(DeliveryMethod.COURIER)
+            .phoneNumber("1234567890")
+            .email("test@mail.com")
+            .build();
+    }
+
+    public static String getRefreshToken() {
+        return "eyJhbGciOiJIUzI1NiJ9" +
+               ".eyJpc3MiOiJHYWRnZXRIb3VzZSIsInN1YiI6ImV4YW1wbGUxMjNAZXhhbXBsZS5jb20iLCJpZCI6MTEsInJ" +
+               "vbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MTY4MDA5NDcsImV4cCI6MTcxNzQwNTc0N30" +
+               ".odua7l-MEZmfjsCu4jmAciqLI[lSRdvrD0Jmufd-N56";
+    }
 }
