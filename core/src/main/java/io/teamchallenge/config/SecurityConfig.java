@@ -82,7 +82,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterAfter(
-                accessTokenJwtAuthenticationFilter,
+                new AccessTokenJwtAuthenticationFilter(jwtService),
                 BasicAuthenticationFilter.class)
             .exceptionHandling(exception -> exception
                 .authenticationEntryPoint((req, resp, exc) ->
@@ -93,7 +93,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST,
                     API_V1 + "/signUp",
                     API_V1 + "/signIn",
-                    API_V1 + "/updateAccessToken"
+                    API_V1 + "/updateAccessToken",
+                    API_V1 + "/orders"
                 )
                 .permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**")
