@@ -7,6 +7,10 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Config for mapper.
+ * @author Denys Liubchenko
+ */
 @Configuration
 public class MapperConfig {
     /**

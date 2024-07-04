@@ -4,7 +4,7 @@ import io.teamchallenge.dto.security.SignInRequestDto;
 import io.teamchallenge.dto.security.SignInResponseDto;
 import io.teamchallenge.dto.security.SignUpRequestDto;
 import io.teamchallenge.dto.security.SignUpResponseDto;
-import io.teamchallenge.service.SecurityService;
+import io.teamchallenge.service.impl.SecurityService;
 import io.teamchallenge.utils.Utils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

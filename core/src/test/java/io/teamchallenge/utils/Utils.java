@@ -1,9 +1,15 @@
 package io.teamchallenge.utils;
 
-import io.teamchallenge.dto.CategoryResponseDto;
+import io.teamchallenge.dto.ImageDto;
+import io.teamchallenge.dto.attributes.AttributeAttributeValueDto;
+import io.teamchallenge.dto.attributes.AttributeValueDto;
+import io.teamchallenge.dto.category.CategoryResponseDto;
 import io.teamchallenge.dto.cart.CartItemResponseDto;
 import io.teamchallenge.dto.cart.CartResponseDto;
 import io.teamchallenge.dto.cart.PatchRequestDto;
+import io.teamchallenge.dto.filter.PriceFilter;
+import io.teamchallenge.dto.filter.ProductFilterDto;
+import io.teamchallenge.dto.pageable.AdvancedPageableDto;
 import io.teamchallenge.dto.product.ProductAttributeResponseDto;
 import io.teamchallenge.dto.product.ProductRequestDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
@@ -52,7 +58,7 @@ public class Utils {
             .builder()
             .productId(1L)
             .quantity(1)
-            .images(new ArrayList<>())
+            .image("dddd")
             .name("name")
             .price(BigDecimal.ONE)
             .build();
@@ -89,8 +95,12 @@ public class Utils {
             .id(product.getId())
             .name(product.getName())
             .price(product.getPrice())
-            .images(product.getImages().stream()
-                .map(Image::getLink)
+            .images(product.getImages()
+                .stream()
+                .map(img -> ImageDto.builder()
+                    .link(img.getLink())
+                    .order(img.getOrder())
+                    .build())
                 .collect(Collectors.toList()))
             .build();
     }
@@ -102,7 +112,8 @@ public class Utils {
             .shortDesc(product.getShortDesc())
             .categoryResponseDto(
                 CategoryResponseDto.builder()
-                    .desc(product.getCategory().getDescription())
+                    .id(product.getId())
+                    .description(product.getCategory().getDescription())
                     .name(product.getCategory().getName())
                     .build())
             .productAttributeResponseDtos(product.getProductAttributes()
@@ -113,7 +124,10 @@ public class Utils {
                 .collect(Collectors.toList()))
             .images(product.getImages()
                 .stream()
-                .map(Image::getLink)
+                .map(img -> ImageDto.builder()
+                    .link(img.getLink())
+                    .order(img.getOrder())
+                    .build())
                 .collect(Collectors.toList()))
             .brand(product.getBrand().getName())
             .name(product.getName())
@@ -130,7 +144,6 @@ public class Utils {
             .shortDesc("shortDesc")
             .categoryId(1L)
             .attributeValueId(List.of(1L))
-            .imageLinks(List.of("https://image.jpg"))
             .brandId(1L)
             .name("name")
             .description("desc")
@@ -196,4 +209,64 @@ public class Utils {
             .password("Password1234!")
             .build();
     }
+
+
+    public static String getAccessToken() {
+        return "eyJhbGciOiJIUzI1NiJ9" +
+               ".eyJpc3MiOiJHYWRnZXRIb3VzZSIsInN1YiI6ImV4YW1wbGUxMjNAZXhhbXBsZS5jb20iLCJpZCI6MTEsInJ" +
+               "vbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MTY4MDA5NDcsImV4cCI6MTcxNzQwNTc0N30" +
+               ".odua7l-MEZmfjsCu4jmAciqLI[lSRdvrD0Jmufd-N56";
+    }
+
+    public static String getSecretKey() {
+        return "5cZAVF/SKSCmCM2+1azD2XHK7K2PChcSg32vrrEh/Qk=";
+    }
+
+    public static AdvancedPageableDto<ShortProductResponseDto> getAdvancedPageableDto() {
+        return AdvancedPageableDto.<ShortProductResponseDto>builder()
+            .page(List.of(getShortProductResponseDto()))
+            .totalElements(1)
+            .currentPage(1)
+            .totalPages(1)
+            .minPrice(BigDecimal.valueOf(2))
+            .maxPrice(BigDecimal.valueOf(3))
+            .build();
+    }
+
+    public static ProductFilterDto getProductFilterDto() {
+        return ProductFilterDto.builder()
+            .name("Sample Product")
+            .price(PriceFilter.builder()
+                .from(100)
+                .to(500)
+                .build())
+            .brandIds(List.of(1L))
+            .categoryId(1L)
+            .attributeValueIds(List.of(2L, 4L))
+            .build();
+    }
+
+    public static AttributeAttributeValueDto getAttributeAttributeValueDto() {
+        return AttributeAttributeValueDto.builder()
+            .id(1L)
+            .name("Size")
+            .attributeValueDtos(
+                List.of((AttributeValueDto
+                    .builder()
+                    .id(1L)
+                    .name("Big")
+                    .build())
+                ))
+            .build();
+    }
+
+    public static CategoryResponseDto getCategoryResponseDto() {
+        return CategoryResponseDto.builder()
+            .id(1L)
+            .name("Laptops")
+            .description("Nothing")
+            .build();
+    }
+
+
 }

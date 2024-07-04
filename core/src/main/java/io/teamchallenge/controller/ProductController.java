@@ -1,17 +1,20 @@
 package io.teamchallenge.controller;
 
 import io.teamchallenge.annotation.AllowedSortFields;
-import io.teamchallenge.dto.PageableDto;
+import io.teamchallenge.annotation.ImageValidation;
+import io.teamchallenge.dto.filter.ProductFilterDto;
+import io.teamchallenge.dto.pageable.AdvancedPageableDto;
 import io.teamchallenge.dto.product.ProductRequestDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
 import io.teamchallenge.dto.product.ShortProductResponseDto;
-import io.teamchallenge.service.ProductService;
+import io.teamchallenge.service.impl.ProductService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Size;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,13 +22,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
+/**
+ * Controller for products.
+ * @author Niktia Malov
+ */
 @RestController
 @RequestMapping("api/v1/products")
 @RequiredArgsConstructor
@@ -34,23 +41,22 @@ public class ProductController {
     private final ProductService productService;
 
     /**
-     * Retrieves a pageable list of products based on optional filtering by name and pageable parameters.
+     * Retrieves a paginated list of products based on the provided filter criteria and pagination settings.
      *
-     * @param name     Optional parameter for filtering products by name.
-     * @param pageable Pageable object specifying pagination and sorting parameters.
-     *                 Defaults to sorting by creation date in descending order if not specified.
-     * @return ResponseEntity containing a PageableDto of ProductResponseDto,
-     *         representing the paginated list of products.
+     * @param productFilterDto  DTO containing filter criteria for products.
+     * @param pageable          Pageable object for pagination and sorting information.
+     *                          Allowed sort fields: "price".
+     *                          Default sort: "price" in descending order.
+     * @return ResponseEntity containing a pageable list of short product responses.
      */
     @GetMapping
-    public ResponseEntity<PageableDto<ShortProductResponseDto>> getAll(@RequestParam(required = false) String name,
-                                                                       @AllowedSortFields(values = {"name", "quantity",
-                                                                           "price", "createdAt"})
-                                                                       @PageableDefault(sort = "createdAt",
-                                                                           direction = DESC)
-                                                                       @Size Pageable pageable) {
-        return ResponseEntity.ok(productService.getAll(pageable, name));
+    public ResponseEntity<AdvancedPageableDto<ShortProductResponseDto>> getAll(
+        @Valid ProductFilterDto productFilterDto,
+        @AllowedSortFields(values = {"price"})
+        @PageableDefault(sort = "price", direction = DESC) Pageable pageable) {
+        return ResponseEntity.ok(productService.getAll(pageable, productFilterDto));
     }
+
 
     /**
      * Retrieves a product by its unique identifier.
@@ -64,30 +70,39 @@ public class ProductController {
     }
 
     /**
-     * Creates a new product based on the provided ProductRequestDto.
+     * Creates a new product with the provided product details and images.
      *
-     * @param productRequestDto The ProductRequestDto containing the details of the product to create.
-     * @return ResponseEntity containing the ProductResponseDto representing the created product, with status CREATED.
+     * @param images            List of image files to be associated with the product.
+     *                          Must pass custom @ImageValidation.
+     * @param productRequestDto DTO containing product details for creation.
+     *                          Must be valid as per validation constraints.
+     * @return ResponseEntity containing the created product details with a status of CREATED (201).
      */
-    @PostMapping
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ProductResponseDto> create(
-        @RequestBody @Valid ProductRequestDto productRequestDto) {
+        @RequestPart @ImageValidation List<MultipartFile> images,
+        @RequestPart @Valid ProductRequestDto productRequestDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(productService.create(productRequestDto));
+            .body(productService.create(productRequestDto, images));
     }
 
     /**
-     * Updates an existing product with the provided ID using the details from the ProductRequestDto.
+     * Updates an existing product with the provided product details and optional images.
      *
-     * @param id                The identifier of the product to update.
-     * @param productRequestDto The ProductRequestDto containing the updated details of the product.
-     * @return ResponseEntity containing the ProductResponseDto representing the updated product, with status OK.
+     * @param id                The ID of the product to be updated.
+     * @param images            Optional list of image files to be associated with the product.
+     *                          Must pass custom @ImageValidation if provided.
+     * @param productRequestDto DTO containing updated product details.
+     *                          Must be valid as per validation constraints.
+     * @return ResponseEntity containing the updated product details with a status of OK (200).
      */
-    @PutMapping("/{id}")
+    @PutMapping(path = "/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ProductResponseDto> update(@PathVariable Long id,
-                                                     @RequestBody @Valid ProductRequestDto productRequestDto) {
+                                                     @RequestPart(required = false) @ImageValidation
+                                                     List<MultipartFile> images,
+                                                     @RequestPart @Valid ProductRequestDto productRequestDto) {
         return ResponseEntity.status(HttpStatus.OK)
-            .body(productService.update(id, productRequestDto));
+            .body(productService.update(id, productRequestDto, images));
     }
 
     /**

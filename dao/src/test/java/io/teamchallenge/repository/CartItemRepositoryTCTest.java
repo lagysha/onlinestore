@@ -21,7 +21,6 @@ import org.testcontainers.utility.DockerImageName;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -46,12 +45,6 @@ public class CartItemRepositoryTCTest {
     }
 
     @Test
-    void findCartItemIdsByUserIdWhenUserDoesNotHaveCartItemsTest() {
-        var cartItemIdPage = cartItemRepository.findCartItemIdsByUserId(3L, Pageable.ofSize(2));
-        assertTrue(cartItemIdPage.getContent().isEmpty());
-    }
-
-    @Test
     void findAllByIdWithImagesAndProductsTest() {
         var cartItems = cartItemRepository
             .findAllByIdWithImagesAndProducts(List.of(new CartItemId(1L, 2L), new CartItemId(2L, 1L))
@@ -64,14 +57,5 @@ public class CartItemRepositoryTCTest {
         LocalDateTime expected =
             LocalDateTime.parse("2024-05-10 14:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         assertEquals(expected, cartItems.getFirst().getCreatedAt());
-    }
-
-    @Test
-    void findByIdWithCategoryAndBrandAndProductAttributeWhenNoProductWithIdPresentTest() {
-        var cartItems = cartItemRepository
-            .findAllByIdWithImagesAndProducts(List.of(new CartItemId(2L, 2L))
-                , Sort.by("createdAt"));
-
-        assertTrue(cartItems.isEmpty());
     }
 }

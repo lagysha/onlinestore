@@ -8,11 +8,12 @@ import java.lang.annotation.Target;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 
 /**
- * Annotation is used for injecting id of user from claims.
+ * Annotation for getting current user id.
+ * @author Denys Liubchenko
  */
 @Target({ElementType.PARAMETER, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@CurrentSecurityContext(expression = "authentication.getClaims().get('id')")
+@CurrentSecurityContext(expression = "authentication.getUserId()")
 public @interface CurrentUserId {
 }

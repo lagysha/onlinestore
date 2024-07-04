@@ -4,7 +4,7 @@ import io.teamchallenge.dto.security.SignInRequestDto;
 import io.teamchallenge.dto.security.SignInResponseDto;
 import io.teamchallenge.dto.security.SignUpRequestDto;
 import io.teamchallenge.dto.security.SignUpResponseDto;
-import io.teamchallenge.service.SecurityService;
+import io.teamchallenge.service.impl.SecurityService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
+/**
+ * Controller for security.
+ * @author Denys Liubchenko
+ */
 @RestController
 @RequestMapping("/api/v1")
 @Validated

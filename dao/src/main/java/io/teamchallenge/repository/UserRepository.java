@@ -7,7 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 /**
- * Repository interface for managing User entities.
+ * Repository interface for managing {@link User} entities.
+ * Provides methods to perform CRUD operations and custom queries.
+ * @author Niktia Malov
  */
 public interface UserRepository extends JpaRepository<User, Long> {
     /**

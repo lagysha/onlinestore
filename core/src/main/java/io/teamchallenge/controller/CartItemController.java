@@ -4,13 +4,17 @@ import io.teamchallenge.annotation.CurrentUserId;
 import io.teamchallenge.dto.cart.CartItemResponseDto;
 import io.teamchallenge.dto.cart.CartResponseDto;
 import io.teamchallenge.dto.cart.PatchRequestDto;
-import io.teamchallenge.service.CartItemService;
+import io.teamchallenge.service.impl.CartItemService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controller for cart items.
+ * @author Niktia Malov
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/cart-items")
