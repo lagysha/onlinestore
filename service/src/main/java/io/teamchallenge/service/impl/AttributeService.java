@@ -45,7 +45,7 @@ public class AttributeService {
                 .build()));
 
         var category = categoryRepository.findById(attributeRequestDto.getCategoryId())
-            .orElseThrow(() -> new NotFoundException(CATEGORY_NOT_FOUND_BY_ID));
+            .orElseThrow(() -> new NotFoundException(CATEGORY_NOT_FOUND_BY_ID.formatted(attributeRequestDto.getCategoryId())));
 
         try {
             categoryAttributeRepository.save(CategoryAttribute.builder()

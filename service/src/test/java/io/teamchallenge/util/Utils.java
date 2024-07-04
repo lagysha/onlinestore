@@ -1,6 +1,10 @@
 package io.teamchallenge.util;
 
 import io.teamchallenge.dto.ImageDto;
+import io.teamchallenge.dto.attributes.AttributeRequestDto;
+import io.teamchallenge.dto.attributes.AttributeResponseDto;
+import io.teamchallenge.dto.brand.BrandRequestDto;
+import io.teamchallenge.dto.brand.BrandResponseDto;
 import io.teamchallenge.dto.category.CategoryAttributeAttributeValueVO;
 import io.teamchallenge.dto.category.CategoryResponseDto;
 import io.teamchallenge.dto.cart.CartItemResponseDto;
@@ -323,6 +327,33 @@ public class Utils {
             .id(category.getId())
             .name(category.getName())
             .description(category.getDescription())
+            .build();
+    }
+
+    public static AttributeRequestDto getAttributeRequestDto(){
+        return AttributeRequestDto.builder()
+            .categoryId(1L)
+            .name("Color")
+            .build();
+    }
+
+    public static AttributeResponseDto getAttributeResponseDto(){
+        return AttributeResponseDto.builder()
+            .id(1L)
+            .name("Color")
+            .build();
+    }
+
+    public static BrandRequestDto getBrandRequestDto(){
+        return BrandRequestDto.builder()
+            .name("Apple")
+            .build();
+    }
+
+    public static BrandResponseDto getBrandResponseDto(){
+        return BrandResponseDto.builder()
+            .id(1L)
+            .name("Apple")
             .build();
     }
 }

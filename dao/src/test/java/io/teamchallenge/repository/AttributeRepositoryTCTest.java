@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 @Testcontainers
 @ActiveProfiles("ts")
 @Sql(scripts = "classpath:data.sql")
-public class AttributeRepositoryTest {
+public class AttributeRepositoryTCTest {
 
     @Container
     @ServiceConnection
