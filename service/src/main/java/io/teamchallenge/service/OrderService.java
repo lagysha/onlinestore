@@ -99,7 +99,7 @@ public class OrderService {
                 .findAny()
                 .orElseThrow(() -> new ConflictException(PRODUCT_QUANTITY_CONFLICT.formatted(cartItem.getProductId())));
 
-            product.setQuantity(product.getQuantity()-cartItem.getQuantity());
+            product.setQuantity(product.getQuantity() - cartItem.getQuantity());
 
             return OrderItem.builder()
                 .id(OrderItemId.builder()
