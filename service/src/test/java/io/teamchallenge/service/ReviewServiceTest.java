@@ -1,13 +1,18 @@
 package io.teamchallenge.service;
 
-import io.teamchallenge.dto.PageableDto;
+import io.teamchallenge.dto.pageable.PageableDto;
 import io.teamchallenge.dto.review.AddReviewRequestDto;
 import io.teamchallenge.dto.review.ReviewResponseDto;
 import io.teamchallenge.dto.user.ReviewerDto;
+import io.teamchallenge.entity.Product;
+import io.teamchallenge.entity.User;
 import io.teamchallenge.entity.reviews.Review;
 import io.teamchallenge.entity.reviews.ReviewId;
+import io.teamchallenge.exception.ForbiddenException;
 import io.teamchallenge.exception.NotFoundException;
+import io.teamchallenge.repository.ProductRepository;
 import io.teamchallenge.repository.ReviewRepository;
+import io.teamchallenge.repository.UserRepository;
 import io.teamchallenge.util.Utils;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -35,6 +40,10 @@ public class ReviewServiceTest {
     private ReviewRepository reviewRepository;
     @Mock
     private ModelMapper modelMapper;
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private ProductRepository productRepository;
 
     @Test
     void getAllByProductIdTest() {
@@ -72,21 +81,44 @@ public class ReviewServiceTest {
     void createTest() {
         ReviewId reviewId = Utils.getReviewId();
         AddReviewRequestDto requestDto = Utils.getAddReviewRequestDto();
+        User user = Utils.getUser();
+        Product product = Utils.getProduct();
         Review review = Review.builder()
             .id(reviewId)
             .rate(requestDto.getRate())
             .text(requestDto.getText())
+            .user(user)
+            .product(product)
             .build();
         ReviewResponseDto expected = Utils.getReviewResponseDto();
 
+
         when(reviewRepository.save(review)).thenReturn(review);
         when(modelMapper.map(review, ReviewResponseDto.class)).thenReturn(expected);
+        when(userRepository.existsByIdAndCompletedOrderWithProductId(reviewId.getUserId(), reviewId.getProductId()))
+            .thenReturn(true);
+        when(userRepository.getReferenceById(reviewId.getUserId())).thenReturn(user);
+        when(productRepository.getReferenceById(reviewId.getProductId())).thenReturn(product);
 
         var actual = reviewService.create(reviewId, requestDto);
 
+        assertEquals(expected, actual);
         verify(reviewRepository).save(review);
         verify(modelMapper).map(review, ReviewResponseDto.class);
-        assertEquals(expected, actual);
+        verify(userRepository).getReferenceById(reviewId.getUserId());
+        verify(productRepository).getReferenceById(reviewId.getProductId());
+    }
+
+    @Test
+    void createThrowsForbiddenExceptionWhenUserHasNoCompletedOrdersWithProductTest() {
+        ReviewId reviewId = Utils.getReviewId();
+        AddReviewRequestDto requestDto = Utils.getAddReviewRequestDto();
+
+        when(userRepository.existsByIdAndCompletedOrderWithProductId(reviewId.getUserId(), reviewId.getProductId()))
+            .thenReturn(false);
+
+        assertThrows(ForbiddenException.class, ()->reviewService.create(reviewId, requestDto));
+        verify(userRepository).existsByIdAndCompletedOrderWithProductId(reviewId.getUserId(), reviewId.getProductId());
     }
 
     @Test

@@ -1,13 +1,19 @@
 package io.teamchallenge.service;
 
 import io.teamchallenge.constant.ExceptionMessage;
-import io.teamchallenge.dto.PageableDto;
+import io.teamchallenge.dto.pageable.PageableDto;
 import io.teamchallenge.dto.review.AddReviewRequestDto;
 import io.teamchallenge.dto.review.ReviewResponseDto;
+import io.teamchallenge.entity.Product;
+import io.teamchallenge.entity.User;
 import io.teamchallenge.entity.reviews.Review;
 import io.teamchallenge.entity.reviews.ReviewId;
+import io.teamchallenge.exception.ForbiddenException;
 import io.teamchallenge.exception.NotFoundException;
+import io.teamchallenge.repository.OrderRepository;
+import io.teamchallenge.repository.ProductRepository;
 import io.teamchallenge.repository.ReviewRepository;
+import io.teamchallenge.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -15,11 +21,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static io.teamchallenge.constant.ExceptionMessage.USER_HAS_NO_COMPLETED_ORDERS_WITH_PRODUCT;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ReviewService {
     private final ReviewRepository reviewRepository;
+    private final UserRepository userRepository;
+    private final ProductRepository productRepository;
     private final ModelMapper modelMapper;
 
     /**
@@ -50,12 +60,19 @@ public class ReviewService {
      */
     @Transactional
     public ReviewResponseDto create(ReviewId reviewId, AddReviewRequestDto addReviewRequestDto) {
-        //todo: add validation if user ordered this product
+        if (!userRepository.existsByIdAndCompletedOrderWithProductId(reviewId.getUserId(), reviewId.getProductId())) {
+            throw new ForbiddenException(USER_HAS_NO_COMPLETED_ORDERS_WITH_PRODUCT.formatted(reviewId.getProductId()));
+        }
+
+        User userReference = userRepository.getReferenceById(reviewId.getUserId());
+        Product productReference = productRepository.getReferenceById(reviewId.getProductId());
 
         Review review = Review.builder()
             .id(reviewId)
             .rate(addReviewRequestDto.getRate())
             .text(addReviewRequestDto.getText())
+            .user(userReference)
+            .product(productReference)
             .build();
         return modelMapper.map(reviewRepository.save(review), ReviewResponseDto.class);
     }

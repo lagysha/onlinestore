@@ -5,6 +5,7 @@ import io.teamchallenge.exception.BadCredentialsException;
 import io.teamchallenge.exception.BadTokenException;
 import io.teamchallenge.exception.ConflictException;
 import io.teamchallenge.exception.ExceptionResponse;
+import io.teamchallenge.exception.ForbiddenException;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.exception.PersistenceException;
 import jakarta.validation.ConstraintViolation;
@@ -167,5 +168,15 @@ public class CustomExceptionHandlerTest {
 
         assertEquals(customExceptionHandler.handleConflictException(conflictException, webRequest),
             ResponseEntity.status(HttpStatus.CONFLICT).body(exceptionResponse));
+    }
+    @Test
+    void handleForbiddenExceptionTest() {
+        ForbiddenException conflictException = new ForbiddenException("test");
+        ExceptionResponse exceptionResponse = new ExceptionResponse(objectMap);
+        when(errorAttributes.getErrorAttributes(eq(webRequest),
+            any(ErrorAttributeOptions.class))).thenReturn(objectMap);
+
+        assertEquals(customExceptionHandler.handleConflictException(conflictException, webRequest),
+            ResponseEntity.status(HttpStatus.FORBIDDEN).body(exceptionResponse));
     }
 }

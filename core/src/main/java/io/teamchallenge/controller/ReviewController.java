@@ -2,7 +2,7 @@ package io.teamchallenge.controller;
 
 import io.teamchallenge.annotation.AllowedSortFields;
 import io.teamchallenge.annotation.CurrentUserId;
-import io.teamchallenge.dto.PageableDto;
+import io.teamchallenge.dto.pageable.PageableDto;
 import io.teamchallenge.dto.review.AddReviewRequestDto;
 import io.teamchallenge.dto.review.ReviewResponseDto;
 import io.teamchallenge.entity.reviews.ReviewId;
