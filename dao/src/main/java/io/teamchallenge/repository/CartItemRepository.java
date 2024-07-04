@@ -12,6 +12,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+/**
+ * Repository interface for managing {@link CartItem} entities.
+ * Provides methods to perform CRUD operations and custom queries.
+ * @author Niktia Malov
+ */
 public interface CartItemRepository
     extends JpaRepository<CartItem, CartItemId>, BaseJpaRepository<CartItem, CartItemId> {
     /**
@@ -32,6 +37,17 @@ public interface CartItemRepository
      * @return a list of {@link CartItem} entities with associated product images and products.
      */
     @EntityGraph(attributePaths = {"product.images", "product"})
-    @Query(value = "select ci from CartItem ci where ci.id in :cartItemIds")
+    @Query(value = "select ci from CartItem ci "
+        + "left join fetch ci.product p "
+        + "left join fetch p.images img "
+        + "where ci.id in :cartItemIds "
+        + "and img.order = 1")
     List<CartItem> findAllByIdWithImagesAndProducts(@Param("cartItemIds") List<CartItemId> cartItemIds, Sort sort);
+
+    /**
+     * Deletes all {@link CartItem} entities by user ID.
+     *
+     * @param userId id of {@link io.teamchallenge.entity.User}.
+     */
+    void deleteByUserId(Long userId);
 }

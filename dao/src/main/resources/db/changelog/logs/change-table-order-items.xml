@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="change-table-order-items" author="Denys Liubchenko">
+        <addColumn tableName="order_items">
+            <column name="price" type="decimal(10,2)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <dropColumn tableName="order_items">
+            <column name="id"/>
+        </dropColumn>
+
+        <addPrimaryKey tableName="order_items" columnNames="order_id,product_id" constraintName="PK_order_items"/>
+    </changeSet>
+</databaseChangeLog>

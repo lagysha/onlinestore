@@ -1,10 +1,19 @@
 package io.teamchallenge.util;
 
-import io.teamchallenge.dto.CategoryResponseDto;
+import io.teamchallenge.dto.ImageDto;
+import io.teamchallenge.dto.address.AddressDto;
+import io.teamchallenge.dto.cart.CartItemRequestDto;
 import io.teamchallenge.dto.cart.CartItemResponseDto;
 import io.teamchallenge.dto.cart.CartResponseDto;
 import io.teamchallenge.dto.cart.PatchRequestDto;
+import io.teamchallenge.dto.category.CategoryAttributeAttributeValueVO;
+import io.teamchallenge.dto.category.CategoryResponseDto;
+import io.teamchallenge.dto.filter.PriceFilter;
+import io.teamchallenge.dto.filter.ProductFilterDto;
+import io.teamchallenge.dto.order.OrderRequestDto;
+import io.teamchallenge.dto.pageable.AdvancedPageableDto;
 import io.teamchallenge.dto.product.ProductAttributeResponseDto;
+import io.teamchallenge.dto.product.ProductMinMaxPriceDto;
 import io.teamchallenge.dto.product.ProductRequestDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
 import io.teamchallenge.dto.product.ShortProductResponseDto;
@@ -13,10 +22,14 @@ import io.teamchallenge.dto.review.ReviewResponseDto;
 import io.teamchallenge.dto.security.SignInRequestDto;
 import io.teamchallenge.dto.security.SignUpRequestDto;
 import io.teamchallenge.dto.security.SignUpResponseDto;
+import io.teamchallenge.entity.Address;
 import io.teamchallenge.dto.user.ReviewerDto;
 import io.teamchallenge.entity.Brand;
 import io.teamchallenge.entity.Category;
+import io.teamchallenge.entity.ContactInfo;
+import io.teamchallenge.entity.Country;
 import io.teamchallenge.entity.Image;
+import io.teamchallenge.entity.Order;
 import io.teamchallenge.entity.Product;
 import io.teamchallenge.entity.User;
 import io.teamchallenge.entity.attributes.Attribute;
@@ -26,14 +39,33 @@ import io.teamchallenge.entity.cartitem.CartItem;
 import io.teamchallenge.entity.cartitem.CartItemId;
 import io.teamchallenge.entity.reviews.Review;
 import io.teamchallenge.entity.reviews.ReviewId;
+import io.teamchallenge.entity.orderitem.OrderItem;
+import io.teamchallenge.entity.orderitem.OrderItemId;
+import io.teamchallenge.enumerated.DeliveryMethod;
+import io.teamchallenge.enumerated.DeliveryStatus;
 import io.teamchallenge.enumerated.Role;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 public class Utils {
+
+    public static final String PRODUCT_IMAGES_FOLDER_NAME = "productImages";
+    public static final String SAMPLE_URL = "https://example.com";
+
+    public static MultipartFile getMultipartFile(){
+        return new MockMultipartFile(
+            "file",
+            "test.fdsf",
+            "image/fdsf",
+            new byte[0]
+        );
+    }
     public static Category getCategory() {
         return Category.builder()
             .id(1L)
@@ -52,6 +84,19 @@ public class Utils {
             .build();
     }
 
+    public static ProductFilterDto getProductFilterDto(){
+        return ProductFilterDto.builder()
+            .name("Sample Product")
+            .price(PriceFilter.builder()
+                .from(1)
+                .to(2)
+                .build())
+            .brandIds(List.of(1L))
+            .categoryId(1L)
+            .attributeValueIds(List.of(2L, 4L))
+            .build();
+    }
+
     public static PatchRequestDto getPatchRequestDto() {
         return PatchRequestDto
             .builder()
@@ -62,8 +107,8 @@ public class Utils {
     public static CartResponseDto getCartResponseDto() {
         return CartResponseDto
             .builder()
-            .cartItemResponseDtos(new ArrayList<>())
-            .totalPrice(BigDecimal.ZERO)
+            .cartItemResponseDtos(List.of(getCartItemResponseDto()))
+            .totalPrice(getCartItemResponseDto().getPrice())
             .build();
     }
 
@@ -72,7 +117,7 @@ public class Utils {
             .builder()
             .productId(1L)
             .quantity(1)
-            .images(new ArrayList<>())
+            .image("ddd")
             .name("name")
             .price(BigDecimal.ONE)
             .build();
@@ -109,8 +154,12 @@ public class Utils {
             .id(product.getId())
             .name(product.getName())
             .price(product.getPrice())
-            .images(product.getImages().stream()
-                .map(Image::getLink)
+            .images(product.getImages()
+                .stream()
+                .map(img -> ImageDto.builder()
+                    .link(img.getLink())
+                    .order(img.getOrder())
+                    .build())
                 .collect(Collectors.toList()))
             .build();
     }
@@ -122,7 +171,8 @@ public class Utils {
             .shortDesc(product.getShortDesc())
             .categoryResponseDto(
                 CategoryResponseDto.builder()
-                    .desc(product.getCategory().getDescription())
+                    .id(product.getCategory().getId())
+                    .description(product.getCategory().getDescription())
                     .name(product.getCategory().getName())
                     .build())
             .productAttributeResponseDtos(product.getProductAttributes()
@@ -133,7 +183,10 @@ public class Utils {
                 .collect(Collectors.toList()))
             .images(product.getImages()
                 .stream()
-                .map(Image::getLink)
+                .map(img -> ImageDto.builder()
+                    .link(img.getLink())
+                    .order(img.getOrder())
+                    .build())
                 .collect(Collectors.toList()))
             .brand(product.getBrand().getName())
             .name(product.getName())
@@ -150,7 +203,6 @@ public class Utils {
             .shortDesc("shortDesc")
             .categoryId(1L)
             .attributeValueId(List.of(1L))
-            .imageLinks(List.of("https://image.jpg"))
             .brandId(1L)
             .name("name")
             .description("desc")
@@ -209,6 +261,7 @@ public class Utils {
             .createdAt(LocalDateTime.of(2024, 1, 1, 1, 1))
             .password("password")
             .phoneNumber("123456789010")
+            .orders(new HashSet<>())
             .build();
     }
 
@@ -255,6 +308,122 @@ public class Utils {
 
     public static String getSecretKey() {
         return "5cZAVF/SKSCmCM2+1azD2XHK7K2PChcSg32vrrEh/Qk=";
+    }
+
+    public static ProductMinMaxPriceDto getProductMinMaxPriceDto(){
+        return new ProductMinMaxPriceDto(BigDecimal.ONE,BigDecimal.TWO);
+    }
+
+    public static AdvancedPageableDto<ShortProductResponseDto> getAdvancedPageableDto(){
+        return AdvancedPageableDto.<ShortProductResponseDto>builder()
+            .page(List.of(getShortProductResponseDto()))
+            .totalElements(1)
+            .currentPage(0)
+            .totalPages(1)
+            .minPrice(getProductMinMaxPriceDto().getMin())
+            .maxPrice(getProductMinMaxPriceDto().getMax())
+            .build();
+    }
+
+    public static CategoryAttributeAttributeValueVO getAttributeAttributeValueVO(){
+        return CategoryAttributeAttributeValueVO.builder()
+            .attributeId(1L)
+            .attributeName("Size")
+            .attributeValueId(1L)
+            .attributeValueName("Big")
+            .build();
+    }
+
+    public static CategoryResponseDto getCategoryResponseDto(){
+        var category = getCategory();
+        return CategoryResponseDto
+            .builder()
+            .id(category.getId())
+            .name(category.getName())
+            .description(category.getDescription())
+            .build();
+    }
+
+    public static OrderItem getNewOrderItem() {
+        return OrderItem.builder()
+            .id(OrderItemId.builder()
+                .productId(1L)
+                .orderId(1L)
+                .build())
+            .quantity(2)
+            .build();
+    }
+
+    public static Order getOrder() {
+        return Order.builder()
+            .id(1L)
+            .createdAt(LocalDateTime.of(1,1,1,1,1))
+            .contactInfo(ContactInfo.builder()
+                .firstName("FirstName")
+                .lastName("LastName")
+                .phoneNumber("1234567890")
+                .email("test@mail.com")
+                .build())
+            .address(Utils.getAddress())
+            .deliveryMethod(DeliveryMethod.COURIER)
+            .deliveryStatus(DeliveryStatus.PROCESSING)
+            .orderItems(new ArrayList<>())
+            .isPaid(false)
+            .build();
+    }
+
+    public static OrderRequestDto getOrderRequestDtoCourier() {
+        return OrderRequestDto.builder()
+            .firstName("FirstName")
+            .lastName("LastName")
+            .address(AddressDto.builder()
+                .addressLine("address line")
+                .city("Kyiv")
+                .postalCode("12322")
+                .countryName("Ukraine")
+                .build())
+            .deliveryMethod(DeliveryMethod.COURIER)
+            .cartItems(List.of(getCartItemRequestDto()))
+            .phoneNumber("1234567890")
+            .email("test@mail.com")
+            .build();
+    }
+
+    private static CartItemRequestDto getCartItemRequestDto() {
+        return CartItemRequestDto.builder()
+            .productId(1L)
+            .quantity(1)
+            .build();
+    }
+
+    public static Address getAddress() {
+        return Address.builder()
+            .id(1L)
+            .country(Country.builder()
+                .id(1L)
+                .name("Ukraine")
+                .build())
+            .postalCode("12345")
+            .city("Kyiv")
+            .addressLine("address line")
+            .build();
+    }
+
+    public static Order getUnsavedOrder() {
+        OrderRequestDto orderRequestDto = Utils.getOrderRequestDtoCourier();
+        return Order.builder()
+            .contactInfo(ContactInfo.builder()
+                .email(orderRequestDto.getEmail())
+                .firstName(orderRequestDto.getFirstName())
+                .lastName(orderRequestDto.getLastName())
+                .phoneNumber(orderRequestDto.getPhoneNumber())
+                .build())
+            .address(Utils.getAddress())
+            .deliveryMethod(orderRequestDto.getDeliveryMethod())
+            .deliveryStatus(DeliveryStatus.PROCESSING)
+            .orderItems(new ArrayList<>())
+            .isPaid(false)
+            .build();
     }
 
     public static Review getReview() {

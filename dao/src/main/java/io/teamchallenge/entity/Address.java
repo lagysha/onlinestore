@@ -10,10 +10,11 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"user", "country"})
-@EqualsAndHashCode(exclude = {"user", "country"})
+@ToString(exclude = {"country"})
+@EqualsAndHashCode(exclude = {"country"})
 public class Address {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "address_line", nullable = false)
@@ -24,11 +25,6 @@ public class Address {
 
     @Column(name = "postal_code", nullable = false)
     private String postalCode;
-
-    @MapsId
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "country_id", nullable = false)

@@ -1,6 +1,7 @@
 package io.teamchallenge.dto.product;
 
 import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
@@ -25,8 +26,6 @@ public class ProductRequestDto {
     private String shortDesc;
     private Long categoryId;
     private List<Long> attributeValueId;
-    @Size(min = 1, max = 10, message = "Pass between 1 and 10 images")
-    private List<String> imageLinks;
     private Long brandId;
     @Size(min = 1,max = 255, message = "name is too long. Max size is 255 chars")
     private String name;
@@ -35,5 +34,6 @@ public class ProductRequestDto {
     @Digits(integer = 10, fraction = 2,message = "Price must have an integer part less than 10 "
         + "and a fraction part less than 2")
     private BigDecimal price;
+    @Min(value = 1,message = "The quantity of one product must be greater than 0")
     private Integer quantity;
 }

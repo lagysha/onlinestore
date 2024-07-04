@@ -1,12 +1,26 @@
 package io.teamchallenge.entity;
 
 import io.teamchallenge.entity.cartitem.CartItem;
-import io.teamchallenge.entity.reviews.Review;
 import io.teamchallenge.enumerated.Role;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,8 +38,8 @@ import org.hibernate.annotations.CreationTimestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = {"address", "orders", "carItems"})
-@EqualsAndHashCode(exclude = {"address", "orders", "carItems"})
+@ToString(exclude = {"address", "orders", "cartItems"})
+@EqualsAndHashCode(exclude = {"address", "orders", "cartItems"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,29 +57,28 @@ public class User {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Column(nullable = false, unique = true, name = "phone_number")
+    @Column(name = "phone_number", nullable = false, unique = true)
     private String phoneNumber;
 
-    @Setter(AccessLevel.PRIVATE)
-    @OneToMany(mappedBy = "user")
-    private List<Order> orders = new ArrayList<>();
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id")
+    private Address address;
 
     @Setter(AccessLevel.PRIVATE)
-    @OneToMany(mappedBy = "user")
-    private List<CartItem> carItems = new ArrayList<>();
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "users_orders",
+        joinColumns = {@JoinColumn(name = "user_id")},
+        inverseJoinColumns = {@JoinColumn(name = "order_id")})
+    private Set<Order> orders = new HashSet<>();
 
     @Setter(AccessLevel.PRIVATE)
-    @OneToMany(mappedBy = "user")
-    private List<Review> reviews = new ArrayList<>();
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<CartItem> cartItems = new ArrayList<>();
 
     @Setter(AccessLevel.PRIVATE)
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
-
-    @OneToOne(mappedBy = "user", optional = false,
-        cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Address address;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -75,45 +88,13 @@ public class User {
     private String refreshTokenKey;
 
     /**
-     * Sets the address for this user and updates the user reference in the address object.
-     *
-     * @param address The address to set.
-     */
-    public void setAddress(Address address) {
-        this.address = address;
-        address.setUser(this);
-    }
-
-    /**
-     * Adds an order to the user's list of orders.
-     * Also sets the user for the added order.
-     *
-     * @param order The order to be added.
-     */
-    public void addOrder(Order order) {
-        orders.add(order);
-        order.setUser(this);
-    }
-
-    /**
-     * Removes an order from the user's list of orders.
-     * Also sets the user of the removed order to null.
-     *
-     * @param order The order to be removed.
-     */
-    public void removeOrder(Order order) {
-        orders.remove(order);
-        order.setUser(null);
-    }
-
-    /**
      * Adds a cart item to the user's list of cart items.
      * Also sets the user for the added cart item.
      *
      * @param cartItem The cart item to be added.
      */
     public void addCarItem(CartItem cartItem) {
-        carItems.add(cartItem);
+        cartItems.add(cartItem);
         cartItem.setUser(this);
     }
 
@@ -124,29 +105,25 @@ public class User {
      * @param cartItem The cart item to be removed.
      */
     public void removeCarItem(CartItem cartItem) {
-        carItems.remove(cartItem);
+        cartItems.remove(cartItem);
         cartItem.setUser(null);
     }
 
     /**
-     * Adds a review to the user's list of reviews.
-     * Also sets the user for the added review.
+     * Adds an order to the user's list of orders.
      *
-     * @param review The cart item to be added.
+     * @param order The order to be added.
      */
-    public void addReview(Review review) {
-        reviews.add(review);
-        review.setUser(this);
+    public void addOrder(Order order) {
+        orders.add(order);
     }
 
     /**
-     * Removes a review from the user's list of reviews.
-     * Also sets the user of the removed review to null.
+     * Removes an order from the user's list of orders.
      *
-     * @param review The cart item to be removed.
+     * @param order The order to be removed.
      */
-    public void removeReview(Review review) {
-        reviews.remove(review);
-        review.setUser(null);
+    public void removeOrder(Order order) {
+        orders.remove(order);
     }
 }

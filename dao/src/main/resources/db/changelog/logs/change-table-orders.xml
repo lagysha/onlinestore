@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="change-table-orders" author="Denys Liubchenko">
+        <addColumn tableName="orders">
+            <column name="first_name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone_number" type="varchar(15)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_paid" type="boolean" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="delivery_status" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="delivery_method" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="post_address_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+
+        <addForeignKeyConstraint baseTableName="orders" baseColumnNames="address_id"
+                                 constraintName="FK_orders_addresses"
+                                 referencedTableName="addresses" referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="orders" baseColumnNames="post_address_id"
+                                 constraintName="FK_orders_post_addresses"
+                                 referencedTableName="post_addresses" referencedColumnNames="id"/>
+
+        <createIndex tableName="orders" indexName="FK_orders_addresses">
+            <column name="address_id"/>
+        </createIndex>
+        <createIndex tableName="orders" indexName="FK_orders_post_addresses">
+            <column name="post_address_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

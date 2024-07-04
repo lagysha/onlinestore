@@ -10,6 +10,8 @@ import io.teamchallenge.exception.BadCredentialsException;
 import io.teamchallenge.exception.BadTokenException;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.repository.UserRepository;
+import io.teamchallenge.service.impl.JwtService;
+import io.teamchallenge.service.impl.SecurityService;
 import io.teamchallenge.util.Utils;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;

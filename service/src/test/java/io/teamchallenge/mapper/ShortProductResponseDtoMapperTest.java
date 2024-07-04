@@ -1,5 +1,6 @@
 package io.teamchallenge.mapper;
 
+import io.teamchallenge.dto.ImageDto;
 import io.teamchallenge.dto.product.ShortProductResponseDto;
 import io.teamchallenge.entity.Image;
 import java.util.stream.Collectors;
@@ -26,8 +27,12 @@ public class ShortProductResponseDtoMapperTest {
             .id(product.getId())
             .name(product.getName())
             .price(product.getPrice())
-            .images(product.getImages().stream()
-                .map(Image::getLink)
+            .images(product.getImages()
+                .stream()
+                .map(img -> ImageDto.builder()
+                    .link(img.getLink())
+                    .order(img.getOrder())
+                    .build())
                 .collect(Collectors.toList()))
             .build();
 

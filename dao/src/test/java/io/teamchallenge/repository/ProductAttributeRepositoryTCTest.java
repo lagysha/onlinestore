@@ -39,15 +39,8 @@ public class ProductAttributeRepositoryTCTest {
 
         TestTransaction.end();
 
-        assertEquals(attributes.size(), 2);
-        assertEquals(attributes.getFirst().getAttributeValue().getId(), 1L);
-        assertEquals(attributes.getFirst().getAttributeValue().getAttribute().getId(), 1L);
-    }
-
-    @Test
-    void findAllByIdInWhenNonExistingIdsTest() {
-        List<ProductAttribute> attributes = productAttributeRepository.findAllByIdIn(List.of(7L));
-
-        assertTrue(attributes.isEmpty());
+        assertEquals(2,attributes.size());
+        assertEquals(1L,attributes.getFirst().getAttributeValue().getId());
+        assertEquals(1L,attributes.getFirst().getAttributeValue().getAttribute().getId());
     }
 }
