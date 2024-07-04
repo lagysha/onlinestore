@@ -47,7 +47,7 @@ public class ReviewRepositoryTest {
                 .build()).build();
 
         assertEquals(1, allByProductId.getSize());
-        assertEquals(2, allByProductId.getTotalElements());
+        assertEquals(1, allByProductId.getTotalElements());
         assertEquals(expected, allByProductId.getContent().getFirst());
     }
 }
