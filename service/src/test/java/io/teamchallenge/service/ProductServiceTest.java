@@ -1,12 +1,15 @@
 package io.teamchallenge.service;
 
 import io.teamchallenge.constant.ExceptionMessage;
+import io.teamchallenge.dto.attributes.AttributeAttributeValueRequestDto;
 import io.teamchallenge.dto.filter.ProductFilterDto;
+import io.teamchallenge.dto.product.ProductAttributeResponseDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
 import io.teamchallenge.dto.product.ShortProductResponseDto;
 import io.teamchallenge.entity.Image;
 import io.teamchallenge.entity.Product;
 import io.teamchallenge.entity.attributes.AttributeValue;
+import io.teamchallenge.entity.attributes.ProductAttribute;
 import io.teamchallenge.exception.AlreadyExistsException;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.exception.PersistenceException;
@@ -35,6 +38,7 @@ import org.springframework.web.multipart.MultipartFile;
 import static io.teamchallenge.util.Utils.PRODUCT_IMAGES_FOLDER_NAME;
 import static io.teamchallenge.util.Utils.SAMPLE_URL;
 import static io.teamchallenge.util.Utils.getAdvancedPageableDto;
+import static io.teamchallenge.util.Utils.getAttribute;
 import static io.teamchallenge.util.Utils.getAttributeValue;
 import static io.teamchallenge.util.Utils.getBrand;
 import static io.teamchallenge.util.Utils.getCategory;
@@ -78,8 +82,9 @@ class ProductServiceTest {
         imageCloudService = mock(ImageCloudService.class);
         modelMapper = mock(ModelMapper.class);
         attributeRepository = mock(AttributeRepository.class);
-        productService = new ProductService(productRepository,attributeRepository, brandRepository, attributeValueRepository,
-            productAttributeRepository, categoryRepository, modelMapper,imageCloudService);
+        productService =
+            new ProductService(productRepository, attributeRepository, brandRepository, attributeValueRepository,
+                productAttributeRepository, categoryRepository, modelMapper, imageCloudService);
         ReflectionTestUtils.setField(productService, "productImagesFolderName", PRODUCT_IMAGES_FOLDER_NAME);
     }
 
@@ -104,7 +109,7 @@ class ProductServiceTest {
 
         try (var mockStaticSpecification = mockStatic(Specification.class);
              var specs = mockStatic(ProductRepository.Specs.class)) {
-            when(Specification.allOf((Iterable<Specification<Product>>)any())).thenReturn(specification);
+            when(Specification.allOf((Iterable<Specification<Product>>) any())).thenReturn(specification);
 
             when(ProductRepository.Specs.byName(filter.getName()))
                 .thenReturn(specification1);
@@ -129,7 +134,7 @@ class ProductServiceTest {
             verify(productRepository).findAllProductIds(eq(specification), eq(pageable));
             verify(productRepository).findAllByIdWithImages(eq(productIds));
             verify(modelMapper).map(eq(product), eq(ShortProductResponseDto.class));
-            assertEquals(expected,actual);
+            assertEquals(expected, actual);
 
         }
     }
@@ -222,7 +227,7 @@ class ProductServiceTest {
         var savedProduct = getProduct();
         var productRequestDto = getProductRequestDto();
         var productResponseDto = getProductResponseDto();
-        when(imageCloudService.uploadImage(file,PRODUCT_IMAGES_FOLDER_NAME)).
+        when(imageCloudService.uploadImage(file, PRODUCT_IMAGES_FOLDER_NAME)).
             thenReturn(SAMPLE_URL);
         when(productRepository.save(product))
             .thenReturn(savedProduct);
@@ -239,10 +244,75 @@ class ProductServiceTest {
         when(modelMapper.map(savedProduct, ProductResponseDto.class))
             .thenReturn(productResponseDto);
 
-        var actual = productService.create(productRequestDto,multipartFiles);
+        var actual = productService.create(productRequestDto, multipartFiles);
 
         verify(brandRepository).findById(eq(1L));
-        verify(imageCloudService).uploadImage(eq(file),eq(PRODUCT_IMAGES_FOLDER_NAME));
+        verify(imageCloudService).uploadImage(eq(file), eq(PRODUCT_IMAGES_FOLDER_NAME));
+        verify(categoryRepository).findById(eq(1L));
+        verify(productRepository).findByName(eq(product.getName()));
+        verify(productRepository).save(eq(product));
+        verify(productRepository).findByName(eq(product.getName()));
+        verify(attributeValueRepository).getReferenceById(eq(1L));
+        verify(productAttributeRepository).findAllByIdIn(eq(productRequestDto.getAttributeValueIds()));
+        verify(attributeValueRepository,never()).save(any());
+        verify(attributeRepository,never()).getReferenceById(eq(1L));
+        verify(modelMapper).map(eq(savedProduct), eq(ProductResponseDto.class));
+        assertEquals(productResponseDto, actual);
+    }
+
+    @Test
+    void createWithNewAttributesTest() {
+        var product = getProduct();
+        product.setId(null);
+        var file = getMultipartFile();
+        List<MultipartFile> multipartFiles = List.of(file);
+        var savedProduct = getProduct();
+        var productRequestDto = getProductRequestDto();
+        productRequestDto.setAttributeAttributeValueRequestDtos(
+            List.of(AttributeAttributeValueRequestDto.builder()
+                .attributeId(1L)
+                .attributeValue("value")
+                .build())
+        );
+        var attributevalue = getAttributeValue();
+        var attribute = getAttribute();
+        var productResponseDto = getProductResponseDto();
+        productResponseDto.getProductAttributeResponseDtos().add(
+            new ProductAttributeResponseDto(
+                attributevalue.getAttribute().getName(),
+                attributevalue.getValue()));
+        product.addProductAttribute(ProductAttribute.builder()
+            .attributeValue(attributevalue)
+            .build());
+
+        when(imageCloudService.uploadImage(file, PRODUCT_IMAGES_FOLDER_NAME)).
+            thenReturn(SAMPLE_URL);
+        when(productRepository.save(product))
+            .thenReturn(savedProduct);
+        when(attributeValueRepository.save(any()))
+            .thenReturn(attributevalue);
+        when(attributeRepository.getReferenceById(1L))
+            .thenReturn(attribute);
+        when(productRepository.findByName(product.getName()))
+            .thenReturn(Optional.empty());
+        when(brandRepository.findById(1L)).
+            thenReturn(Optional.of(product.getBrand()));
+        when(categoryRepository.findById(1L)).
+            thenReturn(Optional.of(product.getCategory()));
+        when(attributeValueRepository.getReferenceById(1L))
+            .thenReturn(getAttributeValue());
+        when(productAttributeRepository.findAllByIdIn(productRequestDto.getAttributeValueIds()))
+            .thenReturn(product.getProductAttributes());
+        when(modelMapper.map(savedProduct, ProductResponseDto.class))
+            .thenReturn(productResponseDto);
+
+
+        var actual = productService.create(productRequestDto, multipartFiles);
+
+        verify(brandRepository).findById(eq(1L));
+        verify(attributeValueRepository).save(any());
+        verify(attributeRepository).getReferenceById(eq(1L));
+        verify(imageCloudService).uploadImage(eq(file), eq(PRODUCT_IMAGES_FOLDER_NAME));
         verify(categoryRepository).findById(eq(1L));
         verify(productRepository).findByName(eq(product.getName()));
         verify(productRepository).save(eq(product));
@@ -260,7 +330,7 @@ class ProductServiceTest {
             .thenReturn(Optional.empty());
         var productRequestDto = getProductRequestDto();
 
-        assertThrows(NotFoundException.class, () -> productService.create(productRequestDto,multipartFiles),
+        assertThrows(NotFoundException.class, () -> productService.create(productRequestDto, multipartFiles),
             ExceptionMessage.BRAND_NOT_FOUND_BY_ID.formatted(1L));
         verify(brandRepository).findById(eq(1L));
     }
@@ -274,7 +344,7 @@ class ProductServiceTest {
             thenReturn(Optional.empty());
         var productRequestDto = getProductRequestDto();
 
-        assertThrows(NotFoundException.class, () -> productService.create(productRequestDto,multipartFiles),
+        assertThrows(NotFoundException.class, () -> productService.create(productRequestDto, multipartFiles),
             ExceptionMessage.CATEGORY_NOT_FOUND_BY_ID.formatted(1L));
         verify(brandRepository).findById(eq(1L));
         verify(categoryRepository).findById(eq(1L));
@@ -292,7 +362,7 @@ class ProductServiceTest {
             .thenReturn(Optional.of(product));
         var productRequestDto = getProductRequestDto();
 
-        assertThrows(AlreadyExistsException.class, () -> productService.create(productRequestDto,multipartFiles),
+        assertThrows(AlreadyExistsException.class, () -> productService.create(productRequestDto, multipartFiles),
             ExceptionMessage.PRODUCT_WITH_NAME_ALREADY_EXISTS.formatted(product.getName()));
         verify(brandRepository).findById(eq(1L));
         verify(categoryRepository).findById(eq(1L));
@@ -320,7 +390,7 @@ class ProductServiceTest {
         when(attributeValueRepository.getReferenceById(1L))
             .thenReturn(getAttributeValue());
 
-        assertThrows(PersistenceException.class, () -> productService.create(productRequestDto,multipartFiles),
+        assertThrows(PersistenceException.class, () -> productService.create(productRequestDto, multipartFiles),
             ExceptionMessage.PRODUCT_PERSISTENCE_EXCEPTION);
 
         verify(brandRepository).findById(eq(1L));
@@ -339,9 +409,9 @@ class ProductServiceTest {
         var productRequestDto = getProductRequestDto();
         var productResponseDto = getProductResponseDto();
         List<String> imagesUrls = product.getImages().stream().map(Image::getLink).toList();
-        when(imageCloudService.uploadImage(file,PRODUCT_IMAGES_FOLDER_NAME)).
+        when(imageCloudService.uploadImage(file, PRODUCT_IMAGES_FOLDER_NAME)).
             thenReturn(SAMPLE_URL);
-        doNothing().when(imageCloudService).deleteImages(imagesUrls,PRODUCT_IMAGES_FOLDER_NAME);
+        doNothing().when(imageCloudService).deleteImages(imagesUrls, PRODUCT_IMAGES_FOLDER_NAME);
         when(productRepository.findByIdWithCollections(1L))
             .thenReturn(Optional.of(getProduct()));
         when(brandRepository.findById(1L)).
@@ -359,8 +429,69 @@ class ProductServiceTest {
 
         verify(brandRepository).findById(eq(1L));
         verify(categoryRepository).findById(eq(1L));
-        verify(imageCloudService).uploadImage(eq(file),eq(PRODUCT_IMAGES_FOLDER_NAME));
-        verify(imageCloudService).deleteImages(eq(imagesUrls),eq(PRODUCT_IMAGES_FOLDER_NAME));
+        verify(attributeValueRepository,never()).save(any());
+        verify(attributeRepository,never()).getReferenceById(eq(1L));
+        verify(imageCloudService).uploadImage(eq(file), eq(PRODUCT_IMAGES_FOLDER_NAME));
+        verify(imageCloudService).deleteImages(eq(imagesUrls), eq(PRODUCT_IMAGES_FOLDER_NAME));
+        verify(productRepository).findByIdWithCollections(eq(1L));
+        verify(attributeValueRepository).findAllByIdIn(eq(Collections.emptyList()));
+        verify(productRepository).saveAndFlush(eq(product));
+        verify(productRepository).findByNameAndIdNot(eq(productRequestDto.getName()), eq(1L));
+        verify(modelMapper).map(eq(product), eq(ProductResponseDto.class));
+        assertEquals(productResponseDto, actual);
+    }
+
+    @Test
+    void updateWithNewAttributesTest() {
+        var file = getMultipartFile();
+        List<MultipartFile> multipartFiles = List.of(file);
+        var product = getProduct();
+        var productRequestDto = getProductRequestDto();
+        productRequestDto.setAttributeAttributeValueRequestDtos(
+            List.of(AttributeAttributeValueRequestDto.builder()
+                .attributeId(1L)
+                .attributeValue("value")
+                .build())
+        );
+        var attributevalue = getAttributeValue();
+        var attribute = getAttribute();
+        var productResponseDto = getProductResponseDto();
+        productResponseDto.getProductAttributeResponseDtos().add(
+            new ProductAttributeResponseDto(
+                attributevalue.getAttribute().getName(),
+                attributevalue.getValue()));
+        product.addProductAttribute(ProductAttribute.builder()
+            .attributeValue(attributevalue)
+            .build());
+        List<String> imagesUrls = product.getImages().stream().map(Image::getLink).toList();
+        when(attributeValueRepository.save(any()))
+            .thenReturn(attributevalue);
+        when(attributeRepository.getReferenceById(1L))
+            .thenReturn(attribute);
+        when(imageCloudService.uploadImage(file, PRODUCT_IMAGES_FOLDER_NAME)).
+            thenReturn(SAMPLE_URL);
+        doNothing().when(imageCloudService).deleteImages(imagesUrls, PRODUCT_IMAGES_FOLDER_NAME);
+        when(productRepository.findByIdWithCollections(1L))
+            .thenReturn(Optional.of(getProduct()));
+        when(brandRepository.findById(1L)).
+            thenReturn(Optional.of(product.getBrand()));
+        when(categoryRepository.findById(1L)).
+            thenReturn(Optional.of(product.getCategory()));
+        when(productRepository.findByNameAndIdNot(productRequestDto.getName(), 1L))
+            .thenReturn(Optional.empty());
+        when(attributeValueRepository.findAllByIdIn(Collections.emptyList()))
+            .thenReturn(Collections.emptyList());
+        when(modelMapper.map(product, ProductResponseDto.class))
+            .thenReturn(productResponseDto);
+
+        var actual = productService.update(1L, productRequestDto, multipartFiles);
+
+        verify(brandRepository).findById(eq(1L));
+        verify(categoryRepository).findById(eq(1L));
+        verify(attributeValueRepository).save(any());
+        verify(attributeRepository).getReferenceById(eq(1L));
+        verify(imageCloudService).uploadImage(eq(file), eq(PRODUCT_IMAGES_FOLDER_NAME));
+        verify(imageCloudService).deleteImages(eq(imagesUrls), eq(PRODUCT_IMAGES_FOLDER_NAME));
         verify(productRepository).findByIdWithCollections(eq(1L));
         verify(attributeValueRepository).findAllByIdIn(eq(Collections.emptyList()));
         verify(productRepository).saveAndFlush(eq(product));
@@ -393,8 +524,8 @@ class ProductServiceTest {
         verify(brandRepository).findById(eq(1L));
         verify(categoryRepository).findById(eq(1L));
         verify(productRepository).findByIdWithCollections(eq(1L));
-        verify(imageCloudService,never()).uploadImage(any(),any());
-        verify(imageCloudService,never()).deleteImages(any(),any());
+        verify(imageCloudService, never()).uploadImage(any(), any());
+        verify(imageCloudService, never()).deleteImages(any(), any());
         verify(attributeValueRepository).findAllByIdIn(eq(Collections.emptyList()));
         verify(productRepository).saveAndFlush(eq(product));
         verify(productRepository).findByNameAndIdNot(eq(productRequestDto.getName()), eq(1L));
