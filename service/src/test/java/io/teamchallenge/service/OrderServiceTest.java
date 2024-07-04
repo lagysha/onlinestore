@@ -2,11 +2,9 @@ package io.teamchallenge.service;
 
 import io.teamchallenge.dto.order.OrderRequestDto;
 import io.teamchallenge.entity.Address;
-import io.teamchallenge.entity.ContactInfo;
 import io.teamchallenge.entity.Order;
 import io.teamchallenge.entity.Product;
 import io.teamchallenge.entity.User;
-import io.teamchallenge.enumerated.DeliveryStatus;
 import io.teamchallenge.exception.ConflictException;
 import io.teamchallenge.exception.ForbiddenException;
 import io.teamchallenge.repository.CartItemRepository;
@@ -15,7 +13,6 @@ import io.teamchallenge.repository.ProductRepository;
 import io.teamchallenge.repository.UserRepository;
 import io.teamchallenge.util.Utils;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -50,19 +47,7 @@ class OrderServiceTest {
         OrderRequestDto orderRequestDto = Utils.getOrderRequestDtoCourier();
         String email = "test@mail.com";
         Principal principal = () -> email;
-        Order order = Order.builder()
-            .contactInfo(ContactInfo.builder()
-                .email(orderRequestDto.getEmail())
-                .firstName(orderRequestDto.getFirstName())
-                .lastName(orderRequestDto.getLastName())
-                .phoneNumber(orderRequestDto.getPhoneNumber())
-                .build())
-            .address(Utils.getAddress())
-            .deliveryMethod(orderRequestDto.getDeliveryMethod())
-            .deliveryStatus(DeliveryStatus.PROCESSING)
-            .orderItems(new ArrayList<>())
-            .isPaid(false)
-            .build();
+        Order order = Utils.getUnsavedOrder();
         User user = Utils.getUser();
         Product product = Utils.getProduct();
         List<Long> productIds = List.of(product.getId());
@@ -125,19 +110,7 @@ class OrderServiceTest {
     void createWithoutPrincipalTest() {
         OrderRequestDto orderRequestDto = Utils.getOrderRequestDtoCourier();
         Principal principal = null;
-        Order order = Order.builder()
-            .contactInfo(ContactInfo.builder()
-                .email(orderRequestDto.getEmail())
-                .firstName(orderRequestDto.getFirstName())
-                .lastName(orderRequestDto.getLastName())
-                .phoneNumber(orderRequestDto.getPhoneNumber())
-                .build())
-            .address(Utils.getAddress())
-            .deliveryMethod(orderRequestDto.getDeliveryMethod())
-            .deliveryStatus(DeliveryStatus.PROCESSING)
-            .orderItems(new ArrayList<>())
-            .isPaid(false)
-            .build();
+        Order order = Utils.getUnsavedOrder();
         Product product = Utils.getProduct();
         List<Long> productIds = List.of(product.getId());
         List<Product> products = List.of(product);

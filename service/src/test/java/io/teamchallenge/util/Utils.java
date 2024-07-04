@@ -403,4 +403,21 @@ public class Utils {
             .addressLine("address line")
             .build();
     }
+
+    public static Order getUnsavedOrder() {
+        OrderRequestDto orderRequestDto = Utils.getOrderRequestDtoCourier();
+        return Order.builder()
+            .contactInfo(ContactInfo.builder()
+                .email(orderRequestDto.getEmail())
+                .firstName(orderRequestDto.getFirstName())
+                .lastName(orderRequestDto.getLastName())
+                .phoneNumber(orderRequestDto.getPhoneNumber())
+                .build())
+            .address(Utils.getAddress())
+            .deliveryMethod(orderRequestDto.getDeliveryMethod())
+            .deliveryStatus(DeliveryStatus.PROCESSING)
+            .orderItems(new ArrayList<>())
+            .isPaid(false)
+            .build();
+    }
 }

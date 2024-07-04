@@ -5,6 +5,6 @@ public enum DeliveryStatus {
     PROCESSED,
     SHIPPED,
     AWAITING,
-    COMPLETE,
+    COMPLETED,
     CANCELED
 }

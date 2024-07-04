@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,7 +77,7 @@ public class OrderService {
                 throw new ForbiddenException(USER_WITH_PHONE_NUMBER_ALREADY_EXISTS.formatted(
                     orderRequestDto.getPhoneNumber()));
             }
-            cartItemRepository.deleteByIdUserId(user.getId());
+            cartItemRepository.deleteByUserId(user.getId());
             user.addOrder(order);
         }
 
@@ -94,25 +93,31 @@ public class OrderService {
 
         Order savedOrder = orderRepository.save(order);
         orderRequestDto.getCartItems().stream().map(cartItem -> {
-            Product product = products.stream()
-                .filter(p -> p.getId().equals(cartItem.getProductId()) && cartItem.getQuantity() <= p.getQuantity())
-                .findAny()
-                .orElseThrow(() -> new ConflictException(PRODUCT_QUANTITY_CONFLICT.formatted(cartItem.getProductId())));
-
+            Product product = getProductByCartItem(cartItem, products);
             product.setQuantity(product.getQuantity() - cartItem.getQuantity());
-
-            return OrderItem.builder()
-                .id(OrderItemId.builder()
-                    .orderId(savedOrder.getId())
-                    .productId(product.getId())
-                    .build())
-                .product(product)
-                .price(product.getPrice())
-                .quantity(cartItem.getQuantity())
-                .order(savedOrder)
-                .build();
+            return buildOrderItem(cartItem, savedOrder, product);
         }).forEach(order::addOrderItem);
         return savedOrder.getId();
+    }
+
+    private static OrderItem buildOrderItem(CartItemRequestDto cartItem, Order savedOrder, Product product) {
+        return OrderItem.builder()
+            .id(OrderItemId.builder()
+                .orderId(savedOrder.getId())
+                .productId(product.getId())
+                .build())
+            .product(product)
+            .price(product.getPrice())
+            .quantity(cartItem.getQuantity())
+            .order(savedOrder)
+            .build();
+    }
+
+    private static Product getProductByCartItem(CartItemRequestDto cartItem, List<Product> products) {
+        return products.stream()
+            .filter(p -> p.getId().equals(cartItem.getProductId()) && cartItem.getQuantity() <= p.getQuantity())
+            .findAny()
+            .orElseThrow(() -> new ConflictException(PRODUCT_QUANTITY_CONFLICT.formatted(cartItem.getProductId())));
     }
 
     private Order createOrderSample(OrderRequestDto orderRequestDto) {

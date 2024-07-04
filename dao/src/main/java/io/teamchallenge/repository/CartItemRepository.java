@@ -1,7 +1,6 @@
 package io.teamchallenge.repository;
 
 import io.hypersistence.utils.spring.repository.BaseJpaRepository;
-import io.teamchallenge.entity.attributes.AttributeValue;
 import io.teamchallenge.entity.cartitem.CartItem;
 import io.teamchallenge.entity.cartitem.CartItemId;
 import java.util.List;
@@ -50,5 +49,5 @@ public interface CartItemRepository
      *
      * @param userId id of {@link io.teamchallenge.entity.User}.
      */
-    void deleteByIdUserId(Long userId);
+    void deleteByUserId(Long userId);
 }

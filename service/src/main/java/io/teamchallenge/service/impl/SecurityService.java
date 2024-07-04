@@ -66,7 +66,6 @@ public class SecurityService {
                 ExceptionMessage.USER_WITH_PHONE_NUMBER_ALREADY_EXISTS.formatted(signUpRequestDto.getPhoneNumber()));
         }
         User user = modelMapper.map(signUpRequestDto, User.class);
-        System.out.println(user);
         return modelMapper.map(userRepository.save(user), SignUpResponseDto.class);
     }
 
