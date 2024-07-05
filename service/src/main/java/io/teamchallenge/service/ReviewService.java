@@ -8,6 +8,7 @@ import io.teamchallenge.entity.Product;
 import io.teamchallenge.entity.User;
 import io.teamchallenge.entity.reviews.Review;
 import io.teamchallenge.entity.reviews.ReviewId;
+import io.teamchallenge.exception.AlreadyExistsException;
 import io.teamchallenge.exception.ForbiddenException;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.repository.OrderRepository;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static io.teamchallenge.constant.ExceptionMessage.REVIEW_ALREADY_EXISTS;
 import static io.teamchallenge.constant.ExceptionMessage.USER_HAS_NO_COMPLETED_ORDERS_WITH_PRODUCT;
 
 @Service
@@ -62,6 +64,10 @@ public class ReviewService {
     public ReviewResponseDto create(ReviewId reviewId, AddReviewRequestDto addReviewRequestDto) {
         if (!userRepository.existsByIdAndCompletedOrderWithProductId(reviewId.getUserId(), reviewId.getProductId())) {
             throw new ForbiddenException(USER_HAS_NO_COMPLETED_ORDERS_WITH_PRODUCT.formatted(reviewId.getProductId()));
+        }
+
+        if (reviewRepository.existsById(reviewId)) {
+            throw new AlreadyExistsException(REVIEW_ALREADY_EXISTS);
         }
 
         User userReference = userRepository.getReferenceById(reviewId.getUserId());

@@ -30,4 +30,5 @@ public final class ExceptionMessage {
     public static final String IMAGE_PERSISTENCE_EXCEPTION_MESSAGE = "The problem encountered during image persistence";
     public static final String IMAGE_DELETION_EXCEPTION_MESSAGE = "The problem encountered during image deletion";
     public static final String USER_HAS_NO_COMPLETED_ORDERS_WITH_PRODUCT = "User has no completed orders with product %s";
+    public static final String REVIEW_ALREADY_EXISTS = "This product was already reviewed by user.";
 }

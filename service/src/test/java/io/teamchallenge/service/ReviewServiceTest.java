@@ -8,6 +8,7 @@ import io.teamchallenge.entity.Product;
 import io.teamchallenge.entity.User;
 import io.teamchallenge.entity.reviews.Review;
 import io.teamchallenge.entity.reviews.ReviewId;
+import io.teamchallenge.exception.AlreadyExistsException;
 import io.teamchallenge.exception.ForbiddenException;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.repository.ProductRepository;
@@ -99,6 +100,7 @@ public class ReviewServiceTest {
             .thenReturn(true);
         when(userRepository.getReferenceById(reviewId.getUserId())).thenReturn(user);
         when(productRepository.getReferenceById(reviewId.getProductId())).thenReturn(product);
+        when(reviewRepository.existsById(reviewId)).thenReturn(false);
 
         var actual = reviewService.create(reviewId, requestDto);
 
@@ -107,6 +109,7 @@ public class ReviewServiceTest {
         verify(modelMapper).map(review, ReviewResponseDto.class);
         verify(userRepository).getReferenceById(reviewId.getUserId());
         verify(productRepository).getReferenceById(reviewId.getProductId());
+        verify(reviewRepository).existsById(reviewId);
     }
 
     @Test
@@ -119,6 +122,20 @@ public class ReviewServiceTest {
 
         assertThrows(ForbiddenException.class, ()->reviewService.create(reviewId, requestDto));
         verify(userRepository).existsByIdAndCompletedOrderWithProductId(reviewId.getUserId(), reviewId.getProductId());
+    }
+
+    @Test
+    void createThrowsAlreadyExistsExceptionWhenUserHasReviewOnProductTest() {
+        ReviewId reviewId = Utils.getReviewId();
+        AddReviewRequestDto requestDto = Utils.getAddReviewRequestDto();
+
+        when(userRepository.existsByIdAndCompletedOrderWithProductId(reviewId.getUserId(), reviewId.getProductId()))
+            .thenReturn(true);
+        when(reviewRepository.existsById(reviewId)).thenReturn(true);
+
+        assertThrows(AlreadyExistsException.class, ()->reviewService.create(reviewId, requestDto));
+        verify(userRepository).existsByIdAndCompletedOrderWithProductId(reviewId.getUserId(), reviewId.getProductId());
+        verify(reviewRepository).existsById(reviewId);
     }
 
     @Test
