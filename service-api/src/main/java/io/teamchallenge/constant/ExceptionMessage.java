@@ -17,7 +17,7 @@ public final class ExceptionMessage {
     public static final String PRODUCT_WITH_NAME_ALREADY_EXISTS =
         "The product with name: %s is already present in database";
     public static final String PRODUCT_PERSISTENCE_EXCEPTION
-        = "The product with such attributes can't be created due to following reasons: "
+        = "The product with such attribute values can't be created due to following reasons: "
         + "attributes duplication or non-existence";
     public static final String ATTRIBUTE_PERSISTENCE_EXCEPTION
         = "The pair of attribute and category already exists";
