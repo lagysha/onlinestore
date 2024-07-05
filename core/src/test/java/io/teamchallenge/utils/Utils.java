@@ -16,10 +16,13 @@ import io.teamchallenge.dto.product.ProductAttributeResponseDto;
 import io.teamchallenge.dto.product.ProductRequestDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
 import io.teamchallenge.dto.product.ShortProductResponseDto;
+import io.teamchallenge.dto.review.AddReviewRequestDto;
+import io.teamchallenge.dto.review.ReviewResponseDto;
 import io.teamchallenge.dto.security.SignInRequestDto;
 import io.teamchallenge.dto.security.SignInResponseDto;
 import io.teamchallenge.dto.security.SignUpRequestDto;
 import io.teamchallenge.dto.security.SignUpResponseDto;
+import io.teamchallenge.dto.user.ReviewerDto;
 import io.teamchallenge.entity.Brand;
 import io.teamchallenge.entity.Category;
 import io.teamchallenge.entity.Image;
@@ -27,8 +30,10 @@ import io.teamchallenge.entity.Product;
 import io.teamchallenge.entity.attributes.Attribute;
 import io.teamchallenge.entity.attributes.AttributeValue;
 import io.teamchallenge.entity.attributes.ProductAttribute;
+import io.teamchallenge.entity.reviews.ReviewId;
 import io.teamchallenge.enumerated.DeliveryMethod;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -294,5 +299,31 @@ public class Utils {
                ".eyJpc3MiOiJHYWRnZXRIb3VzZSIsInN1YiI6ImV4YW1wbGUxMjNAZXhhbXBsZS5jb20iLCJpZCI6MTEsInJ" +
                "vbGUiOiJST0xFX1VTRVIiLCJpYXQiOjE3MTY4MDA5NDcsImV4cCI6MTcxNzQwNTc0N30" +
                ".odua7l-MEZmfjsCu4jmAciqLI[lSRdvrD0Jmufd-N56";
+    }
+
+    public static ReviewResponseDto getReviewResponseDto() {
+        return ReviewResponseDto.builder()
+            .text("test text")
+            .rate((short) 4)
+            .createdAt(LocalDateTime.of(1,1,1,1,1))
+            .user(ReviewerDto.builder()
+                .firstName("test name")
+                .lastName("test surname")
+                .build())
+            .build();
+    }
+
+    public static ReviewId getReviewId() {
+        return ReviewId.builder()
+            .userId(1L)
+            .productId(1L)
+            .build();
+    }
+
+    public static AddReviewRequestDto getAddReviewRequestDto() {
+        return AddReviewRequestDto.builder()
+            .text("test text")
+            .rate((short) 4)
+            .build();
     }
 }

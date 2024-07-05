@@ -23,9 +23,12 @@ public final class ExceptionMessage {
     public static final String CARTITEM_ALREADY_EXISTS =
         "The cartItem with id: %s is already present in database";
     public static final String CARTITEM_NOT_FOUND_BY_ID = "The cartItem with id: %s is not present in database";
-
+    public static final String REVIEW_NOT_FOUND_BY_ID =
+        "The review from user with id: %s on product with id: %s is not present in database";
     public static final String PRODUCT_QUANTITY_CONFLICT =
         "Quantity requested for the following product %s exceeds our current stock";
     public static final String IMAGE_PERSISTENCE_EXCEPTION_MESSAGE = "The problem encountered during image persistence";
     public static final String IMAGE_DELETION_EXCEPTION_MESSAGE = "The problem encountered during image deletion";
+    public static final String USER_HAS_NO_COMPLETED_ORDERS_WITH_PRODUCT = "User has no completed orders with product %s";
+    public static final String REVIEW_ALREADY_EXISTS = "This product was already reviewed by user.";
 }

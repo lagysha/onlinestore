@@ -17,10 +17,13 @@ import io.teamchallenge.dto.product.ProductMinMaxPriceDto;
 import io.teamchallenge.dto.product.ProductRequestDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
 import io.teamchallenge.dto.product.ShortProductResponseDto;
+import io.teamchallenge.dto.review.AddReviewRequestDto;
+import io.teamchallenge.dto.review.ReviewResponseDto;
 import io.teamchallenge.dto.security.SignInRequestDto;
 import io.teamchallenge.dto.security.SignUpRequestDto;
 import io.teamchallenge.dto.security.SignUpResponseDto;
 import io.teamchallenge.entity.Address;
+import io.teamchallenge.dto.user.ReviewerDto;
 import io.teamchallenge.entity.Brand;
 import io.teamchallenge.entity.Category;
 import io.teamchallenge.entity.ContactInfo;
@@ -34,6 +37,8 @@ import io.teamchallenge.entity.attributes.AttributeValue;
 import io.teamchallenge.entity.attributes.ProductAttribute;
 import io.teamchallenge.entity.cartitem.CartItem;
 import io.teamchallenge.entity.cartitem.CartItemId;
+import io.teamchallenge.entity.reviews.Review;
+import io.teamchallenge.entity.reviews.ReviewId;
 import io.teamchallenge.entity.orderitem.OrderItem;
 import io.teamchallenge.entity.orderitem.OrderItemId;
 import io.teamchallenge.enumerated.DeliveryMethod;
@@ -418,6 +423,43 @@ public class Utils {
             .deliveryStatus(DeliveryStatus.PROCESSING)
             .orderItems(new ArrayList<>())
             .isPaid(false)
+            .build();
+    }
+
+    public static Review getReview() {
+        return Review.builder()
+            .id(getReviewId())
+            .text("test")
+            .rate((short) 4)
+            .createdAt(LocalDateTime.of(1,1,1,1,1))
+            .user(getUser())
+            .build();
+    }
+
+    public static ReviewId getReviewId() {
+        return ReviewId.builder()
+            .productId(1L)
+            .userId(1L)
+            .build();
+    }
+
+    public static AddReviewRequestDto getAddReviewRequestDto() {
+        return AddReviewRequestDto.builder()
+            .text("test text")
+            .rate((short) 4)
+            .build();
+    }
+
+    public static ReviewResponseDto getReviewResponseDto() {
+        Review review = getReview();
+        return ReviewResponseDto.builder()
+            .text(review.getText())
+            .rate(review.getRate())
+            .createdAt(review.getCreatedAt())
+            .user(ReviewerDto.builder()
+                .firstName(review.getUser().getFirstName())
+                .lastName(review.getUser().getLastName())
+                .build())
             .build();
     }
 }

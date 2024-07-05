@@ -94,7 +94,8 @@ public class SecurityConfig {
                     API_V1 + "/signUp",
                     API_V1 + "/signIn",
                     API_V1 + "/updateAccessToken",
-                    API_V1 + "/orders"
+                    API_V1 + "/orders",
+                    API_V1 + "/reviews/{productId}"
                 )
                 .permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**")
@@ -119,7 +120,9 @@ public class SecurityConfig {
                     API_V1 + "/cart-items")
                 .hasAnyRole(USER,ADMIN)
                 .requestMatchers(HttpMethod.POST,
-                    API_V1 + "/cart-items/{product_id}")
+                    API_V1 + "/cart-items/{product_id}",
+                    API_V1 + "/reviews/{productId}"
+                )
                 .hasAnyRole(USER,ADMIN)
                 .requestMatchers(HttpMethod.PATCH,
                     API_V1 + "/cart-items/{product_id}")

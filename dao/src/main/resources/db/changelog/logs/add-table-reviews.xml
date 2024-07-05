@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="create-table-reviews" author="Denys Liubchenko">
+        <createTable tableName="reviews">
+            <column name="user_id" type="bigint"/>
+            <column name="product_id" type="bigint"/>
+            <column name="text" type="varchar(3000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rate" type="smallint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp"/>
+        </createTable>
+
+        <addPrimaryKey tableName="reviews" columnNames="user_id, product_id" constraintName="PK_previews"/>
+
+        <addForeignKeyConstraint baseTableName="reviews" baseColumnNames="user_id"
+                                 constraintName="FK_reviews_users"
+                                 referencedTableName="users" referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="reviews" baseColumnNames="product_id"
+                                 constraintName="FK_reviews_products"
+                                 referencedTableName="products" referencedColumnNames="id"/>
+        <sql>
+            ALTER TABLE reviews ADD CONSTRAINT check_rate CHECK (rate &gt;=1 AND rate &lt;= 5)
+        </sql>
+    </changeSet>
+</databaseChangeLog>

@@ -5,8 +5,10 @@ import io.teamchallenge.exception.BadCredentialsException;
 import io.teamchallenge.exception.BadTokenException;
 import io.teamchallenge.exception.ConflictException;
 import io.teamchallenge.exception.ExceptionResponse;
+import io.teamchallenge.exception.ForbiddenException;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.exception.PersistenceException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import java.util.HashMap;
@@ -53,6 +55,22 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ExceptionResponse> handleNotFoundException(NotFoundException e, WebRequest webRequest) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(webRequest));
+        log.trace(e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(exceptionResponse);
+    }
+
+    /**
+     * Exception handler method to handle NotFoundException.
+     *
+     * @param e          The NotFoundException instance that occurred.
+     * @param webRequest The WebRequest associated with the request.
+     * @return A ResponseEntity containing the ExceptionResponse with HttpStatus.NOT_FOUND.
+     */
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleEntityNotFoundException(EntityNotFoundException e,
+                                                                           WebRequest webRequest) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(webRequest));
         log.trace(e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -194,6 +212,21 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(webRequest));
         log.trace(e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.CONFLICT)
+            .body(exceptionResponse);
+    }
+
+    /**
+     * Exception handler method to handle ForbiddenException.
+     *
+     * @param e          The ForbiddenException instance that occurred.
+     * @param webRequest The WebRequest associated with the request.
+     * @return A ResponseEntity containing the ExceptionResponse with HttpStatus.FORBIDDEN.
+     */
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ExceptionResponse> handleConflictException(ForbiddenException e, WebRequest webRequest) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(webRequest));
+        log.trace(e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
             .body(exceptionResponse);
     }
 
