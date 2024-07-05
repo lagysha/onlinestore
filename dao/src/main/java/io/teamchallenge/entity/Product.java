@@ -2,6 +2,7 @@ package io.teamchallenge.entity;
 
 import io.teamchallenge.entity.attributes.ProductAttribute;
 import io.teamchallenge.entity.cartitem.CartItem;
+import io.teamchallenge.entity.reviews.Review;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -51,6 +52,10 @@ public class Product {
     @OneToMany(mappedBy = "product")
     @Setter(AccessLevel.PRIVATE)
     private List<CartItem> cartItems = new ArrayList<>();
+
+    @OneToMany(mappedBy = "product")
+    @Setter(AccessLevel.PRIVATE)
+    private List<Review> reviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, orphanRemoval = true)
     @Setter(AccessLevel.PRIVATE)
@@ -136,5 +141,27 @@ public class Product {
     public void clearAllImages() {
         images.forEach(image -> image.setProduct(null));
         images.clear();
+    }
+
+    /**
+     * Adds a review to the product's list of reviews.
+     * Also sets the product for the added review.
+     *
+     * @param review The cart item to be added.
+     */
+    public void addReview(Review review) {
+        reviews.add(review);
+        review.setProduct(this);
+    }
+
+    /**
+     * Removes a review from the product's list of reviews.
+     * Also sets the product of the removed review to null.
+     *
+     * @param review The cart item to be removed.
+     */
+    public void removeReview(Review review) {
+        reviews.remove(review);
+        review.setProduct(null);
     }
 }

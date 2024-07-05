@@ -82,7 +82,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterAfter(
-                accessTokenJwtAuthenticationFilter,
+                new AccessTokenJwtAuthenticationFilter(jwtService),
                 BasicAuthenticationFilter.class)
             .exceptionHandling(exception -> exception
                 .authenticationEntryPoint((req, resp, exc) ->
@@ -93,8 +93,21 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST,
                     API_V1 + "/signUp",
                     API_V1 + "/signIn",
-                    API_V1 + "/updateAccessToken"
+                    API_V1 + "/updateAccessToken",
+                    API_V1 + "/orders",
+                    API_V1 + "/reviews/{productId}"
                 )
+                .permitAll()
+                .requestMatchers(HttpMethod.OPTIONS, "/**")
+                .permitAll()
+                .requestMatchers(
+                    "/v3/api-docs/**",
+                    "/swagger.json",
+                    "/swagger-ui.html",
+                    "/swagger-ui/index.html",
+                    "/swagger-ui/**",
+                    "/swagger-resources/**",
+                    "/webjars/**")
                 .permitAll()
                 .requestMatchers(HttpMethod.GET,
                     API_V1 + "/categories/{categoryId}/attribute-attributeValues",
@@ -109,7 +122,9 @@ public class SecurityConfig {
                     API_V1 + "/cart-items")
                 .hasAnyRole(USER,ADMIN)
                 .requestMatchers(HttpMethod.POST,
-                    API_V1 + "/cart-items/{product_id}")
+                    API_V1 + "/cart-items/{product_id}",
+                    API_V1 + "/reviews/{productId}"
+                )
                 .hasAnyRole(USER,ADMIN)
                 .requestMatchers(HttpMethod.PATCH,
                     API_V1 + "/cart-items/{product_id}")
