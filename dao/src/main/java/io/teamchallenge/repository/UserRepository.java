@@ -52,7 +52,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @param productId the phoneNumber of the user.
      * @return a boolean true if there is already user with completed order with product.
      */
-    @Query("select case when count(u)> 0 then true else false end "
+    @Query("select count(u)> 0 "
            + "from User u "
            + "left join u.orders o "
            + "left join o.orderItems oi "
