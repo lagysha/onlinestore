@@ -100,8 +100,8 @@ public class CategoryController {
      * @return a {@link ResponseEntity} containing the updated category details with HTTP status 200 (OK)
      */
     @PutMapping("/{id}")
-    public ResponseEntity<CategoryResponseDto> patchUpdate(@PathVariable("id") Long id,
-                                                        @RequestBody CategoryRequestDto categoryRequestDto) {
+    public ResponseEntity<CategoryResponseDto> update(@PathVariable("id") Long id,
+                                                      @RequestBody CategoryRequestDto categoryRequestDto) {
         return ResponseEntity.ok(categoryService.update(id, categoryRequestDto));
     }
 }

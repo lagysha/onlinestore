@@ -3,7 +3,7 @@ package io.teamchallenge.service.impl;
 import io.teamchallenge.constant.ExceptionMessage;
 import io.teamchallenge.dto.cart.CartItemResponseDto;
 import io.teamchallenge.dto.cart.CartResponseDto;
-import io.teamchallenge.dto.cart.PatchRequestDto;
+import io.teamchallenge.dto.cart.CartItemPatchRequestDto;
 import io.teamchallenge.entity.cartitem.CartItem;
 import io.teamchallenge.entity.cartitem.CartItemId;
 import io.teamchallenge.exception.AlreadyExistsException;
@@ -123,11 +123,11 @@ public class CartItemService {
      *
      * @param userId          the ID of the user who owns the cart item
      * @param productId       the ID of the product in the cart item
-     * @param patchRequestDto the request body containing the fields to be updated
+     * @param cartItemPatchRequestDto the request body containing the fields to be updated
      * @return a CartItemResponseDto containing the updated cart item details
      */
     @Transactional
-    public CartItemResponseDto patch(Long userId, Long productId, PatchRequestDto patchRequestDto) {
+    public CartItemResponseDto patch(Long userId, Long productId, CartItemPatchRequestDto cartItemPatchRequestDto) {
         CartItemId cartItemId = CartItemId.builder()
             .productId(productId)
             .userId(userId).build();
@@ -136,7 +136,7 @@ public class CartItemService {
             .findById(cartItemId)
             .orElseThrow(() -> new NotFoundException(ExceptionMessage.CARTITEM_NOT_FOUND_BY_ID.formatted(cartItemId)));
 
-        retrievedCartItem.setQuantity(patchRequestDto.getQuantity());
+        retrievedCartItem.setQuantity(cartItemPatchRequestDto.getQuantity());
 
         return modelMapper.map(retrievedCartItem, CartItemResponseDto.class);
     }

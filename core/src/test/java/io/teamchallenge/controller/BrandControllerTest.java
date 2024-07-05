@@ -11,10 +11,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static io.teamchallenge.utils.Utils.getBrandRequestDto;
 import static io.teamchallenge.utils.Utils.getBrandResponseDto;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,5 +54,32 @@ public class BrandControllerTest {
         verify(brandService).findAll();
         assertEquals(expected,actual.getBody());
         assertEquals(OK,actual.getStatusCode());
+    }
+
+    @Test
+    void deleteTest() {
+        Long id = 1L;
+        doNothing().when(brandService).deleteById(id);
+
+        var responseEntity = brandController.delete(id);
+
+        verify(brandService).deleteById(eq(id));
+        assertEquals(NO_CONTENT, responseEntity.getStatusCode());
+        assertNull(responseEntity.getBody());
+    }
+
+    @Test
+    void updateTest() {
+        Long id = 1L;
+        var request = getBrandRequestDto();
+        var response = getBrandResponseDto();
+        when(brandService.update(id, request)).thenReturn(response);
+
+        var responseEntity =
+            brandController.update(id, request);
+
+        verify(brandService).update(eq(id), eq(request));
+        assertEquals(OK, responseEntity.getStatusCode());
+        assertEquals(response, responseEntity.getBody());
     }
 }

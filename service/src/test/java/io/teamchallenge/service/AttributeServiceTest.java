@@ -1,7 +1,7 @@
 package io.teamchallenge.service;
 
-import io.teamchallenge.dto.attributes.AttributeResponseDto;
-import io.teamchallenge.entity.attributes.Attribute;
+import io.teamchallenge.constant.ExceptionMessage;
+import io.teamchallenge.exception.DeletionException;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.exception.PersistenceException;
 import io.teamchallenge.repository.AttributeRepository;
@@ -20,12 +20,16 @@ import static io.teamchallenge.constant.ExceptionMessage.ATTRIBUTE_PERSISTENCE_E
 import static io.teamchallenge.constant.ExceptionMessage.CATEGORY_NOT_FOUND_BY_ID;
 import static io.teamchallenge.util.Utils.getAttribute;
 import static io.teamchallenge.util.Utils.getAttributeRequestDto;
+import static io.teamchallenge.util.Utils.getAttributeRequestUpdateDto;
 import static io.teamchallenge.util.Utils.getAttributeResponseDto;
+import static io.teamchallenge.util.Utils.getAttributeValue;
 import static io.teamchallenge.util.Utils.getCategory;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -108,11 +112,75 @@ public class AttributeServiceTest {
         when(categoryRepository.findById(request.getCategoryId())).thenReturn(Optional.of(category));
         when(categoryAttributeRepository.save(any())).thenThrow(DataIntegrityViolationException.class);
 
-        assertThrows(PersistenceException.class,() -> attributeService.create(request)
-            ,ATTRIBUTE_PERSISTENCE_EXCEPTION);
+        assertThrows(PersistenceException.class,() -> attributeService.create(request));
 
         verify(attributeRepository).findByName(eq(request.getName()));
         verify(categoryRepository).findById(eq(request.getCategoryId()));
         verify(categoryAttributeRepository).save(any());
+    }
+
+    @Test
+    void deleteByIdTest() {
+        Long id = 1L;
+
+        when(attributeRepository.findById(id)).thenReturn(Optional.of(getAttribute()));
+        doNothing().when(attributeRepository).deleteById(id);
+
+        attributeService.deleteById(id);
+
+        verify(attributeRepository).findById(eq(id));
+        verify(attributeRepository).deleteById(eq(id));
+    }
+
+    @Test
+    void deleteByIdThrowsNotFoundExceptionWhenNonExistingIdTest() {
+        Long id = 1L;
+
+        when(attributeRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> attributeService.deleteById(id));
+
+        verify(attributeRepository).findById(eq(id));
+    }
+
+    @Test
+    void deleteByIdThrowsDeletionExceptionWhenThereAreRelatedEntitiesToCurrentOneInDatabaseTest() {
+        Long id = 1L;
+
+        when(attributeRepository.findById(id)).thenReturn(Optional.of(getAttribute()));
+        doThrow(new DataIntegrityViolationException("Data integrity violation")).
+            when(attributeRepository).deleteById(id);
+
+        assertThrows(DeletionException.class, () -> attributeService.deleteById(id));
+
+        verify(attributeRepository).findById(eq(id));
+    }
+
+    @Test
+    void updateTest() {
+        Long id = 1L;
+        var retrievedAttribute = getAttribute();
+        var expected = getAttributeResponseDto();
+        var request = getAttributeRequestUpdateDto();
+
+        when(attributeRepository.findById(id)).thenReturn(Optional.of(retrievedAttribute));
+
+        var actual = attributeService.update(id, request);
+
+        assertEquals(expected, actual);
+
+        verify(attributeRepository).findById(eq(id));
+    }
+
+    @Test
+    void updateThrowsNotFoundExceptionWhenNonExistingIdTest() {
+        Long id = 1L;
+        var request = getAttributeRequestUpdateDto();
+
+        when(attributeRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> attributeService.update(id, request));
+
+        verify(attributeRepository).findById(eq(id));
     }
 }

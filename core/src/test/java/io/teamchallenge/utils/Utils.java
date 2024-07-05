@@ -3,7 +3,9 @@ package io.teamchallenge.utils;
 import io.teamchallenge.dto.ImageDto;
 import io.teamchallenge.dto.attributes.AttributeAttributeValueDto;
 import io.teamchallenge.dto.attributes.AttributeRequestDto;
+import io.teamchallenge.dto.attributes.AttributeRequestUpdateDto;
 import io.teamchallenge.dto.attributes.AttributeResponseDto;
+import io.teamchallenge.dto.attributes.AttributeValuePatchRequestDto;
 import io.teamchallenge.dto.attributes.AttributeValueResponseDto;
 import io.teamchallenge.dto.brand.BrandRequestDto;
 import io.teamchallenge.dto.brand.BrandResponseDto;
@@ -11,7 +13,7 @@ import io.teamchallenge.dto.category.CategoryRequestDto;
 import io.teamchallenge.dto.category.CategoryResponseDto;
 import io.teamchallenge.dto.cart.CartItemResponseDto;
 import io.teamchallenge.dto.cart.CartResponseDto;
-import io.teamchallenge.dto.cart.PatchRequestDto;
+import io.teamchallenge.dto.cart.CartItemPatchRequestDto;
 import io.teamchallenge.dto.filter.PriceFilter;
 import io.teamchallenge.dto.filter.ProductFilterDto;
 import io.teamchallenge.dto.pageable.AdvancedPageableDto;
@@ -43,8 +45,8 @@ public class Utils {
             .build();
     }
 
-    public static PatchRequestDto getPatchRequestDto() {
-        return PatchRequestDto
+    public static CartItemPatchRequestDto getCartItemPatchRequestDto() {
+        return CartItemPatchRequestDto
             .builder()
             .quantity(1)
             .build();
@@ -304,6 +306,25 @@ public class Utils {
         return AttributeResponseDto.builder()
             .id(1L)
             .name("Laptops")
+            .build();
+    }
+
+    public static AttributeRequestUpdateDto getAttributeRequestUpdateDto() {
+        return AttributeRequestUpdateDto.builder()
+            .name("Laptops")
+            .build();
+    }
+
+    public static AttributeValuePatchRequestDto getAttributeValuePatchRequestDto() {
+        return AttributeValuePatchRequestDto.builder()
+            .value("1")
+            .build();
+    }
+
+    public static AttributeValueResponseDto getAttributeValueResponseDto() {
+        return AttributeValueResponseDto.builder()
+            .id(1L)
+            .value("1")
             .build();
     }
 }

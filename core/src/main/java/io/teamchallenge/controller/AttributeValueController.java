@@ -56,6 +56,6 @@ public class AttributeValueController {
                                                                  @RequestBody
                                                                  AttributeValuePatchRequestDto
                                                                      attributeValuePatchRequestDto) {
-        return ResponseEntity.ok(attributeValueService.update(id, attributeValuePatchRequestDto));
+        return ResponseEntity.ok(attributeValueService.patchUpdate(id, attributeValuePatchRequestDto));
     }
 }

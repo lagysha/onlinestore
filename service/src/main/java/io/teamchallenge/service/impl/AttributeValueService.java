@@ -56,7 +56,7 @@ public class AttributeValueService {
      * @throws NotFoundException if the attribute value with the specified ID is not found
      */
     @Transactional
-    public AttributeValueResponseDto update(Long id, AttributeValuePatchRequestDto attributeValuePatchRequestDto) {
+    public AttributeValueResponseDto patchUpdate(Long id, AttributeValuePatchRequestDto attributeValuePatchRequestDto) {
         var retrievedAttributeValue = attributeValueRepository
             .findById(id)
             .orElseThrow(() -> new NotFoundException(ExceptionMessage.ATTRIBUTEVALUE_NOT_FOUND_BY_ID.formatted(id)));

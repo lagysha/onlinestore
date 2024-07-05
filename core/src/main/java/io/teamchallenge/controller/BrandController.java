@@ -75,8 +75,8 @@ public class BrandController {
      * @return a {@link ResponseEntity} containing the updated brand details with HTTP status 200 (OK)
      */
     @PutMapping("/{id}")
-    public ResponseEntity<BrandResponseDto> patchUpdate(@PathVariable("id") Long id,
-                                                        @RequestBody BrandRequestDto brandRequestDto) {
+    public ResponseEntity<BrandResponseDto> update(@PathVariable("id") Long id,
+                                                   @RequestBody BrandRequestDto brandRequestDto) {
         return ResponseEntity.ok(brandService.update(id, brandRequestDto));
     }
 }

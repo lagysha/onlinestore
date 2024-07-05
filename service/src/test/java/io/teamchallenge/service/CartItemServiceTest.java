@@ -125,8 +125,7 @@ public class CartItemServiceTest {
         when(cartItemRepository.findById(cartItemId)).thenReturn(Optional.empty());
         when(productRepository.findByIdWithImages(productId)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> cartItemService.create(userId, productId),
-            ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID.formatted(1L));
+        assertThrows(NotFoundException.class, () -> cartItemService.create(userId, productId));
 
         verify(cartItemRepository).findById(eq(cartItemId));
         verify(productRepository).findByIdWithImages(eq(productId));
@@ -140,8 +139,7 @@ public class CartItemServiceTest {
 
         when(cartItemRepository.findById(cartItemId)).thenReturn(Optional.of(getCartItem()));
 
-        assertThrows(AlreadyExistsException.class, () -> cartItemService.create(userId, productId),
-            ExceptionMessage.CARTITEM_ALREADY_EXISTS.formatted(1L));
+        assertThrows(AlreadyExistsException.class, () -> cartItemService.create(userId, productId));
 
         verify(cartItemRepository).findById(eq(cartItemId));
     }
@@ -169,8 +167,7 @@ public class CartItemServiceTest {
 
         when(cartItemRepository.findById(cartItemId)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> cartItemService.deleteByCartItemId(userId, productId),
-            ExceptionMessage.CARTITEM_NOT_FOUND_BY_ID.formatted(1L));
+        assertThrows(NotFoundException.class, () -> cartItemService.deleteByCartItemId(userId, productId));
 
         verify(cartItemRepository).findById(eq(cartItemId));
     }
@@ -204,8 +201,7 @@ public class CartItemServiceTest {
 
         when(cartItemRepository.findById(cartItemId)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> cartItemService.patch(userId, productId, request),
-            ExceptionMessage.CARTITEM_NOT_FOUND_BY_ID.formatted(1L));
+        assertThrows(NotFoundException.class, () -> cartItemService.patch(userId, productId, request));
 
         verify(cartItemRepository).findById(eq(cartItemId));
     }

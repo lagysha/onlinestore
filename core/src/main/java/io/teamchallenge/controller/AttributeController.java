@@ -9,9 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -57,18 +57,18 @@ public class AttributeController {
     }
 
     /**
-     * Partially updates an attribute by its ID with the provided update details.
+     * Updates an attribute by its ID with the provided update details.
      *
-     * <p>This method calls the {@code attributeService} to update an attribute's details using a patch request.
+     * <p>This method calls the {@code attributeService} to update an attribute's details using a put request.
      * It returns the updated attribute details wrapped in a {@link ResponseEntity} with HTTP status 200 (OK).
      *
      * @param id                            the ID of the attribute to update
      * @param attributeValuePatchRequestDto the DTO containing the update details
      * @return a {@link ResponseEntity} containing the updated attribute details with HTTP status 200 (OK)
      */
-    @PatchMapping("/{id}")
-    public ResponseEntity<AttributeResponseDto> patchUpdate(@PathVariable("id") Long id,
-                                                            @RequestBody
+    @PutMapping("/{id}")
+    public ResponseEntity<AttributeResponseDto> update(@PathVariable("id") Long id,
+                                                       @RequestBody
                                                             AttributeRequestUpdateDto attributeValuePatchRequestDto) {
         return ResponseEntity.ok(attributeService.update(id, attributeValuePatchRequestDto));
     }

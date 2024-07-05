@@ -66,15 +66,15 @@ public class BrandService {
      * is not found, a {@link NotFoundException} is thrown. If there is a data integrity violation during
      * the deletion process, a {@link DeletionException} is thrown.
      *
-     * @param brandId the ID of the brand to delete
+     * @param id the ID of the brand to delete
      * @throws NotFoundException if the brand with the specified ID is not found
      * @throws DeletionException if a data integrity violation occurs during deletion
      */
     @Transactional
-    public void deleteById(Long brandId) {
+    public void deleteById(Long id) {
         var retrievedBrand = brandRepository
-            .findById(brandId)
-            .orElseThrow(() -> new NotFoundException(ExceptionMessage.BRAND_NOT_FOUND_BY_ID.formatted(brandId)));
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException(ExceptionMessage.BRAND_NOT_FOUND_BY_ID.formatted(id)));
 
         try {
             brandRepository.deleteById(retrievedBrand.getId());
@@ -89,16 +89,16 @@ public class BrandService {
      * <p>This method retrieves a brand by its ID and updates its name with the value provided in the
      * {@code brandRequestDto}. If the brand is not found, a {@link NotFoundException} is thrown.
      *
-     * @param brandId the ID of the brand to update
+     * @param id the ID of the brand to update
      * @param brandRequestDto the DTO containing the update details
      * @return a {@link BrandResponseDto} containing the updated brand details
      * @throws NotFoundException if the brand with the specified ID is not found
      */
     @Transactional
-    public BrandResponseDto update(Long brandId, BrandRequestDto brandRequestDto) {
+    public BrandResponseDto update(Long id, BrandRequestDto brandRequestDto) {
         var retrievedBrand = brandRepository
-            .findById(brandId)
-            .orElseThrow(() -> new NotFoundException(ExceptionMessage.BRAND_NOT_FOUND_BY_ID.formatted(brandId)));
+            .findById(id)
+            .orElseThrow(() -> new NotFoundException(ExceptionMessage.BRAND_NOT_FOUND_BY_ID.formatted(id)));
 
         retrievedBrand.setName(brandRequestDto.getName());
 

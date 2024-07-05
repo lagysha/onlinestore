@@ -190,8 +190,7 @@ class ProductServiceTest {
         when(productRepository.findByIdWithCollections(2L))
             .thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> productService.getById(2L),
-            ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID.formatted(2L));
+        assertThrows(NotFoundException.class, () -> productService.getById(2L));
         verify(productRepository).findByIdWithCollections(eq(2L));
     }
 
@@ -213,8 +212,7 @@ class ProductServiceTest {
         when(productRepository.findById(2L))
             .thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> productService.deleteById(2L),
-            ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID.formatted(2L));
+        assertThrows(NotFoundException.class, () -> productService.deleteById(2L));
         verify(productRepository).findById(eq(2L));
     }
 
@@ -330,8 +328,7 @@ class ProductServiceTest {
             .thenReturn(Optional.empty());
         var productRequestDto = getProductRequestDto();
 
-        assertThrows(NotFoundException.class, () -> productService.create(productRequestDto, multipartFiles),
-            ExceptionMessage.BRAND_NOT_FOUND_BY_ID.formatted(1L));
+        assertThrows(NotFoundException.class, () -> productService.create(productRequestDto, multipartFiles));
         verify(brandRepository).findById(eq(1L));
     }
 
@@ -344,8 +341,7 @@ class ProductServiceTest {
             thenReturn(Optional.empty());
         var productRequestDto = getProductRequestDto();
 
-        assertThrows(NotFoundException.class, () -> productService.create(productRequestDto, multipartFiles),
-            ExceptionMessage.CATEGORY_NOT_FOUND_BY_ID.formatted(1L));
+        assertThrows(NotFoundException.class, () -> productService.create(productRequestDto, multipartFiles));
         verify(brandRepository).findById(eq(1L));
         verify(categoryRepository).findById(eq(1L));
     }
@@ -362,8 +358,7 @@ class ProductServiceTest {
             .thenReturn(Optional.of(product));
         var productRequestDto = getProductRequestDto();
 
-        assertThrows(AlreadyExistsException.class, () -> productService.create(productRequestDto, multipartFiles),
-            ExceptionMessage.PRODUCT_WITH_NAME_ALREADY_EXISTS.formatted(product.getName()));
+        assertThrows(AlreadyExistsException.class, () -> productService.create(productRequestDto, multipartFiles));
         verify(brandRepository).findById(eq(1L));
         verify(categoryRepository).findById(eq(1L));
         verify(productRepository).findByName(eq(product.getName()));
@@ -390,8 +385,7 @@ class ProductServiceTest {
         when(attributeValueRepository.getReferenceById(1L))
             .thenReturn(getAttributeValue());
 
-        assertThrows(PersistenceException.class, () -> productService.create(productRequestDto, multipartFiles),
-            ExceptionMessage.PRODUCT_PERSISTENCE_EXCEPTION);
+        assertThrows(PersistenceException.class, () -> productService.create(productRequestDto, multipartFiles));
 
         verify(brandRepository).findById(eq(1L));
         verify(categoryRepository).findById(eq(1L));
@@ -542,8 +536,7 @@ class ProductServiceTest {
         when(brandRepository.findById(1L))
             .thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> productService.update(1L, productRequestDto, multipartFiles),
-            ExceptionMessage.BRAND_NOT_FOUND_BY_ID.formatted(1L));
+        assertThrows(NotFoundException.class, () -> productService.update(1L, productRequestDto, multipartFiles));
         verify(brandRepository).findById(eq(1L));
         verify(productRepository).findByIdWithCollections(eq(1L));
     }
@@ -559,8 +552,7 @@ class ProductServiceTest {
         when(categoryRepository.findById(1L)).
             thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> productService.update(1L, productRequestDto, multipartFiles),
-            ExceptionMessage.CATEGORY_NOT_FOUND_BY_ID.formatted(1L));
+        assertThrows(NotFoundException.class, () -> productService.update(1L, productRequestDto, multipartFiles));
         verify(brandRepository).findById(eq(1L));
         verify(categoryRepository).findById(eq(1L));
         verify(productRepository).findByIdWithCollections(eq(1L));
@@ -574,8 +566,7 @@ class ProductServiceTest {
         when(productRepository.findByIdWithCollections(1L))
             .thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> productService.update(1L, productRequestDto, multipartFiles),
-            ExceptionMessage.PRODUCT_NOT_FOUND_BY_ID.formatted(product.getName()));
+        assertThrows(NotFoundException.class, () -> productService.update(1L, productRequestDto, multipartFiles));
         verify(productRepository).findByIdWithCollections(eq(1L));
     }
 
@@ -593,8 +584,8 @@ class ProductServiceTest {
         when(productRepository.findByNameAndIdNot(productRequestDto.getName(), 1L))
             .thenReturn(Optional.of(product));
 
-        assertThrows(AlreadyExistsException.class, () -> productService.update(1L, productRequestDto, multipartFiles),
-            ExceptionMessage.PRODUCT_WITH_NAME_ALREADY_EXISTS.formatted(product.getName()));
+        assertThrows(AlreadyExistsException.class, () -> productService
+            .update(1L, productRequestDto, multipartFiles));
         verify(brandRepository).findById(eq(1L));
         verify(categoryRepository).findById(eq(1L));
         verify(productRepository).findByNameAndIdNot(eq(product.getName()), eq(1L));
@@ -622,8 +613,7 @@ class ProductServiceTest {
         when(attributeValueRepository.findAllByIdIn(List.of(3L)))
             .thenThrow(DataIntegrityViolationException.class);
 
-        assertThrows(PersistenceException.class, () -> productService.update(1L, productRequestDto, multipartFiles),
-            ExceptionMessage.PRODUCT_PERSISTENCE_EXCEPTION);
+        assertThrows(PersistenceException.class, () -> productService.update(1L, productRequestDto, multipartFiles));
         verify(productRepository).findByIdWithCollections(eq(1L));
         verify(brandRepository).findById(eq(1L));
         verify(categoryRepository).findById(eq(1L));
