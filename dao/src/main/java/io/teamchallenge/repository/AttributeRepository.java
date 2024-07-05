@@ -14,7 +14,8 @@ public interface AttributeRepository extends JpaRepository<Attribute,Long> {
      * Finds an attribute by its name.
      *
      * @param name the name of the attribute to find
-     * @return an {@link Optional} containing the found attribute, or {@link Optional#empty()} if no attribute with the given name is found
+     * @return an {@link Optional} containing the found attribute,
+     *         or {@link Optional#empty()} if no attribute with the given name is found
      */
     Optional<Attribute> findByName(String name);
 }

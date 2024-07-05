@@ -11,7 +11,6 @@ import org.springframework.data.jpa.repository.Query;
  * @author Niktia Malov
  */
 public interface CategoryAttributeRepository extends JpaRepository<CategoryAttribute,Long> {
-
     /**
      * Finds all attributes and their corresponding attribute values by category ID.
      * <p>
@@ -21,7 +20,7 @@ public interface CategoryAttributeRepository extends JpaRepository<CategoryAttri
      *
      * @param categoryId the ID of the category for which to find attributes and attribute values
      * @return a {@link Stream} of {@link CategoryAttributeAttributeValueVO} containing the attribute
-     * and attribute value details
+     *         and attribute value details
      */
     @Query("select distinct "
         + "new io.teamchallenge.dto.category.CategoryAttributeAttributeValueVO(a.id, a.name, av.id, av.value) "

@@ -1,7 +1,7 @@
 package io.teamchallenge.service;
 
 import io.teamchallenge.dto.attributes.AttributeAttributeValueDto;
-import io.teamchallenge.dto.attributes.AttributeValueDto;
+import io.teamchallenge.dto.attributes.AttributeValueResponseDto;
 import io.teamchallenge.dto.category.CategoryResponseDto;
 import io.teamchallenge.repository.CategoryAttributeRepository;
 import io.teamchallenge.repository.CategoryRepository;
@@ -16,9 +16,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static io.teamchallenge.util.Utils.getAttributeAttributeValueVO;
-import static io.teamchallenge.util.Utils.getBrand;
-import static io.teamchallenge.util.Utils.getBrandRequestDto;
-import static io.teamchallenge.util.Utils.getBrandResponseDto;
 import static io.teamchallenge.util.Utils.getCategory;
 import static io.teamchallenge.util.Utils.getCategoryRequestDto;
 import static io.teamchallenge.util.Utils.getCategoryResponseDto;
@@ -49,9 +46,9 @@ public class CategoryServiceTest {
             .builder()
             .id(1L)
             .name("Size")
-            .attributeValueDtos(List.of(AttributeValueDto.builder()
+            .attributeValueResponseDtos(List.of(AttributeValueResponseDto.builder()
                 .id(1L)
-                .name("Big")
+                .value("Big")
                 .build()))
             .build());
         when(categoryRepository.findAllAttributeAttributeValueByCategoryInProducts(categoryId))
@@ -70,9 +67,9 @@ public class CategoryServiceTest {
             .builder()
             .id(1L)
             .name("Size")
-            .attributeValueDtos(List.of(AttributeValueDto.builder()
+            .attributeValueResponseDtos(List.of(AttributeValueResponseDto.builder()
                 .id(1L)
-                .name("Big")
+                .value("Big")
                 .build()))
             .build());
         when(categoryAttributeRepository.findAllAttributeAttributeValueByCategory(categoryId))

@@ -15,7 +15,6 @@ import lombok.ToString;
 @Builder
 @ToString
 @EqualsAndHashCode
-public class AttributeResponseDto {
-    private Long id;
+public class AttributeRequestUpdateDto {
     private String name;
 }

@@ -3,6 +3,7 @@ package io.teamchallenge.handler;
 import io.teamchallenge.exception.AlreadyExistsException;
 import io.teamchallenge.exception.BadCredentialsException;
 import io.teamchallenge.exception.BadTokenException;
+import io.teamchallenge.exception.DeletionException;
 import io.teamchallenge.exception.ExceptionResponse;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.exception.PersistenceException;
@@ -174,6 +175,22 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ExceptionResponse> handleBadCredentialsException(BadRequestException e,
+                                                                           WebRequest webRequest) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(webRequest));
+        log.trace(e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(exceptionResponse);
+    }
+
+    /**
+     * Exception handler method to handle DeletionException.
+     *
+     * @param e          The DeletionException instance that occurred.
+     * @param webRequest The WebRequest associated with the request.
+     * @return A ResponseEntity containing the ExceptionResponse with HttpStatus.BAD_REQUEST.
+     */
+    @ExceptionHandler(DeletionException.class)
+    public ResponseEntity<ExceptionResponse> handleDeletionException(DeletionException e,
                                                                            WebRequest webRequest) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(getErrorAttributes(webRequest));
         log.trace(e.getMessage(), e);

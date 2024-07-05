@@ -4,7 +4,7 @@ import io.teamchallenge.dto.ImageDto;
 import io.teamchallenge.dto.attributes.AttributeAttributeValueDto;
 import io.teamchallenge.dto.attributes.AttributeRequestDto;
 import io.teamchallenge.dto.attributes.AttributeResponseDto;
-import io.teamchallenge.dto.attributes.AttributeValueDto;
+import io.teamchallenge.dto.attributes.AttributeValueResponseDto;
 import io.teamchallenge.dto.brand.BrandRequestDto;
 import io.teamchallenge.dto.brand.BrandResponseDto;
 import io.teamchallenge.dto.category.CategoryRequestDto;
@@ -255,11 +255,11 @@ public class Utils {
         return AttributeAttributeValueDto.builder()
             .id(1L)
             .name("Size")
-            .attributeValueDtos(
-                List.of((AttributeValueDto
+            .attributeValueResponseDtos(
+                List.of((AttributeValueResponseDto
                     .builder()
                     .id(1L)
-                    .name("Big")
+                    .value("Big")
                     .build())
                 ))
             .build();

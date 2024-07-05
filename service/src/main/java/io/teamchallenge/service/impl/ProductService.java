@@ -27,8 +27,8 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +54,7 @@ import static io.teamchallenge.repository.ProductRepository.Specs.byPriceRange;
 
 /**
  * Service class for managing products.
+ *
  * @author Niktia Malov
  */
 @Service
@@ -158,7 +159,7 @@ public class ProductService {
      * Creates a new product.
      *
      * @param productRequestDto the DTO containing the details of the product to create
-     * @param multipartFiles the list of multipart files to be associated with the product
+     * @param multipartFiles    the list of multipart files to be associated with the product
      * @return a {@link ProductResponseDto} containing the details of the created product
      * @throws PersistenceException if there is a data integrity violation during the save operation
      */
@@ -195,11 +196,11 @@ public class ProductService {
     /**
      * Updates an existing product.
      *
-     * @param id the ID of the product to update
+     * @param id                the ID of the product to update
      * @param productRequestDto the DTO containing the updated details of the product
-     * @param multipartFiles the list of multipart files to be associated with the product
+     * @param multipartFiles    the list of multipart files to be associated with the product
      * @return a {@link ProductResponseDto} containing the details of the updated product
-     * @throws NotFoundException if the product with the given ID is not found
+     * @throws NotFoundException    if the product with the given ID is not found
      * @throws PersistenceException if there is a data integrity violation during the update operation
      */
     @Transactional
@@ -218,7 +219,7 @@ public class ProductService {
         product.setQuantity(productRequestDto.getQuantity());
         product.setShortDesc(productRequestDto.getShortDesc());
         product.setPrice(productRequestDto.getPrice());
-        insertNewAttributes(productRequestDto,product);
+        insertNewAttributes(productRequestDto, product);
 
         List<Long> idsToFetch = updateProductAttributes(productRequestDto, product);
         try {
@@ -336,7 +337,7 @@ public class ProductService {
     }
 
     private void insertNewAttributes(ProductRequestDto productRequestDto, Product product) {
-        if(Objects.nonNull(productRequestDto.getAttributeAttributeValueRequestDtos())) {
+        if (Objects.nonNull(productRequestDto.getAttributeAttributeValueRequestDtos())) {
             productRequestDto.getAttributeAttributeValueRequestDtos()
                 .forEach(entry ->
                     product.addProductAttribute(ProductAttribute
@@ -352,7 +353,7 @@ public class ProductService {
     }
 
     private void insertExistingAttributes(ProductRequestDto productRequestDto, Product product) {
-        if(Objects.nonNull(productRequestDto.getAttributeValueIds())) {
+        if (Objects.nonNull(productRequestDto.getAttributeValueIds())) {
             productRequestDto.getAttributeValueIds()
                 .forEach(attributeValueId ->
                     product.addProductAttribute(ProductAttribute

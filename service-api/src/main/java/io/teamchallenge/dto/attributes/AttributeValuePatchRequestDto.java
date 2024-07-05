@@ -8,14 +8,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Getter
+@Setter
 @ToString
 @EqualsAndHashCode
-public class AttributeResponseDto {
-    private Long id;
-    private String name;
+@Builder
+public class AttributeValuePatchRequestDto {
+    private String value;
 }
