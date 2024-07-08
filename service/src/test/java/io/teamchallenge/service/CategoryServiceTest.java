@@ -1,9 +1,9 @@
 package io.teamchallenge.service;
 
-import io.teamchallenge.constant.ExceptionMessage;
 import io.teamchallenge.dto.attributes.AttributeAttributeValueDto;
 import io.teamchallenge.dto.attributes.AttributeValueResponseDto;
 import io.teamchallenge.dto.category.CategoryResponseDto;
+import io.teamchallenge.entity.Category;
 import io.teamchallenge.exception.DeletionException;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.repository.CategoryAttributeRepository;
@@ -21,13 +21,11 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static io.teamchallenge.util.Utils.getAttributeAttributeValueVO;
-import static io.teamchallenge.util.Utils.getBrand;
 import static io.teamchallenge.util.Utils.getCategory;
 import static io.teamchallenge.util.Utils.getCategoryRequestDto;
 import static io.teamchallenge.util.Utils.getCategoryResponseDto;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -40,8 +38,6 @@ public class CategoryServiceTest {
     private CategoryRepository categoryRepository;
     @Mock
     private CategoryAttributeRepository categoryAttributeRepository;
-
-
     @Mock
     private ModelMapper modelMapper;
 
@@ -111,11 +107,17 @@ public class CategoryServiceTest {
         var request = getCategoryRequestDto();
         var expected = getCategoryResponseDto();
         var category = getCategory();
-        when(categoryRepository.save(any()))
+        var categoryToSave = Category
+            .builder()
+                .name(request.getName())
+                    .description(request.getDescription())
+                        .build();
+        when(categoryRepository.save(categoryToSave))
             .thenReturn(category);
 
         var actual = categoryService.create(request);
 
+        verify(categoryRepository).save(categoryToSave);
         assertEquals(expected,actual);
     }
 

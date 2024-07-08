@@ -1,6 +1,7 @@
 package io.teamchallenge.service;
 
-import io.teamchallenge.constant.ExceptionMessage;
+import io.teamchallenge.entity.attributes.Attribute;
+import io.teamchallenge.entity.attributes.CategoryAttribute;
 import io.teamchallenge.exception.DeletionException;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.exception.PersistenceException;
@@ -16,13 +17,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
-import static io.teamchallenge.constant.ExceptionMessage.ATTRIBUTE_PERSISTENCE_EXCEPTION;
 import static io.teamchallenge.constant.ExceptionMessage.CATEGORY_NOT_FOUND_BY_ID;
 import static io.teamchallenge.util.Utils.getAttribute;
 import static io.teamchallenge.util.Utils.getAttributeRequestDto;
 import static io.teamchallenge.util.Utils.getAttributeRequestUpdateDto;
 import static io.teamchallenge.util.Utils.getAttributeResponseDto;
-import static io.teamchallenge.util.Utils.getAttributeValue;
 import static io.teamchallenge.util.Utils.getCategory;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -52,15 +51,24 @@ public class AttributeServiceTest {
         var attribute = getAttribute();
         attribute.setName("Color");
         var category = getCategory();
+        var categoryAttributeToSave = CategoryAttribute.builder()
+            .category(category)
+            .attribute(attribute)
+            .build();
+        var attributeCategory = CategoryAttribute.builder()
+            .id(1L)
+            .category(category)
+            .attribute(attribute)
+            .build();
         when(attributeRepository.findByName(request.getName())).thenReturn(Optional.of(attribute));
         when(categoryRepository.findById(request.getCategoryId())).thenReturn(Optional.of(category));
-        when(categoryAttributeRepository.save(any())).thenReturn(null);
+        when(categoryAttributeRepository.save(categoryAttributeToSave)).thenReturn(attributeCategory);
 
         var actual = attributeService.create(request);
 
         verify(attributeRepository).findByName(eq(request.getName()));
         verify(categoryRepository).findById(eq(request.getCategoryId()));
-        verify(categoryAttributeRepository).save(any());
+        verify(categoryAttributeRepository).save(categoryAttributeToSave);
         assertEquals(expected,actual);
     }
 
@@ -71,17 +79,29 @@ public class AttributeServiceTest {
         var attribute = getAttribute();
         attribute.setName("Color");
         var category = getCategory();
+        var attributeToSave = Attribute.builder()
+            .name("Color")
+            .build();
+        var categoryAttributeToSave = CategoryAttribute.builder()
+            .category(category)
+            .attribute(attribute)
+            .build();
+        var attributeCategory = CategoryAttribute.builder()
+            .id(1L)
+            .category(category)
+            .attribute(attribute)
+            .build();
         when(attributeRepository.findByName(request.getName())).thenReturn(Optional.empty());
-        when(attributeRepository.save(any())).thenReturn(attribute);
+        when(attributeRepository.save(attributeToSave)).thenReturn(attribute);
         when(categoryRepository.findById(request.getCategoryId())).thenReturn(Optional.of(category));
-        when(categoryAttributeRepository.save(any())).thenReturn(null);
+        when(categoryAttributeRepository.save(categoryAttributeToSave)).thenReturn(attributeCategory);
 
         var actual = attributeService.create(request);
 
         verify(attributeRepository).findByName(eq(request.getName()));
         verify(categoryRepository).findById(eq(request.getCategoryId()));
-        verify(categoryAttributeRepository).save(any());
-        verify(attributeRepository).save(any());
+        verify(categoryAttributeRepository).save(categoryAttributeToSave);
+        verify(attributeRepository).save(attributeToSave);
         assertEquals(expected,actual);
     }
 

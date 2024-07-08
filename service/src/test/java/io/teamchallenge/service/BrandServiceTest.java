@@ -1,6 +1,6 @@
 package io.teamchallenge.service;
 
-import io.teamchallenge.constant.ExceptionMessage;
+import io.teamchallenge.entity.Brand;
 import io.teamchallenge.exception.DeletionException;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.repository.BrandRepository;
@@ -14,13 +14,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
-import static io.teamchallenge.util.Utils.getAttribute;
 import static io.teamchallenge.util.Utils.getBrand;
 import static io.teamchallenge.util.Utils.getBrandRequestDto;
 import static io.teamchallenge.util.Utils.getBrandResponseDto;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -41,10 +39,14 @@ public class BrandServiceTest {
         var expected = getBrandResponseDto();
         var brand = getBrand();
         brand.setName("Apple");
-        when(brandRepository.save(any()))
+        var brandToSave = Brand.builder()
+            .name("Apple")
+            .build();
+        when(brandRepository.save(brandToSave))
             .thenReturn(brand);
 
         var actual = brandService.create(request);
+        verify(brandRepository).save(brandToSave);
 
         assertEquals(expected,actual);
     }
@@ -59,6 +61,7 @@ public class BrandServiceTest {
             .thenReturn(brands);
 
         var actual = brandService.findAll();
+        verify(brandRepository).findAll();
 
         assertEquals(expected,actual);
     }
