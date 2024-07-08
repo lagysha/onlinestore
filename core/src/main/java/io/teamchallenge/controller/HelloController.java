@@ -1,6 +1,5 @@
 package io.teamchallenge.controller;
 
-import io.teamchallenge.annotation.CurrentUserId;
 import java.util.Optional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

@@ -3,9 +3,12 @@ package io.teamchallenge.handler;
 import io.teamchallenge.exception.AlreadyExistsException;
 import io.teamchallenge.exception.BadCredentialsException;
 import io.teamchallenge.exception.BadTokenException;
+import io.teamchallenge.exception.ConflictException;
 import io.teamchallenge.exception.ExceptionResponse;
+import io.teamchallenge.exception.ForbiddenException;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.exception.PersistenceException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import java.util.ArrayList;
@@ -68,6 +71,17 @@ public class CustomExceptionHandlerTest {
 
         assertEquals(ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponse)
             , customExceptionHandler.handleNotFoundException(notFoundException, webRequest));
+    }
+
+    @Test
+    void handleEntityNotFoundExceptionTest() {
+        EntityNotFoundException notFoundException = new EntityNotFoundException("test");
+        ExceptionResponse exceptionResponse = new ExceptionResponse(objectMap);
+        when(errorAttributes.getErrorAttributes(eq(webRequest),
+            any(ErrorAttributeOptions.class))).thenReturn(objectMap);
+
+        assertEquals(ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionResponse)
+            , customExceptionHandler.handleEntityNotFoundException(notFoundException, webRequest));
     }
 
     @Test
@@ -155,5 +169,26 @@ public class CustomExceptionHandlerTest {
 
         assertEquals(customExceptionHandler.handleBadCredentialsException(badRequestException, webRequest),
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse));
+    }
+
+    @Test
+    void handleConflictExceptionTest() {
+        ConflictException conflictException = new ConflictException("test");
+        ExceptionResponse exceptionResponse = new ExceptionResponse(objectMap);
+        when(errorAttributes.getErrorAttributes(eq(webRequest),
+            any(ErrorAttributeOptions.class))).thenReturn(objectMap);
+
+        assertEquals(customExceptionHandler.handleConflictException(conflictException, webRequest),
+            ResponseEntity.status(HttpStatus.CONFLICT).body(exceptionResponse));
+    }
+    @Test
+    void handleForbiddenExceptionTest() {
+        ForbiddenException conflictException = new ForbiddenException("test");
+        ExceptionResponse exceptionResponse = new ExceptionResponse(objectMap);
+        when(errorAttributes.getErrorAttributes(eq(webRequest),
+            any(ErrorAttributeOptions.class))).thenReturn(objectMap);
+
+        assertEquals(customExceptionHandler.handleConflictException(conflictException, webRequest),
+            ResponseEntity.status(HttpStatus.FORBIDDEN).body(exceptionResponse));
     }
 }
