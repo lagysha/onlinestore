@@ -63,6 +63,6 @@ public class UserRepositoryTCTest {
     @Test
     void existsByIdAndCompletedOrderWithProductId() {
         assertTrue(userRepository.existsByIdAndCompletedOrderWithProductId(1L,1L));
-        assertFalse(userRepository.existsByIdAndCompletedOrderWithProductId(1L,2L));
+        assertFalse(userRepository.existsByIdAndCompletedOrderWithProductId(2L,1L));
     }
 }

@@ -1,4 +1,4 @@
-package io.teamchallenge.service;
+package io.teamchallenge.service.impl;
 
 import io.teamchallenge.constant.ExceptionMessage;
 import io.teamchallenge.dto.pageable.PageableDto;

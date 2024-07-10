@@ -1,4 +1,4 @@
-package io.teamchallenge.service;
+package io.teamchallenge.service.impl;
 
 import io.teamchallenge.dto.cart.CartItemRequestDto;
 import io.teamchallenge.dto.order.OrderRequestDto;

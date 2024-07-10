@@ -6,7 +6,7 @@ import io.teamchallenge.dto.pageable.PageableDto;
 import io.teamchallenge.dto.review.AddReviewRequestDto;
 import io.teamchallenge.dto.review.ReviewResponseDto;
 import io.teamchallenge.entity.reviews.ReviewId;
-import io.teamchallenge.service.ReviewService;
+import io.teamchallenge.service.impl.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
