@@ -54,7 +54,6 @@ class ProductRepositoryTCTest {
         assertEquals("Example Smartphone", product.get().getName());
     }
 
-
     @Test
     void findByNameAndIdNotTest() {
         Optional<Product> product = productRepository.findByNameAndIdNot("Example Smartphone", 2L);

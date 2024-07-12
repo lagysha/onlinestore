@@ -1,18 +1,26 @@
 package io.teamchallenge.controller;
 
 import io.teamchallenge.annotation.CurrentUserId;
+import io.teamchallenge.dto.cart.CartItemPatchRequestDto;
 import io.teamchallenge.dto.cart.CartItemResponseDto;
 import io.teamchallenge.dto.cart.CartResponseDto;
-import io.teamchallenge.dto.cart.PatchRequestDto;
 import io.teamchallenge.service.impl.CartItemService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller for cart items.
+ *
  * @author Niktia Malov
  */
 @RestController
@@ -61,15 +69,16 @@ public class CartItemController {
     /**
      * Updates a cart item partially for a specific user.
      *
-     * @param userId          the ID of the current user obtained from the security context
-     * @param productId       the ID of the product to be updated in the cart
-     * @param patchRequestDto the request body containing the fields to be updated
+     * @param userId                  the ID of the current user obtained from the security context
+     * @param productId               the ID of the product to be updated in the cart
+     * @param cartItemPatchRequestDto the request body containing the fields to be updated
      * @return a ResponseEntity containing a CartItemResponseDto with the updated cart item
      */
     @PatchMapping("/{product_id}")
     public ResponseEntity<CartItemResponseDto> patchUpdate(@CurrentUserId Long userId,
                                                            @PathVariable("product_id") Long productId,
-                                                           @RequestBody @Valid PatchRequestDto patchRequestDto) {
-        return ResponseEntity.ok(cartItemService.patch(userId, productId, patchRequestDto));
+                                                           @RequestBody @Valid CartItemPatchRequestDto
+                                                               cartItemPatchRequestDto) {
+        return ResponseEntity.ok(cartItemService.patch(userId, productId, cartItemPatchRequestDto));
     }
 }
