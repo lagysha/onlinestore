@@ -31,6 +31,7 @@ public interface ProductRepository
         var product = findByIdWithCategoryAndBrandAndProductAttribute(id);
         if (product.isPresent()) {
             product = findByIdWithImages(id);
+            product = findByIdWithReviews(id);
         }
         return product;
     }
@@ -91,6 +92,15 @@ public interface ProductRepository
      */
     @Query("select p from Product p left join fetch p.images where p.id in :productId ")
     Optional<Product> findByIdWithImages(@Param("productId") Long id);
+
+    /**
+     * Retrieves a Product by its ID with associated reviews eagerly fetched.
+     *
+     * @param id The ID of the Product to retrieve.
+     * @return An Optional containing the Product if found, with associated images eagerly fetched.
+     */
+    @Query("select p from Product p left join fetch p.reviews where p.id in :productId ")
+    Optional<Product> findByIdWithReviews(@Param("productId") Long id);
 
     /**
      * Retrieves a Product by its name.

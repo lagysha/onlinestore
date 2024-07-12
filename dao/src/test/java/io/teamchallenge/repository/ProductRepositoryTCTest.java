@@ -72,6 +72,16 @@ class ProductRepositoryTCTest {
     }
 
     @Test
+    void findByIdWithReviewsTest() {
+        Optional<Product> product = productRepository.findByIdWithReviews(1L);
+
+        TestTransaction.end();
+
+        assertFalse(product.isEmpty());
+        assertEquals(1L, product.get().getReviews().size());
+    }
+
+    @Test
     void findByIdWithCategoryAndBrandAndProductAttributeTest() {
         Optional<Product> product = productRepository.findByIdWithCategoryAndBrandAndProductAttribute(1L);
 

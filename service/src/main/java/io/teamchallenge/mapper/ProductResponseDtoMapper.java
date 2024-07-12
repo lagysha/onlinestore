@@ -5,6 +5,7 @@ import io.teamchallenge.dto.category.CategoryResponseDto;
 import io.teamchallenge.dto.product.ProductAttributeResponseDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
 import io.teamchallenge.entity.Product;
+import io.teamchallenge.entity.reviews.Review;
 import java.util.stream.Collectors;
 import org.modelmapper.AbstractConverter;
 import org.springframework.stereotype.Component;
@@ -55,6 +56,10 @@ public class ProductResponseDtoMapper extends AbstractConverter<Product, Product
             .price(product.getPrice())
             .quantity(product.getQuantity())
             .createdAt(product.getCreatedAt())
+            .rating(product.getReviews().stream()
+                .mapToInt(Review::getRate)
+                .average()
+                .orElse(0))
             .build();
     }
 }
