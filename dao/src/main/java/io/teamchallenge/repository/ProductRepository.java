@@ -16,13 +16,13 @@ import org.springframework.data.repository.query.Param;
 /**
  * Repository interface for managing {@link Product} entities.
  * Provides methods to perform CRUD operations and custom queries.
+ *
  * @author Niktia Malov
  */
 public interface ProductRepository
     extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product>, CustomProductRepository {
     /**
      * Retrieves a Product by its ID along with associated collections if available.
-     * If the Product is found, associated collections such as images are eagerly fetched.
      *
      * @param id The ID of the Product to retrieve.
      * @return An Optional containing the Product if found, with associated collections eagerly fetched.
@@ -31,9 +31,33 @@ public interface ProductRepository
         var product = findByIdWithCategoryAndBrandAndProductAttribute(id);
         if (product.isPresent()) {
             product = findByIdWithImages(id);
+            product = findByIdWithReviews(id);
         }
         return product;
     }
+
+    /**
+     * Retrieves Products by their IDs along with associated collections if available.
+     *
+     * @param ids The IDs of the Products to retrieve.
+     * @return A List containing the Products if found, with associated collections eagerly fetched.
+     */
+    default List<Product> findByIdsWithCollections(List<Long> ids) {
+        var products = findAllByIdWithImages(ids);
+        if (!products.isEmpty()) {
+            products = findAllByIdWithReviews(ids);
+        }
+        return products;
+    }
+
+    /**
+     * Retrieves all Products by their IDs with associated reviews eagerly fetched.
+     *
+     * @param productIds The list of IDs of the Products to retrieve.
+     * @return A list of Products with associated images eagerly fetched.
+     */
+    @Query("select p from Product p left join fetch p.images where p.id in :productIds")
+    List<Product> findAllByIdWithImages(@Param("productIds") List<Long> productIds);
 
     /**
      * Retrieves all Products by their IDs with associated images eagerly fetched.
@@ -41,8 +65,8 @@ public interface ProductRepository
      * @param productIds The list of IDs of the Products to retrieve.
      * @return A list of Products with associated images eagerly fetched.
      */
-    @Query("select p from Product p left join fetch p.images where p.id in :productIds")
-    List<Product> findAllByIdWithImages(@Param("productIds") List<Long> productIds);
+    @Query("select p from Product p left join fetch p.reviews where p.id in :productIds")
+    List<Product> findAllByIdWithReviews(@Param("productIds") List<Long> productIds);
 
     /**
      * Retrieves a Product by its ID with associated category, brand, and product attributes eagerly fetched.
@@ -68,6 +92,15 @@ public interface ProductRepository
      */
     @Query("select p from Product p left join fetch p.images where p.id in :productId ")
     Optional<Product> findByIdWithImages(@Param("productId") Long id);
+
+    /**
+     * Retrieves a Product by its ID with associated reviews eagerly fetched.
+     *
+     * @param id The ID of the Product to retrieve.
+     * @return An Optional containing the Product if found, with associated images eagerly fetched.
+     */
+    @Query("select p from Product p left join fetch p.reviews where p.id in :productId ")
+    Optional<Product> findByIdWithReviews(@Param("productId") Long id);
 
     /**
      * Retrieves a Product by its name.

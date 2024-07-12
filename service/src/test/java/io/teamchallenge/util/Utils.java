@@ -66,7 +66,7 @@ public class Utils {
     public static final String PRODUCT_IMAGES_FOLDER_NAME = "productImages";
     public static final String SAMPLE_URL = "https://example.com";
 
-    public static MultipartFile getMultipartFile(){
+    public static MultipartFile getMultipartFile() {
         return new MockMultipartFile(
             "file",
             "test.fdsf",
@@ -74,6 +74,7 @@ public class Utils {
             new byte[0]
         );
     }
+
     public static Category getCategory() {
         return Category.builder()
             .id(1L)
@@ -93,7 +94,7 @@ public class Utils {
             .build();
     }
 
-    public static ProductFilterDto getProductFilterDto(){
+    public static ProductFilterDto getProductFilterDto() {
         return ProductFilterDto.builder()
             .name("Sample Product")
             .price(PriceFilter.builder()
@@ -146,6 +147,7 @@ public class Utils {
             .productAttributes(productAttributes)
             .price(BigDecimal.ONE)
             .images(images)
+            .reviews(new ArrayList<>())
             .brand(getBrand())
             .description("desc")
             .quantity(1)
@@ -163,6 +165,11 @@ public class Utils {
             .id(product.getId())
             .name(product.getName())
             .price(product.getPrice())
+            .available(product.getQuantity() > 0)
+            .rating(product.getReviews().stream()
+                .mapToInt(Review::getRate)
+                .average()
+                .orElse(0))
             .images(product.getImages()
                 .stream()
                 .map(img -> ImageDto.builder()
@@ -203,6 +210,10 @@ public class Utils {
             .price(product.getPrice())
             .quantity(product.getQuantity())
             .createdAt(product.getCreatedAt())
+            .rating(product.getReviews().stream()
+                .mapToInt(Review::getRate)
+                .average()
+                .orElse(0))
             .build();
     }
 
@@ -319,11 +330,11 @@ public class Utils {
         return "5cZAVF/SKSCmCM2+1azD2XHK7K2PChcSg32vrrEh/Qk=";
     }
 
-    public static ProductMinMaxPriceDto getProductMinMaxPriceDto(){
-        return new ProductMinMaxPriceDto(BigDecimal.ONE,BigDecimal.TWO);
+    public static ProductMinMaxPriceDto getProductMinMaxPriceDto() {
+        return new ProductMinMaxPriceDto(BigDecimal.ONE, BigDecimal.TWO);
     }
 
-    public static AdvancedPageableDto<ShortProductResponseDto> getAdvancedPageableDto(){
+    public static AdvancedPageableDto<ShortProductResponseDto> getAdvancedPageableDto() {
         return AdvancedPageableDto.<ShortProductResponseDto>builder()
             .page(List.of(getShortProductResponseDto()))
             .totalElements(1)
@@ -334,7 +345,7 @@ public class Utils {
             .build();
     }
 
-    public static CategoryAttributeAttributeValueVO getAttributeAttributeValueVO(){
+    public static CategoryAttributeAttributeValueVO getAttributeAttributeValueVO() {
         return CategoryAttributeAttributeValueVO.builder()
             .attributeId(1L)
             .attributeName("Size")
@@ -343,7 +354,7 @@ public class Utils {
             .build();
     }
 
-    public static CategoryResponseDto getCategoryResponseDto(){
+    public static CategoryResponseDto getCategoryResponseDto() {
         var category = getCategory();
         return CategoryResponseDto
             .builder()
@@ -366,7 +377,7 @@ public class Utils {
     public static Order getOrder() {
         return Order.builder()
             .id(1L)
-            .createdAt(LocalDateTime.of(1,1,1,1,1))
+            .createdAt(LocalDateTime.of(1, 1, 1, 1, 1))
             .contactInfo(ContactInfo.builder()
                 .firstName("FirstName")
                 .lastName("LastName")
@@ -440,7 +451,7 @@ public class Utils {
             .id(getReviewId())
             .text("test")
             .rate((short) 4)
-            .createdAt(LocalDateTime.of(1,1,1,1,1))
+            .createdAt(LocalDateTime.of(1, 1, 1, 1, 1))
             .user(getUser())
             .build();
     }
@@ -472,34 +483,34 @@ public class Utils {
             .build();
     }
 
-    public static AttributeRequestDto getAttributeRequestDto(){
+    public static AttributeRequestDto getAttributeRequestDto() {
         return AttributeRequestDto.builder()
             .categoryId(1L)
             .name("Color")
             .build();
     }
 
-    public static AttributeResponseDto getAttributeResponseDto(){
+    public static AttributeResponseDto getAttributeResponseDto() {
         return AttributeResponseDto.builder()
             .id(1L)
             .name("Color")
             .build();
     }
 
-    public static BrandRequestDto getBrandRequestDto(){
+    public static BrandRequestDto getBrandRequestDto() {
         return BrandRequestDto.builder()
             .name("Apple")
             .build();
     }
 
-    public static BrandResponseDto getBrandResponseDto(){
+    public static BrandResponseDto getBrandResponseDto() {
         return BrandResponseDto.builder()
             .id(1L)
             .name("Apple")
             .build();
     }
 
-    public static CategoryRequestDto getCategoryRequestDto(){
+    public static CategoryRequestDto getCategoryRequestDto() {
         return CategoryRequestDto.builder()
             .name("name1")
             .description("Nothing")

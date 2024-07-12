@@ -1,7 +1,7 @@
 package io.teamchallenge.controller;
 
 import io.teamchallenge.dto.order.OrderRequestDto;
-import io.teamchallenge.service.OrderService;
+import io.teamchallenge.service.impl.OrderService;
 import io.teamchallenge.utils.Utils;
 import java.security.Principal;
 import org.junit.jupiter.api.Test;

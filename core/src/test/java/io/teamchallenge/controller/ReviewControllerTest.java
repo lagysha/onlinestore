@@ -4,7 +4,7 @@ import io.teamchallenge.dto.pageable.PageableDto;
 import io.teamchallenge.dto.review.AddReviewRequestDto;
 import io.teamchallenge.dto.review.ReviewResponseDto;
 import io.teamchallenge.entity.reviews.ReviewId;
-import io.teamchallenge.service.ReviewService;
+import io.teamchallenge.service.impl.ReviewService;
 import io.teamchallenge.utils.Utils;
 import java.util.List;
 import org.junit.jupiter.api.Test;

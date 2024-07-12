@@ -72,6 +72,16 @@ class ProductRepositoryTCTest {
     }
 
     @Test
+    void findByIdWithReviewsTest() {
+        Optional<Product> product = productRepository.findByIdWithReviews(1L);
+
+        TestTransaction.end();
+
+        assertFalse(product.isEmpty());
+        assertEquals(1L, product.get().getReviews().size());
+    }
+
+    @Test
     void findByIdWithCategoryAndBrandAndProductAttributeTest() {
         Optional<Product> product = productRepository.findByIdWithCategoryAndBrandAndProductAttribute(1L);
 
@@ -107,6 +117,29 @@ class ProductRepositoryTCTest {
     }
 
     @Test
+    void findAllByIdsWithReviewsTest() {
+        List<Product> products = productRepository.findAllByIdWithReviews(List.of(1L, 2L));
+
+        TestTransaction.end();
+
+        assertEquals(2, products.size());
+        assertEquals(1L, products.getFirst().getReviews().getFirst().getId().getUserId());
+    }
+
+    @Test
+    void findByIdsWithCollectionsTest() {
+        List<Product> products = productRepository.findByIdsWithCollections(List.of(1L, 2L));
+
+        TestTransaction.end();
+
+        assertFalse(products.isEmpty());
+        assertEquals(1L, products.getFirst().getCategory().getId());
+        assertEquals(1L, products.getFirst().getBrand().getId());
+        assertEquals(1, products.getFirst().getImages().size());
+        assertEquals(1, products.getFirst().getReviews().size());
+    }
+
+    @Test
     void findProductMinMaxPriceWithoutSpecificationTest() {
         var actual = productRepository.findProductMinMaxPrice(null);
         var expected = new ProductMinMaxPriceDto(BigDecimal.valueOf(19.99), BigDecimal.valueOf(599.99));
@@ -133,6 +166,42 @@ class ProductRepositoryTCTest {
         assertEquals(2, actual.getTotalPages());
         assertEquals(0, actual.getPageable().getPageNumber());
         assertEquals(2, actual.getTotalElements());
+    }
+
+    @Test
+    void findAllProductIdsOrderByPriceAscTest() {
+        PageRequest pageable = PageRequest.of(0, 2,Sort.by(Sort.Order.asc("price")));
+        var actual = productRepository.findAllProductIds(null, pageable);
+        assertEquals(2, actual.getContent().size());
+        assertEquals(2L, actual.getContent().getFirst());
+        assertEquals(1L, actual.getContent().get(1));
+    }
+
+    @Test
+    void findAllProductIdsOrderByPriceDescTest() {
+        PageRequest pageable = PageRequest.of(0, 2,Sort.by(Sort.Order.desc("price")));
+        var actual = productRepository.findAllProductIds(null, pageable);
+        assertEquals(2, actual.getContent().size());
+        assertEquals(1L, actual.getContent().getFirst());
+        assertEquals(2L, actual.getContent().get(1));
+    }
+
+    @Test
+    void findAllProductIdsOrderByPopularityTest() {
+        PageRequest pageable = PageRequest.of(0, 2,Sort.by(Sort.Order.by("popularity")));
+        var actual = productRepository.findAllProductIds(null, pageable);
+        assertEquals(2, actual.getContent().size());
+        assertEquals(2L, actual.getContent().getFirst());
+        assertEquals(1L, actual.getContent().get(1));
+    }
+
+    @Test
+    void findAllProductIdsOrderByRatingTest() {
+        PageRequest pageable = PageRequest.of(0, 2,Sort.by(Sort.Order.desc("rating")));
+        var actual = productRepository.findAllProductIds(null, pageable);
+        assertEquals(2, actual.getContent().size());
+        assertEquals(2L, actual.getContent().getFirst());
+        assertEquals(1L, actual.getContent().get(1));
     }
 
     @Test

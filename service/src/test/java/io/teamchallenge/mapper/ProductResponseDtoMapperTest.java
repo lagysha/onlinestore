@@ -5,6 +5,7 @@ import io.teamchallenge.dto.category.CategoryResponseDto;
 import io.teamchallenge.dto.product.ProductAttributeResponseDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
 import io.teamchallenge.entity.Image;
+import io.teamchallenge.entity.reviews.Review;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,6 +52,10 @@ public class ProductResponseDtoMapperTest {
             .price(product.getPrice())
             .quantity(product.getQuantity())
             .createdAt(product.getCreatedAt())
+            .rating(product.getReviews().stream()
+                .mapToInt(Review::getRate)
+                .average()
+                .orElse(0))
             .build();
 
         assertEquals(expected, productResponseDtoMapper.convert(product));

@@ -97,7 +97,7 @@ public class ProductService {
         }
 
         Map<Long, ShortProductResponseDto> productMap = productRepository
-            .findAllByIdWithImages(retrievedProducts.getContent())
+            .findByIdsWithCollections(retrievedProducts.getContent())
             .stream()
             .map(product -> modelMapper.map(product, ShortProductResponseDto.class))
             .collect(Collectors.toMap(ShortProductResponseDto::getId, product -> product));
@@ -176,6 +176,7 @@ public class ProductService {
             .description(productRequestDto.getDescription())
             .category(category)
             .quantity(productRequestDto.getQuantity())
+            .reviews(new ArrayList<>())
             .images(new ArrayList<>())
             .productAttributes(new ArrayList<>())
             .build();

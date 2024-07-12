@@ -33,6 +33,7 @@ VALUES (1, '2024-07-04 12:00:00', 'John', 'Doe', 'john.doe@example.com', '123456
        (2, '2024-07-03 12:00:00', 'Johana', 'Doe', 'johana.doe@example.com', '1234567891', FALSE, 'PROCESSING', 'COURIER', 1, null);
 INSERT INTO Order_Items (order_id, product_id, quantity, price)
 VALUES (1, 1, 1,40.99),
+       (1, 2, 1,40.99),
        (2, 2, 2,400.99);
 INSERT INTO Cart_items (user_id, product_id, quantity, created_at)
 VALUES (1, 2, 1, '2024-05-10 14:00:00'),

@@ -2,7 +2,7 @@ package io.teamchallenge.controller;
 
 import io.teamchallenge.annotation.ValidOrderRequest;
 import io.teamchallenge.dto.order.OrderRequestDto;
-import io.teamchallenge.service.OrderService;
+import io.teamchallenge.service.impl.OrderService;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
