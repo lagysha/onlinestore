@@ -4,6 +4,7 @@ import com.cloudinary.Api;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Uploader;
 import com.cloudinary.Url;
+import io.teamchallenge.exception.DeletionException;
 import io.teamchallenge.exception.PersistenceException;
 import io.teamchallenge.service.impl.CloudinaryUploadServiceImpl;
 import java.io.IOException;
@@ -82,8 +83,7 @@ public class CloudinaryUploadServiceTest {
         when(cloudinary.uploader()).thenReturn(uploader);
         when(uploader.upload(eq(file.getBytes()),anyMap())).thenThrow(new IOException());
 
-        assertThrows(PersistenceException.class, () -> cloudinaryUploadService.uploadImage(file,PRODUCT_IMAGES_FOLDER_NAME),
-            IMAGE_PERSISTENCE_EXCEPTION_MESSAGE);
+        assertThrows(PersistenceException.class, () -> cloudinaryUploadService.uploadImage(file,PRODUCT_IMAGES_FOLDER_NAME));
 
         verify(cloudinary).uploader();
         verify(uploader).upload(eq(file.getBytes()),anyMap());
@@ -110,8 +110,8 @@ public class CloudinaryUploadServiceTest {
         when(cloudinary.api()).thenReturn(api);
         when(api.deleteResources(eq(publicIds),anyMap())).thenThrow(new IOException());
 
-        assertThrows(PersistenceException.class, () -> cloudinaryUploadService.deleteImages(urlLinks,PRODUCT_IMAGES_FOLDER_NAME),
-            IMAGE_DELETION_EXCEPTION_MESSAGE);
+        assertThrows(
+            DeletionException.class, () -> cloudinaryUploadService.deleteImages(urlLinks,PRODUCT_IMAGES_FOLDER_NAME));
 
         verify(cloudinary).api();
         verify(api).deleteResources(eq(publicIds),anyMap());

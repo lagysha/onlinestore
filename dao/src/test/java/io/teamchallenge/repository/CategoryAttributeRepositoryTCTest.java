@@ -19,23 +19,24 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Testcontainers
 @ActiveProfiles("ts")
 @Sql(scripts = "classpath:data.sql")
-public class CategoryRepositoryTCTest {
-
+public class CategoryAttributeRepositoryTCTest {
     @Container
     @ServiceConnection
     static PostgreSQLContainer<?> postgresqlContainer =
         new PostgreSQLContainer<>(DockerImageName.parse("postgres:16-alpine"));
 
     @Autowired
-    private CategoryRepository categoryRepository;
+    private CategoryAttributeRepository categoryAttributeRepository;
 
     @Test
-    void findAllAttributeAttributeValueByCategoryInProductsTest() {
-        var expected = categoryRepository.findAllAttributeAttributeValueByCategoryInProducts(1L).toList();
-        assertEquals(2, expected.size());
+    void findAllAttributeAttributeValueByCategoryTest() {
+        var expected = categoryAttributeRepository.findAllAttributeAttributeValueByCategory(1L)
+            .toList();
+        System.out.println(expected);
+        assertEquals(4, expected.size());
         assertEquals(1L, expected.getFirst().getAttributeId());
         assertEquals(1L, expected.getFirst().getAttributeValueId());
-        assertEquals(3L, expected.get(1).getAttributeId());
-        assertEquals(5L, expected.get(1).getAttributeValueId());
+        assertEquals(1L, expected.get(1).getAttributeId());
+        assertEquals(2L, expected.get(1).getAttributeValueId());
     }
 }

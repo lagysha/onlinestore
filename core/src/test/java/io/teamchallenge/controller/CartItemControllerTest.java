@@ -9,7 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static io.teamchallenge.utils.Utils.getCartItemResponseDto;
 import static io.teamchallenge.utils.Utils.getCartResponseDto;
-import static io.teamchallenge.utils.Utils.getPatchRequestDto;
+import static io.teamchallenge.utils.Utils.getCartItemPatchRequestDto;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.eq;
@@ -73,7 +73,7 @@ public class CartItemControllerTest {
     void patchUpdateTest() {
         Long userId = 1L;
         Long productId = 1L;
-        var request = getPatchRequestDto();
+        var request = getCartItemPatchRequestDto();
         var response = getCartItemResponseDto();
         when(cartItemService.patch(userId, productId, request)).thenReturn(response);
 

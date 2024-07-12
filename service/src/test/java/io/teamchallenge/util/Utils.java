@@ -2,11 +2,19 @@ package io.teamchallenge.util;
 
 import io.teamchallenge.dto.ImageDto;
 import io.teamchallenge.dto.address.AddressDto;
+import io.teamchallenge.dto.attributes.AttributeRequestDto;
+import io.teamchallenge.dto.attributes.AttributeRequestUpdateDto;
+import io.teamchallenge.dto.attributes.AttributeResponseDto;
+import io.teamchallenge.dto.attributes.AttributeValuePatchRequestDto;
+import io.teamchallenge.dto.attributes.AttributeValueResponseDto;
+import io.teamchallenge.dto.brand.BrandRequestDto;
+import io.teamchallenge.dto.brand.BrandResponseDto;
+import io.teamchallenge.dto.cart.CartItemPatchRequestDto;
 import io.teamchallenge.dto.cart.CartItemRequestDto;
 import io.teamchallenge.dto.cart.CartItemResponseDto;
 import io.teamchallenge.dto.cart.CartResponseDto;
-import io.teamchallenge.dto.cart.PatchRequestDto;
 import io.teamchallenge.dto.category.CategoryAttributeAttributeValueVO;
+import io.teamchallenge.dto.category.CategoryRequestDto;
 import io.teamchallenge.dto.category.CategoryResponseDto;
 import io.teamchallenge.dto.filter.PriceFilter;
 import io.teamchallenge.dto.filter.ProductFilterDto;
@@ -22,8 +30,8 @@ import io.teamchallenge.dto.review.ReviewResponseDto;
 import io.teamchallenge.dto.security.SignInRequestDto;
 import io.teamchallenge.dto.security.SignUpRequestDto;
 import io.teamchallenge.dto.security.SignUpResponseDto;
-import io.teamchallenge.entity.Address;
 import io.teamchallenge.dto.user.ReviewerDto;
+import io.teamchallenge.entity.Address;
 import io.teamchallenge.entity.Brand;
 import io.teamchallenge.entity.Category;
 import io.teamchallenge.entity.ContactInfo;
@@ -37,10 +45,10 @@ import io.teamchallenge.entity.attributes.AttributeValue;
 import io.teamchallenge.entity.attributes.ProductAttribute;
 import io.teamchallenge.entity.cartitem.CartItem;
 import io.teamchallenge.entity.cartitem.CartItemId;
-import io.teamchallenge.entity.reviews.Review;
-import io.teamchallenge.entity.reviews.ReviewId;
 import io.teamchallenge.entity.orderitem.OrderItem;
 import io.teamchallenge.entity.orderitem.OrderItemId;
+import io.teamchallenge.entity.reviews.Review;
+import io.teamchallenge.entity.reviews.ReviewId;
 import io.teamchallenge.enumerated.DeliveryMethod;
 import io.teamchallenge.enumerated.DeliveryStatus;
 import io.teamchallenge.enumerated.Role;
@@ -70,6 +78,7 @@ public class Utils {
         return Category.builder()
             .id(1L)
             .name("name1")
+            .description("Nothing")
             .build();
     }
 
@@ -97,8 +106,8 @@ public class Utils {
             .build();
     }
 
-    public static PatchRequestDto getPatchRequestDto() {
-        return PatchRequestDto
+    public static CartItemPatchRequestDto getPatchRequestDto() {
+        return CartItemPatchRequestDto
             .builder()
             .quantity(1)
             .build();
@@ -202,7 +211,7 @@ public class Utils {
             .builder()
             .shortDesc("shortDesc")
             .categoryId(1L)
-            .attributeValueId(List.of(1L))
+            .attributeValueIds(List.of(1L))
             .brandId(1L)
             .name("name")
             .description("desc")
@@ -460,6 +469,59 @@ public class Utils {
                 .firstName(review.getUser().getFirstName())
                 .lastName(review.getUser().getLastName())
                 .build())
+            .build();
+    }
+
+    public static AttributeRequestDto getAttributeRequestDto(){
+        return AttributeRequestDto.builder()
+            .categoryId(1L)
+            .name("Color")
+            .build();
+    }
+
+    public static AttributeResponseDto getAttributeResponseDto(){
+        return AttributeResponseDto.builder()
+            .id(1L)
+            .name("Color")
+            .build();
+    }
+
+    public static BrandRequestDto getBrandRequestDto(){
+        return BrandRequestDto.builder()
+            .name("Apple")
+            .build();
+    }
+
+    public static BrandResponseDto getBrandResponseDto(){
+        return BrandResponseDto.builder()
+            .id(1L)
+            .name("Apple")
+            .build();
+    }
+
+    public static CategoryRequestDto getCategoryRequestDto(){
+        return CategoryRequestDto.builder()
+            .name("name1")
+            .description("Nothing")
+            .build();
+    }
+
+    public static AttributeRequestUpdateDto getAttributeRequestUpdateDto() {
+        return AttributeRequestUpdateDto.builder()
+            .name("Color")
+            .build();
+    }
+
+    public static AttributeValuePatchRequestDto getAttributeValuePatchRequestDto() {
+        return AttributeValuePatchRequestDto.builder()
+            .value("1")
+            .build();
+    }
+
+    public static AttributeValueResponseDto getAttributeValueResponseDto() {
+        return AttributeValueResponseDto.builder()
+            .id(1L)
+            .value("1")
             .build();
     }
 }

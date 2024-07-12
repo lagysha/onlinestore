@@ -3,6 +3,7 @@ package io.teamchallenge.handler;
 import io.teamchallenge.exception.AlreadyExistsException;
 import io.teamchallenge.exception.BadCredentialsException;
 import io.teamchallenge.exception.BadTokenException;
+import io.teamchallenge.exception.DeletionException;
 import io.teamchallenge.exception.ConflictException;
 import io.teamchallenge.exception.ExceptionResponse;
 import io.teamchallenge.exception.ForbiddenException;
@@ -190,5 +191,16 @@ public class CustomExceptionHandlerTest {
 
         assertEquals(customExceptionHandler.handleConflictException(conflictException, webRequest),
             ResponseEntity.status(HttpStatus.FORBIDDEN).body(exceptionResponse));
+    }
+
+    @Test
+    void handleDeletionExceptionTest() {
+        DeletionException deletionExceptionException = new DeletionException("test");
+        ExceptionResponse exceptionResponse = new ExceptionResponse(objectMap);
+        when(errorAttributes.getErrorAttributes(eq(webRequest),
+            any(ErrorAttributeOptions.class))).thenReturn(objectMap);
+
+        assertEquals(customExceptionHandler.handleDeletionException(deletionExceptionException, webRequest),
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponse));
     }
 }
