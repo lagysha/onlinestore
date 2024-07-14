@@ -1,0 +1,28 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+    <changeSet id="create_images_table" author="Denys Liubchenko">
+        <createTable tableName="images">
+            <column name="id" type="bigint" autoIncrement="true"/>
+            <column name="product_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="link" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="images" columnNames="id" constraintName="PK_images"/>
+        <addForeignKeyConstraint baseTableName="images"
+                                 baseColumnNames="product_id"
+                                 constraintName="FK_images_products"
+                                 referencedTableName="products"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+        <addUniqueConstraint tableName="images" columnNames="link"
+                             constraintName="UQ_images_link"/>
+        <createIndex tableName="images" indexName="FK_images_products">
+            <column name="product_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

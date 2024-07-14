@@ -1,0 +1,573 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet id="insert-countries-data" author="Denys Liubchenko">
+        <insert tableName="countries">
+            <column name="name">Afghanistan</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Albania</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Algeria</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Andorra</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Angola</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Antigua and Barbuda</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Argentina</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Armenia</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Australia</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Austria</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Azerbaijan</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Bahamas</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Bahrain</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Bangladesh</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Barbados</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Belgium</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Belize</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Benin</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Bhutan</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Bolivia</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Bosnia and Herzegovina</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Botswana</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Brazil</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Brunei</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Bulgaria</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Burkina Faso</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Burundi</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Cabo Verde</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Cambodia</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Cameroon</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Canada</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Central African Republic</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Chad</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Chile</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">China</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Colombia</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Comoros</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Congo</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Costa Rica</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Croatia</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Cuba</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Cyprus</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Czech Republic</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Democratic Republic of the Congo</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Denmark</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Djibouti</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Dominica</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Dominican Republic</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Ecuador</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Egypt</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">El Salvador</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Equatorial Guinea</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Estonia</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Eswatini</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Ethiopia</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Fiji</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Finland</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">France</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Gabon</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Gambia</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Georgia</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Germany</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Ghana</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Greece</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Grenada</column>
+        </insert>
+
+        <insert tableName="countries">
+            <column name="name">Guatemala</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Guinea</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Guinea-Bissau</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Guyana</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Haiti</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Holy See</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Honduras</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Hungary</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Iceland</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">India</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Indonesia</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Iraq</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Ireland</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Israel</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Italy</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Jamaica</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Japan</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Jordan</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Kazakhstan</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Kenya</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Kiribati</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Kuwait</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Kyrgyzstan</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Laos</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Latvia</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Lebanon</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Lesotho</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Liberia</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Libya</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Liechtenstein</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Lithuania</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Luxembourg</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Madagascar</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Malawi</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Malaysia</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Maldives</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Mali</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Malta</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Marshall Islands</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Mauritania</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Mauritius</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Mexico</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Micronesia</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Moldova</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Monaco</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Mongolia</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Montenegro</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Morocco</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Mozambique</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Myanmar</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Namibia</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Nauru</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Nepal</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Netherlands</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">New Zealand</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Nicaragua</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Niger</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Nigeria</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">North Korea</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">North Macedonia</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Norway</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Oman</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Pakistan</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Palau</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Palestine State</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Panama</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Papua New Guinea</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Paraguay</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Peru</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Philippines</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Poland</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Portugal</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Qatar</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Romania</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Rwanda</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Saint Kitts and Nevis</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Saint Lucia</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Saint Vincent and the Grenadines</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Samoa</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">San Marino</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Sao Tome and Principe</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Saudi Arabia</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Senegal</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Serbia</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Seychelles</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Sierra Leone</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Singapore</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Slovakia</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Slovenia</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Solomon Islands</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Somalia</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">South Africa</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">South Sudan</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Spain</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Sri Lanka</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Sudan</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Suriname</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Sweden</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Switzerland</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Syria</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Tajikistan</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Tanzania</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Thailand</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Timor-Leste</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Togo</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Tonga</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Trinidad and Tobago</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Tunisia</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Turkey</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Turkmenistan</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Tuvalu</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Uganda</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Ukraine</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">United Arab Emirates</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">United Kingdom</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">United States of America</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Uruguay</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Uzbekistan</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Vanuatu</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Vietnam</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Yemen</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Zambia</column>
+        </insert>
+        <insert tableName="countries">
+            <column name="name">Zimbabwe</column>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
