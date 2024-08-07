@@ -1,7 +1,7 @@
 package io.teamchallenge.dto.order;
 
+import io.teamchallenge.dto.product.ShortProductResponseDto;
 import java.math.BigDecimal;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -18,9 +18,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 public class OrderItemResponseDto {
-    private Long productId;
+    private ShortProductResponseDto shortProductResponseDto;
     private Integer quantity;
-    private List<String> images;
-    private String name;
     private BigDecimal price;
 }

@@ -2,12 +2,10 @@ package io.teamchallenge.dto.order;
 
 import io.teamchallenge.dto.PostAddressDto;
 import io.teamchallenge.dto.address.AddressDto;
-import io.teamchallenge.dto.user.UserVO;
 import io.teamchallenge.enumerated.DeliveryMethod;
 import io.teamchallenge.enumerated.DeliveryStatus;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -23,7 +21,7 @@ import lombok.ToString;
 @Builder
 @ToString
 @EqualsAndHashCode
-public class OrderResponseDto {
+public class ShortOrderResponseDto {
     private Long id;
     private String email;
     private String firstName;
@@ -36,6 +34,4 @@ public class OrderResponseDto {
     private Boolean isPaid;
     private LocalDateTime createdAt;
     private BigDecimal total;
-    private List<OrderItemResponseDto> orderItems;
-    private UserVO user;
 }

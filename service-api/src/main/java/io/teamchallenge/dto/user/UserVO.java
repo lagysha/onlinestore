@@ -18,6 +18,8 @@ import lombok.ToString;
 @Builder
 public class UserVO {
     private Long id;
+    private String firstName;
+    private String lastName;
     private String email;
     private Role role;
 }

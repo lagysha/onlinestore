@@ -1,6 +1,7 @@
 package io.teamchallenge.utils;
 
 import io.teamchallenge.dto.ImageDto;
+import io.teamchallenge.dto.PostAddressDto;
 import io.teamchallenge.dto.address.AddressDto;
 import io.teamchallenge.dto.attributes.AttributeAttributeValueDto;
 import io.teamchallenge.dto.attributes.AttributeRequestDto;
@@ -17,8 +18,12 @@ import io.teamchallenge.dto.category.CategoryRequestDto;
 import io.teamchallenge.dto.category.CategoryResponseDto;
 import io.teamchallenge.dto.filter.PriceFilter;
 import io.teamchallenge.dto.filter.ProductFilterDto;
+import io.teamchallenge.dto.order.OrderItemResponseDto;
 import io.teamchallenge.dto.order.OrderRequestDto;
+import io.teamchallenge.dto.order.OrderResponseDto;
+import io.teamchallenge.dto.order.ShortOrderResponseDto;
 import io.teamchallenge.dto.pageable.AdvancedPageableDto;
+import io.teamchallenge.dto.pageable.PageableDto;
 import io.teamchallenge.dto.product.ProductAttributeResponseDto;
 import io.teamchallenge.dto.product.ProductRequestDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
@@ -39,6 +44,7 @@ import io.teamchallenge.entity.attributes.AttributeValue;
 import io.teamchallenge.entity.attributes.ProductAttribute;
 import io.teamchallenge.entity.reviews.ReviewId;
 import io.teamchallenge.enumerated.DeliveryMethod;
+import io.teamchallenge.enumerated.DeliveryStatus;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -248,6 +254,73 @@ public class Utils {
             .build();
     }
 
+    public static PageableDto<ShortOrderResponseDto> getShortOrderResponseDtoPageableDto() {
+        return AdvancedPageableDto.<ShortOrderResponseDto>builder()
+            .page(List.of(getShortOrderResponseDto()))
+            .totalElements(1)
+            .currentPage(1)
+            .totalPages(1)
+            .minPrice(BigDecimal.valueOf(2))
+            .maxPrice(BigDecimal.valueOf(3))
+            .build();
+    }
+
+    public static ShortOrderResponseDto getShortOrderResponseDto() {
+        return ShortOrderResponseDto.builder()
+            .id(1L)
+            .email("example@example.com")
+            .firstName("John")
+            .lastName("Doe")
+            .phoneNumber("1234567890")
+            .deliveryMethod(DeliveryMethod.COURIER)
+            .deliveryStatus(DeliveryStatus.CANCELED)
+            .address(getAddressDto())
+            .postAddress(getPostAddressDto())
+            .isPaid(true)
+            .createdAt(LocalDateTime.of(1, 1, 1, 1, 1))
+            .total(new BigDecimal("99.99"))
+            .build();
+    }
+
+    public static OrderResponseDto getOrderResponseDto() {
+        return OrderResponseDto.builder()
+            .id(1L)
+            .email("example@example.com")
+            .firstName("John")
+            .lastName("Doe")
+            .phoneNumber("1234567890")
+            .deliveryMethod(DeliveryMethod.COURIER)
+            .deliveryStatus(DeliveryStatus.CANCELED)
+            .address(getAddressDto())
+            .postAddress(getPostAddressDto())
+            .isPaid(true)
+            .createdAt(LocalDateTime.of(1, 1, 1, 1, 1))
+            .total(new BigDecimal("99.99"))
+            .orderItems(List.of(getOrderItemResponseDto()))
+            .build();
+    }
+
+    public static OrderItemResponseDto getOrderItemResponseDto() {
+        return OrderItemResponseDto.builder().price(new BigDecimal("99.99")).quantity(1)
+            .shortProductResponseDto(getShortProductResponseDto()).build();
+    }
+
+    public static PostAddressDto getPostAddressDto() {
+        return PostAddressDto.builder()
+            .city("Anytown")
+            .department("1")
+            .build();
+    }
+
+    public static AddressDto getAddressDto() {
+        return AddressDto.builder()
+            .city("Anytown")
+            .addressLine("some address")
+            .countryName("Ukraine")
+            .postalCode("1234")
+            .build();
+    }
+
     public static ProductFilterDto getProductFilterDto() {
         return ProductFilterDto.builder()
             .name("Sample Product")
@@ -284,7 +357,6 @@ public class Utils {
     }
 
 
-
     public static OrderRequestDto getOrderRequestDtoCourier() {
         return OrderRequestDto.builder()
             .firstName("FirstName")
@@ -308,31 +380,6 @@ public class Utils {
                ".odua7l-MEZmfjsCu4jmAciqLI[lSRdvrD0Jmufd-N56";
     }
 
-    public static ReviewResponseDto getReviewResponseDto() {
-        return ReviewResponseDto.builder()
-            .text("test text")
-            .rate((short) 4)
-            .createdAt(LocalDateTime.of(1,1,1,1,1))
-            .user(ReviewerDto.builder()
-                .firstName("test name")
-                .lastName("test surname")
-                .build())
-            .build();
-    }
-
-    public static ReviewId getReviewId() {
-        return ReviewId.builder()
-            .userId(1L)
-            .productId(1L)
-            .build();
-    }
-
-    public static AddReviewRequestDto getAddReviewRequestDto() {
-        return AddReviewRequestDto.builder()
-            .text("test text")
-            .rate((short) 4)
-            .build();
-    }
     public static CategoryRequestDto getCategoryRequestDto() {
         return CategoryRequestDto.builder()
             .name("Laptops")
@@ -383,6 +430,36 @@ public class Utils {
         return AttributeValueResponseDto.builder()
             .id(1L)
             .value("1")
+            .build();
+    }
+
+    public static ReviewResponseDto getReviewResponseDto() {
+        return ReviewResponseDto.builder()
+            .text("test text")
+            .rate((short) 4)
+            .createdAt(LocalDateTime.of(1, 1, 1, 1, 1))
+            .user(getReviewerDto())
+            .build();
+    }
+
+    public static ReviewerDto getReviewerDto() {
+        return ReviewerDto.builder()
+            .firstName("test name")
+            .lastName("test surname")
+            .build();
+    }
+
+    public static ReviewId getReviewId() {
+        return ReviewId.builder()
+            .userId(1L)
+            .productId(1L)
+            .build();
+    }
+
+    public static AddReviewRequestDto getAddReviewRequestDto() {
+        return AddReviewRequestDto.builder()
+            .text("test text")
+            .rate((short) 4)
             .build();
     }
 }

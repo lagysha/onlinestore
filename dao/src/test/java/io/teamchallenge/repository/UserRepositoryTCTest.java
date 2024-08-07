@@ -61,8 +61,22 @@ public class UserRepositoryTCTest {
     }
 
     @Test
-    void existsByIdAndCompletedOrderWithProductId() {
+    void existsByIdAndCompletedOrderWithProductIdTest() {
         assertTrue(userRepository.existsByIdAndCompletedOrderWithProductId(1L,1L));
         assertFalse(userRepository.existsByIdAndCompletedOrderWithProductId(2L,1L));
+    }
+
+    @Test
+    void findVOByOrdersIdTest() {
+        Optional<UserVO> voByOrdersId = userRepository.findVOByOrdersId(1L);
+
+        assertTrue(voByOrdersId.isPresent());
+        assertEquals(1L, voByOrdersId.get().getId());
+    }
+
+    @Test
+    void userHasOrderWithIdTest() {
+        assertTrue(userRepository.userHasOrderWithId(1L,1L));
+        assertFalse(userRepository.userHasOrderWithId(2L,1L));
     }
 }
