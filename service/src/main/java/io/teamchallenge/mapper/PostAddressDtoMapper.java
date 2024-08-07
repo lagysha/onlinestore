@@ -2,11 +2,8 @@ package io.teamchallenge.mapper;
 
 import io.teamchallenge.dto.PostAddressDto;
 import io.teamchallenge.entity.PostAddress;
-import io.teamchallenge.repository.CountryRepository;
-import lombok.RequiredArgsConstructor;
 import org.modelmapper.AbstractConverter;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Mapper for {@link PostAddressDto}.

@@ -2,11 +2,9 @@ package io.teamchallenge.repository;
 
 import io.teamchallenge.dto.order.OrderFilterDto;
 import io.teamchallenge.entity.Order;
-import io.teamchallenge.repository.impl.CustomOrderRepositoryImpl;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;

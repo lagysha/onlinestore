@@ -14,7 +14,6 @@ import io.teamchallenge.enumerated.DeliveryStatus;
 import io.teamchallenge.exception.ConflictException;
 import io.teamchallenge.exception.ForbiddenException;
 import io.teamchallenge.repository.CartItemRepository;
-import io.teamchallenge.repository.CustomOrderRepository;
 import io.teamchallenge.repository.OrderRepository;
 import io.teamchallenge.repository.ProductRepository;
 import io.teamchallenge.repository.UserRepository;
@@ -49,8 +48,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
-    @Mock
-    private CustomOrderRepository customOrderRepository;
     @Mock
     private CartItemRepository cartItemRepository;
     @Mock
@@ -264,13 +261,13 @@ class OrderServiceTest {
         ShortOrderResponseDto shortOrderResponseDto = getShortOrderResponseDto();
         PageableDto<ShortOrderResponseDto> expectedResponse = getShortOrderResponseDtoPageableDto();
 
-        when(customOrderRepository.findAllByFilterParameters(filterParametersDto, pageable)).thenReturn(page);
+        when(orderRepository.findAllByFilterParameters(filterParametersDto, pageable)).thenReturn(page);
         when(modelMapper.map(order, ShortOrderResponseDto.class)).thenReturn(shortOrderResponseDto);
 
         PageableDto<ShortOrderResponseDto> result = orderService.getAllByFilter(filterParametersDto, pageable);
 
         assertEquals(expectedResponse, result);
-        verify(customOrderRepository).findAllByFilterParameters(filterParametersDto, pageable);
+        verify(orderRepository).findAllByFilterParameters(filterParametersDto, pageable);
         verify(modelMapper).map(order, ShortOrderResponseDto.class);
     }
 

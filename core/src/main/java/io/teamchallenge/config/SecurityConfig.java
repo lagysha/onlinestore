@@ -82,7 +82,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterAfter(
-                new AccessTokenJwtAuthenticationFilter(jwtService),
+                accessTokenJwtAuthenticationFilter,
                 BasicAuthenticationFilter.class)
             .exceptionHandling(exception -> exception
                 .authenticationEntryPoint((req, resp, exc) ->

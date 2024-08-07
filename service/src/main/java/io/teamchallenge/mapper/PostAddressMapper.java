@@ -3,7 +3,9 @@ package io.teamchallenge.mapper;
 import io.teamchallenge.dto.PostAddressDto;
 import io.teamchallenge.entity.PostAddress;
 import org.modelmapper.AbstractConverter;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PostAddressMapper extends AbstractConverter<PostAddressDto, PostAddress> {
     /**
      * Converts a {@link PostAddressDto} object to a {@link PostAddress} object.

@@ -2,14 +2,8 @@ package io.teamchallenge.mapper;
 
 import io.teamchallenge.dto.address.AddressDto;
 import io.teamchallenge.entity.Address;
-import io.teamchallenge.exception.NotFoundException;
-import io.teamchallenge.repository.CountryRepository;
-import lombok.RequiredArgsConstructor;
 import org.modelmapper.AbstractConverter;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
-import static io.teamchallenge.constant.ExceptionMessage.COUNTRY_NOT_FOUND_BY_NAME;
 
 /**
  * Mapper for {@link AddressDto}.

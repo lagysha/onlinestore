@@ -2,12 +2,10 @@ package io.teamchallenge.dto.order;
 
 import io.teamchallenge.dto.PostAddressDto;
 import io.teamchallenge.dto.address.AddressDto;
-import io.teamchallenge.dto.user.UserVO;
 import io.teamchallenge.enumerated.DeliveryMethod;
 import io.teamchallenge.enumerated.DeliveryStatus;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

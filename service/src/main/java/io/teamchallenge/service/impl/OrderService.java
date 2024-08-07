@@ -21,7 +21,6 @@ import io.teamchallenge.exception.ConflictException;
 import io.teamchallenge.exception.ForbiddenException;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.repository.CartItemRepository;
-import io.teamchallenge.repository.CustomOrderRepository;
 import io.teamchallenge.repository.OrderRepository;
 import io.teamchallenge.repository.ProductRepository;
 import io.teamchallenge.repository.UserRepository;
@@ -47,7 +46,6 @@ import static io.teamchallenge.constant.ExceptionMessage.USER_WITH_PHONE_NUMBER_
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class OrderService {
-    private final CustomOrderRepository customOrderRepository;
     private final CartItemRepository cartItemRepository;
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
@@ -144,7 +142,7 @@ public class OrderService {
     }
 
     public PageableDto<ShortOrderResponseDto> getAllByFilter(OrderFilterDto filterParametersDto, Pageable pageable) {
-        var orders = customOrderRepository
+        var orders = orderRepository
             .findAllByFilterParameters(filterParametersDto, pageable);
         var content = orders.getContent().stream()
             .map(order -> modelMapper.map(order, ShortOrderResponseDto.class))
