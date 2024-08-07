@@ -59,4 +59,10 @@ public class UserRepositoryTCTest {
     void existsByPhoneNumberTest() {
         assertTrue(userRepository.existsByPhoneNumber("+1234567890"));
     }
+
+    @Test
+    void existsByIdAndCompletedOrderWithProductId() {
+        assertTrue(userRepository.existsByIdAndCompletedOrderWithProductId(1L,1L));
+        assertFalse(userRepository.existsByIdAndCompletedOrderWithProductId(2L,1L));
+    }
 }

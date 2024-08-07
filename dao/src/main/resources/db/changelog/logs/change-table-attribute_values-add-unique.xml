@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet id="change-table-attribute_values-add-unique" author="Malov Nikita">
+        <addUniqueConstraint tableName="attribute_values"
+                             columnNames="value,attribute_id"
+                             constraintName="UQ_attribute_values_value_attribute_id"/>
+    </changeSet>
+</databaseChangeLog>

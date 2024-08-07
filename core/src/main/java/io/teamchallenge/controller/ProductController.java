@@ -52,7 +52,7 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<AdvancedPageableDto<ShortProductResponseDto>> getAll(
         @Valid ProductFilterDto productFilterDto,
-        @AllowedSortFields(values = {"price"})
+        @AllowedSortFields(values = {"price","popularity","rating"})
         @PageableDefault(sort = "price", direction = DESC) Pageable pageable) {
         return ResponseEntity.ok(productService.getAll(pageable, productFilterDto));
     }

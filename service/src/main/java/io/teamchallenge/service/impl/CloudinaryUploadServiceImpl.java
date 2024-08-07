@@ -2,6 +2,7 @@ package io.teamchallenge.service.impl;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import io.teamchallenge.exception.DeletionException;
 import io.teamchallenge.exception.PersistenceException;
 import io.teamchallenge.service.ImageCloudService;
 import java.io.IOException;
@@ -54,7 +55,7 @@ public class CloudinaryUploadServiceImpl implements ImageCloudService {
             );
             cloudinary.api().deleteResources(publicIds, ObjectUtils.emptyMap());
         } catch (Exception e) {
-            throw new PersistenceException(IMAGE_DELETION_EXCEPTION_MESSAGE, e);
+            throw new DeletionException(IMAGE_DELETION_EXCEPTION_MESSAGE, e);
         }
     }
 }

@@ -17,7 +17,7 @@ import lombok.ToString;
 @Builder
 @ToString
 @EqualsAndHashCode
-public class PatchRequestDto {
+public class CartItemPatchRequestDto {
     @Min(value = 1,message = "The quantity of one product must be greater than 0")
     @Max(value = 999999, message = "The quantity of one product must be fewer than 1,000,000")
     private Integer quantity;

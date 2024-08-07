@@ -18,5 +18,5 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class AttributeAttributeValueDto extends AttributeDto {
     @JsonProperty("values")
-    private List<AttributeValueDto> attributeValueDtos;
+    private List<AttributeValueResponseDto> attributeValueResponseDtos;
 }

@@ -22,11 +22,11 @@ public class Attribute {
     @Column(nullable = false,unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "attribute")
+    @OneToMany(mappedBy = "attribute",cascade = CascadeType.REMOVE)
     @Setter(AccessLevel.PRIVATE)
     private List<CategoryAttribute> categoryAttributes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "attribute")
+    @OneToMany(mappedBy = "attribute",cascade = CascadeType.REMOVE)
     @Setter(AccessLevel.PRIVATE)
     private List<AttributeValue> attributeValues = new ArrayList<>();
 

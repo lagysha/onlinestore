@@ -2,11 +2,19 @@ package io.teamchallenge.util;
 
 import io.teamchallenge.dto.ImageDto;
 import io.teamchallenge.dto.address.AddressDto;
+import io.teamchallenge.dto.attributes.AttributeRequestDto;
+import io.teamchallenge.dto.attributes.AttributeRequestUpdateDto;
+import io.teamchallenge.dto.attributes.AttributeResponseDto;
+import io.teamchallenge.dto.attributes.AttributeValuePatchRequestDto;
+import io.teamchallenge.dto.attributes.AttributeValueResponseDto;
+import io.teamchallenge.dto.brand.BrandRequestDto;
+import io.teamchallenge.dto.brand.BrandResponseDto;
+import io.teamchallenge.dto.cart.CartItemPatchRequestDto;
 import io.teamchallenge.dto.cart.CartItemRequestDto;
 import io.teamchallenge.dto.cart.CartItemResponseDto;
 import io.teamchallenge.dto.cart.CartResponseDto;
-import io.teamchallenge.dto.cart.PatchRequestDto;
 import io.teamchallenge.dto.category.CategoryAttributeAttributeValueVO;
+import io.teamchallenge.dto.category.CategoryRequestDto;
 import io.teamchallenge.dto.category.CategoryResponseDto;
 import io.teamchallenge.dto.filter.PriceFilter;
 import io.teamchallenge.dto.filter.ProductFilterDto;
@@ -17,9 +25,12 @@ import io.teamchallenge.dto.product.ProductMinMaxPriceDto;
 import io.teamchallenge.dto.product.ProductRequestDto;
 import io.teamchallenge.dto.product.ProductResponseDto;
 import io.teamchallenge.dto.product.ShortProductResponseDto;
+import io.teamchallenge.dto.review.AddReviewRequestDto;
+import io.teamchallenge.dto.review.ReviewResponseDto;
 import io.teamchallenge.dto.security.SignInRequestDto;
 import io.teamchallenge.dto.security.SignUpRequestDto;
 import io.teamchallenge.dto.security.SignUpResponseDto;
+import io.teamchallenge.dto.user.ReviewerDto;
 import io.teamchallenge.entity.Address;
 import io.teamchallenge.entity.Brand;
 import io.teamchallenge.entity.Category;
@@ -36,6 +47,8 @@ import io.teamchallenge.entity.cartitem.CartItem;
 import io.teamchallenge.entity.cartitem.CartItemId;
 import io.teamchallenge.entity.orderitem.OrderItem;
 import io.teamchallenge.entity.orderitem.OrderItemId;
+import io.teamchallenge.entity.reviews.Review;
+import io.teamchallenge.entity.reviews.ReviewId;
 import io.teamchallenge.enumerated.DeliveryMethod;
 import io.teamchallenge.enumerated.DeliveryStatus;
 import io.teamchallenge.enumerated.Role;
@@ -53,7 +66,7 @@ public class Utils {
     public static final String PRODUCT_IMAGES_FOLDER_NAME = "productImages";
     public static final String SAMPLE_URL = "https://example.com";
 
-    public static MultipartFile getMultipartFile(){
+    public static MultipartFile getMultipartFile() {
         return new MockMultipartFile(
             "file",
             "test.fdsf",
@@ -61,10 +74,12 @@ public class Utils {
             new byte[0]
         );
     }
+
     public static Category getCategory() {
         return Category.builder()
             .id(1L)
             .name("name1")
+            .description("Nothing")
             .build();
     }
 
@@ -79,7 +94,7 @@ public class Utils {
             .build();
     }
 
-    public static ProductFilterDto getProductFilterDto(){
+    public static ProductFilterDto getProductFilterDto() {
         return ProductFilterDto.builder()
             .name("Sample Product")
             .price(PriceFilter.builder()
@@ -92,8 +107,8 @@ public class Utils {
             .build();
     }
 
-    public static PatchRequestDto getPatchRequestDto() {
-        return PatchRequestDto
+    public static CartItemPatchRequestDto getPatchRequestDto() {
+        return CartItemPatchRequestDto
             .builder()
             .quantity(1)
             .build();
@@ -132,6 +147,7 @@ public class Utils {
             .productAttributes(productAttributes)
             .price(BigDecimal.ONE)
             .images(images)
+            .reviews(new ArrayList<>())
             .brand(getBrand())
             .description("desc")
             .quantity(1)
@@ -149,6 +165,11 @@ public class Utils {
             .id(product.getId())
             .name(product.getName())
             .price(product.getPrice())
+            .available(product.getQuantity() > 0)
+            .rating(product.getReviews().stream()
+                .mapToInt(Review::getRate)
+                .average()
+                .orElse(0))
             .images(product.getImages()
                 .stream()
                 .map(img -> ImageDto.builder()
@@ -189,6 +210,10 @@ public class Utils {
             .price(product.getPrice())
             .quantity(product.getQuantity())
             .createdAt(product.getCreatedAt())
+            .rating(product.getReviews().stream()
+                .mapToInt(Review::getRate)
+                .average()
+                .orElse(0))
             .build();
     }
 
@@ -197,7 +222,7 @@ public class Utils {
             .builder()
             .shortDesc("shortDesc")
             .categoryId(1L)
-            .attributeValueId(List.of(1L))
+            .attributeValueIds(List.of(1L))
             .brandId(1L)
             .name("name")
             .description("desc")
@@ -305,11 +330,11 @@ public class Utils {
         return "5cZAVF/SKSCmCM2+1azD2XHK7K2PChcSg32vrrEh/Qk=";
     }
 
-    public static ProductMinMaxPriceDto getProductMinMaxPriceDto(){
-        return new ProductMinMaxPriceDto(BigDecimal.ONE,BigDecimal.TWO);
+    public static ProductMinMaxPriceDto getProductMinMaxPriceDto() {
+        return new ProductMinMaxPriceDto(BigDecimal.ONE, BigDecimal.TWO);
     }
 
-    public static AdvancedPageableDto<ShortProductResponseDto> getAdvancedPageableDto(){
+    public static AdvancedPageableDto<ShortProductResponseDto> getAdvancedPageableDto() {
         return AdvancedPageableDto.<ShortProductResponseDto>builder()
             .page(List.of(getShortProductResponseDto()))
             .totalElements(1)
@@ -320,7 +345,7 @@ public class Utils {
             .build();
     }
 
-    public static CategoryAttributeAttributeValueVO getAttributeAttributeValueVO(){
+    public static CategoryAttributeAttributeValueVO getAttributeAttributeValueVO() {
         return CategoryAttributeAttributeValueVO.builder()
             .attributeId(1L)
             .attributeName("Size")
@@ -329,7 +354,7 @@ public class Utils {
             .build();
     }
 
-    public static CategoryResponseDto getCategoryResponseDto(){
+    public static CategoryResponseDto getCategoryResponseDto() {
         var category = getCategory();
         return CategoryResponseDto
             .builder()
@@ -352,7 +377,7 @@ public class Utils {
     public static Order getOrder() {
         return Order.builder()
             .id(1L)
-            .createdAt(LocalDateTime.of(1,1,1,1,1))
+            .createdAt(LocalDateTime.of(1, 1, 1, 1, 1))
             .contactInfo(ContactInfo.builder()
                 .firstName("FirstName")
                 .lastName("LastName")
@@ -418,6 +443,96 @@ public class Utils {
             .deliveryStatus(DeliveryStatus.PROCESSING)
             .orderItems(new ArrayList<>())
             .isPaid(false)
+            .build();
+    }
+
+    public static Review getReview() {
+        return Review.builder()
+            .id(getReviewId())
+            .text("test")
+            .rate((short) 4)
+            .createdAt(LocalDateTime.of(1, 1, 1, 1, 1))
+            .user(getUser())
+            .build();
+    }
+
+    public static ReviewId getReviewId() {
+        return ReviewId.builder()
+            .productId(1L)
+            .userId(1L)
+            .build();
+    }
+
+    public static AddReviewRequestDto getAddReviewRequestDto() {
+        return AddReviewRequestDto.builder()
+            .text("test text")
+            .rate((short) 4)
+            .build();
+    }
+
+    public static ReviewResponseDto getReviewResponseDto() {
+        Review review = getReview();
+        return ReviewResponseDto.builder()
+            .text(review.getText())
+            .rate(review.getRate())
+            .createdAt(review.getCreatedAt())
+            .user(ReviewerDto.builder()
+                .firstName(review.getUser().getFirstName())
+                .lastName(review.getUser().getLastName())
+                .build())
+            .build();
+    }
+
+    public static AttributeRequestDto getAttributeRequestDto() {
+        return AttributeRequestDto.builder()
+            .categoryId(1L)
+            .name("Color")
+            .build();
+    }
+
+    public static AttributeResponseDto getAttributeResponseDto() {
+        return AttributeResponseDto.builder()
+            .id(1L)
+            .name("Color")
+            .build();
+    }
+
+    public static BrandRequestDto getBrandRequestDto() {
+        return BrandRequestDto.builder()
+            .name("Apple")
+            .build();
+    }
+
+    public static BrandResponseDto getBrandResponseDto() {
+        return BrandResponseDto.builder()
+            .id(1L)
+            .name("Apple")
+            .build();
+    }
+
+    public static CategoryRequestDto getCategoryRequestDto() {
+        return CategoryRequestDto.builder()
+            .name("name1")
+            .description("Nothing")
+            .build();
+    }
+
+    public static AttributeRequestUpdateDto getAttributeRequestUpdateDto() {
+        return AttributeRequestUpdateDto.builder()
+            .name("Color")
+            .build();
+    }
+
+    public static AttributeValuePatchRequestDto getAttributeValuePatchRequestDto() {
+        return AttributeValuePatchRequestDto.builder()
+            .value("1")
+            .build();
+    }
+
+    public static AttributeValueResponseDto getAttributeValueResponseDto() {
+        return AttributeValueResponseDto.builder()
+            .id(1L)
+            .value("1")
             .build();
     }
 }

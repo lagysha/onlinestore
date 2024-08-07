@@ -2,7 +2,7 @@ package io.teamchallenge.exception;
 
 public class PersistenceException extends RuntimeException {
     /**
-     * Constructs a new CreationException with the specified detail message.
+     * Constructs a new PersistenceException with the specified detail message.
      *
      * @param message The detail message (which is saved for later retrieval by the getMessage() method).
      */
@@ -11,7 +11,7 @@ public class PersistenceException extends RuntimeException {
     }
 
     /**
-     * Constructs a new CreationException with the specified detail message and cause.
+     * Constructs a new PersistenceException with the specified detail message and cause.
      *
      * @param message The detail message (which is saved for later retrieval by the getMessage() method).
      * @param cause   The cause (which is saved for later retrieval by the getCause() method).

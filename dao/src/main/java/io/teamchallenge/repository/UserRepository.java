@@ -44,4 +44,18 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return a boolean true if there is already user with sane phone number.
      */
     boolean existsByPhoneNumber(String phoneNumber);
+
+    /**
+     * Retrieves boolean true if there is already user with completed order with product.
+     *
+     * @param userId the phoneNumber of the user.
+     * @param productId the phoneNumber of the user.
+     * @return a boolean true if there is already user with completed order with product.
+     */
+    @Query("select count(u)> 0 "
+           + "from User u "
+           + "left join u.orders o "
+           + "left join o.orderItems oi "
+           + "where u.id = :userId and o.deliveryStatus = 'COMPLETED' and oi.product.id = :productId")
+    boolean existsByIdAndCompletedOrderWithProductId(Long userId, Long productId);
 }

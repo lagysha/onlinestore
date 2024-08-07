@@ -30,8 +30,8 @@ public class CategoryRepositoryTCTest {
     private CategoryRepository categoryRepository;
 
     @Test
-    void findAllAttributeAttributeValueByCategoryTest() {
-        var expected = categoryRepository.findAllAttributeAttributeValueByCategory(1L).toList();
+    void findAllAttributeAttributeValueByCategoryInProductsTest() {
+        var expected = categoryRepository.findAllAttributeAttributeValueByCategoryInProducts(1L).toList();
         assertEquals(2, expected.size());
         assertEquals(1L, expected.getFirst().getAttributeId());
         assertEquals(1L, expected.getFirst().getAttributeValueId());
