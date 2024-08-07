@@ -23,7 +23,7 @@ import lombok.ToString;
 @Builder
 @ToString
 @EqualsAndHashCode
-public class OrderResponseDto {
+public class ShortOrderResponseDto {
     private Long id;
     private String email;
     private String firstName;
@@ -36,6 +36,4 @@ public class OrderResponseDto {
     private Boolean isPaid;
     private LocalDateTime createdAt;
     private BigDecimal total;
-    private List<OrderItemResponseDto> orderItems;
-    private UserVO user;
 }

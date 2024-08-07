@@ -18,7 +18,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @param email the email of the user.
      * @return an Optional containing the UserVO object, if found.
      */
-    @Query("select new io.teamchallenge.dto.user.UserVO(u.id, u.email, u.role) from User u where u.email=:email")
+    @Query("select new io.teamchallenge.dto.user.UserVO(u.id, u.firstName, u.lastName, u.email, u.role) "
+           + "from User u where u.email=:email")
     Optional<UserVO> findUserVOByEmail(String email);
 
     /**
@@ -58,4 +59,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
            + "left join o.orderItems oi "
            + "where u.id = :userId and o.deliveryStatus = 'COMPLETED' and oi.product.id = :productId")
     boolean existsByIdAndCompletedOrderWithProductId(Long userId, Long productId);
+
+    @Query("select new io.teamchallenge.dto.user.UserVO(u.id, u.firstName, u.lastName, u.email, u.role) "
+           + "from User u left join u.orders o where o.id = :orderId")
+    Optional<UserVO> findVOByOrdersId(Long orderId);
+
+    @Query("select count(u)> 0 "
+           + "from User u "
+           + "left join u.orders o "
+           + "where u.id = :userId and o.id = :orderId")
+    boolean userHasOrderWithId(Long userId, Long orderId);
 }

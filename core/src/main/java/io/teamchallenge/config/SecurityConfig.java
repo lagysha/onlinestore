@@ -120,7 +120,9 @@ public class SecurityConfig {
                     "/hello")
                 .permitAll()
                 .requestMatchers(HttpMethod.GET,
-                    API_V1 + "/cart-items")
+                    API_V1 + "/cart-items",
+                    API_V1 + "/orders/{order_id}"
+                )
                 .hasAnyRole(USER,ADMIN)
                 .requestMatchers(HttpMethod.POST,
                     API_V1 + "/cart-items/{product_id}",
@@ -128,7 +130,9 @@ public class SecurityConfig {
                 )
                 .hasAnyRole(USER,ADMIN)
                 .requestMatchers(HttpMethod.PATCH,
-                    API_V1 + "/cart-items/{product_id}")
+                    API_V1 + "/cart-items/{product_id}",
+                    API_V1 + "/orders/cancel/{orderId}"
+                )
                 .hasAnyRole(USER,ADMIN)
                 .requestMatchers(HttpMethod.DELETE,
                     API_V1 + "/cart-items/{product_id}")

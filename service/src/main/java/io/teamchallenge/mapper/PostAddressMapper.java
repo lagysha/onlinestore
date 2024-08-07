@@ -4,7 +4,7 @@ import io.teamchallenge.dto.PostAddressDto;
 import io.teamchallenge.entity.PostAddress;
 import org.modelmapper.AbstractConverter;
 
-public class PostAddressDtoToPostAddressMapper extends AbstractConverter<PostAddressDto, PostAddress> {
+public class PostAddressMapper extends AbstractConverter<PostAddressDto, PostAddress> {
     /**
      * Converts a {@link PostAddressDto} object to a {@link PostAddress} object.
      * This method creates a new {@link PostAddress} object using the values from the given {@link PostAddressDto}.

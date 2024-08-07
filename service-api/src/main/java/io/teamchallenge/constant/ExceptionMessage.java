@@ -9,6 +9,7 @@ public final class ExceptionMessage {
     public static final String USER_WITH_PHONE_NUMBER_ALREADY_EXISTS =
         "There is already registered user with same phone number: %s";
     public static final String PRODUCT_NOT_FOUND_BY_ID = "The product with id: %s is not present in database";
+    public static final String ORDER_NOT_FOUND_BY_ID = "Order with id: %s is not present in database";
     public static final String ATTRIBUTEVALUE_NOT_FOUND_BY_ID =
         "The attributeValue with id: %s is not present in database";
     public static final String ATTRIBUTE_NOT_FOUND_BY_ID = "The attribute with id: %s is not present in database";
@@ -34,6 +35,8 @@ public final class ExceptionMessage {
         "Quantity requested for the following product %s exceeds our current stock";
     public static final String IMAGE_PERSISTENCE_EXCEPTION_MESSAGE = "The problem encountered during image persistence";
     public static final String IMAGE_DELETION_EXCEPTION_MESSAGE = "The problem encountered during image deletion";
+    public static final String USER_HAS_NO_ORDERS_WITH_ID = "User has no orders with id %s";
+    public static final String UPDATE_ORDER_EXCEPTION = "You cannot update completed order.";
     public static final String BRAND_DELETION_EXCEPTION_MESSAGE =
         "You cannot delete brand if it has products associated with it";
     public static final String CATEGORY_DELETION_EXCEPTION_MESSAGE =

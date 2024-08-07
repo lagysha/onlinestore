@@ -1,7 +1,12 @@
 package io.teamchallenge.service.impl;
 
 import io.teamchallenge.dto.cart.CartItemRequestDto;
+import io.teamchallenge.dto.order.OrderFilterDto;
 import io.teamchallenge.dto.order.OrderRequestDto;
+import io.teamchallenge.dto.order.OrderResponseDto;
+import io.teamchallenge.dto.order.ShortOrderResponseDto;
+import io.teamchallenge.dto.pageable.PageableDto;
+import io.teamchallenge.dto.user.UserVO;
 import io.teamchallenge.entity.Address;
 import io.teamchallenge.entity.ContactInfo;
 import io.teamchallenge.entity.Order;
@@ -16,6 +21,7 @@ import io.teamchallenge.exception.ConflictException;
 import io.teamchallenge.exception.ForbiddenException;
 import io.teamchallenge.exception.NotFoundException;
 import io.teamchallenge.repository.CartItemRepository;
+import io.teamchallenge.repository.CustomOrderRepository;
 import io.teamchallenge.repository.OrderRepository;
 import io.teamchallenge.repository.ProductRepository;
 import io.teamchallenge.repository.UserRepository;
@@ -25,10 +31,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static io.teamchallenge.constant.ExceptionMessage.ORDER_NOT_FOUND_BY_ID;
 import static io.teamchallenge.constant.ExceptionMessage.PRODUCT_QUANTITY_CONFLICT;
+import static io.teamchallenge.constant.ExceptionMessage.UPDATE_ORDER_EXCEPTION;
+import static io.teamchallenge.constant.ExceptionMessage.USER_HAS_NO_ORDERS_WITH_ID;
 import static io.teamchallenge.constant.ExceptionMessage.USER_NOT_FOUND_BY_EMAIL;
 import static io.teamchallenge.constant.ExceptionMessage.USER_WITH_EMAIL_ALREADY_EXISTS;
 import static io.teamchallenge.constant.ExceptionMessage.USER_WITH_PHONE_NUMBER_ALREADY_EXISTS;
@@ -37,6 +47,7 @@ import static io.teamchallenge.constant.ExceptionMessage.USER_WITH_PHONE_NUMBER_
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class OrderService {
+    private final CustomOrderRepository customOrderRepository;
     private final CartItemRepository cartItemRepository;
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
@@ -98,6 +109,52 @@ public class OrderService {
             return buildOrderItem(cartItem, savedOrder, product);
         }).forEach(order::addOrderItem);
         return savedOrder.getId();
+    }
+
+    //todo: create tests
+
+    public OrderResponseDto getById(Long orderId) {
+        Order order = orderRepository.findByIdFetchData(orderId)
+            .orElseThrow(() -> new NotFoundException(ORDER_NOT_FOUND_BY_ID.formatted(orderId)));
+        UserVO user = userRepository.findVOByOrdersId(orderId).orElse(null);
+        productRepository.findAllByIdWithImages(order.getOrderItems().stream()
+            .map(orderItem -> orderItem.getProduct().getId()).toList());
+        OrderResponseDto orderResponseDto = modelMapper.map(order, OrderResponseDto.class);
+        orderResponseDto.setUser(user);
+        return orderResponseDto;
+    }
+
+    @Transactional
+    public void setDeliveryStatus(Long orderId, DeliveryStatus status) {
+        Order order = orderRepository.findById(orderId)
+            .orElseThrow(() -> new NotFoundException(ORDER_NOT_FOUND_BY_ID.formatted(orderId)));
+        if (order.getDeliveryStatus().equals(DeliveryStatus.COMPLETED)) {
+            throw new ConflictException(UPDATE_ORDER_EXCEPTION);
+        }
+        order.setDeliveryStatus(status);
+    }
+
+    @Transactional
+    public void cancelOrder(Long orderId, Long userId) {
+        if (userRepository.userHasOrderWithId(userId, orderId)) {
+            setDeliveryStatus(orderId, DeliveryStatus.CANCELED);
+        } else {
+            throw new ForbiddenException(USER_HAS_NO_ORDERS_WITH_ID.formatted(orderId));
+        }
+    }
+
+    public PageableDto<ShortOrderResponseDto> getAllByFilter(OrderFilterDto filterParametersDto, Pageable pageable) {
+        var orders = customOrderRepository
+            .findAllByFilterParameters(filterParametersDto, pageable);
+        var content = orders.getContent().stream()
+            .map(order -> modelMapper.map(order, ShortOrderResponseDto.class))
+            .collect(Collectors.toList());
+        return PageableDto.<ShortOrderResponseDto>builder()
+            .page(content)
+            .totalElements(orders.getTotalElements())
+            .currentPage(orders.getPageable().getPageNumber())
+            .totalPages(orders.getTotalPages())
+            .build();
     }
 
     private static OrderItem buildOrderItem(CartItemRequestDto cartItem, Order savedOrder, Product product) {
