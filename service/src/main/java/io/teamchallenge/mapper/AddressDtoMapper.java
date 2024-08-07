@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class AddressDtoMapper extends AbstractConverter<Address, AddressDto> {
-
     /**
      * Converts an {@link Address} object to an {@link AddressDto} entity.
      *

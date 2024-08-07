@@ -455,6 +455,18 @@ public class Utils {
             .build();
     }
 
+    public static OrderItem getOrderItem() {
+        return OrderItem.builder()
+            .id(OrderItemId.builder()
+                .productId(1L)
+                .orderId(1L)
+                .build())
+            .quantity(2)
+            .price(BigDecimal.TEN)
+            .product(getProduct())
+            .build();
+    }
+
     public static Order getOrder() {
         return Order.builder()
             .id(1L)
@@ -468,7 +480,7 @@ public class Utils {
             .address(Utils.getAddress())
             .deliveryMethod(DeliveryMethod.COURIER)
             .deliveryStatus(DeliveryStatus.PROCESSING)
-            .orderItems(new ArrayList<>())
+            .orderItems(List.of(getOrderItem()))
             .isPaid(false)
             .build();
     }

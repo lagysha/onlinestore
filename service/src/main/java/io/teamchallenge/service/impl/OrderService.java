@@ -109,8 +109,13 @@ public class OrderService {
         return savedOrder.getId();
     }
 
-    //todo: create tests
-
+    /**
+     * Retrieves an {@link OrderResponseDto} by its unique identifier.
+     *
+     * @param orderId The unique identifier of the order.
+     * @return An {@link OrderResponseDto} containing the details of the order.
+     * @throws NotFoundException If no order is found with the provided ID.
+     */
     public OrderResponseDto getById(Long orderId) {
         Order order = orderRepository.findByIdFetchData(orderId)
             .orElseThrow(() -> new NotFoundException(ORDER_NOT_FOUND_BY_ID.formatted(orderId)));
@@ -122,6 +127,14 @@ public class OrderService {
         return orderResponseDto;
     }
 
+    /**
+     * Updates the delivery status of an order.
+     *
+     * @param orderId The unique identifier of the order.
+     * @param status  The new delivery status to be set for the order.
+     * @throws NotFoundException If no order is found with the provided ID.
+     * @throws ConflictException If the current delivery status of the order is {@link DeliveryStatus#COMPLETED}.
+     */
     @Transactional
     public void setDeliveryStatus(Long orderId, DeliveryStatus status) {
         Order order = orderRepository.findById(orderId)
@@ -132,6 +145,13 @@ public class OrderService {
         order.setDeliveryStatus(status);
     }
 
+    /**
+     * Cancels an order if the user has the specified order.
+     *
+     * @param orderId The unique identifier of the order to be canceled.
+     * @param userId  The unique identifier of the user requesting the cancellation.
+     * @throws ForbiddenException If the user does not have an order with the specified ID.
+     */
     @Transactional
     public void cancelOrder(Long orderId, Long userId) {
         if (userRepository.userHasOrderWithId(userId, orderId)) {
@@ -141,6 +161,13 @@ public class OrderService {
         }
     }
 
+    /**
+     * Retrieves a pageable list of orders filtered by the given parameters.
+     *
+     * @param filterParametersDto The filter parameters to apply to the query.
+     * @param pageable            The pagination information.
+     * @return A {@link PageableDto} containing a list of {@link ShortOrderResponseDto} and pagination details.
+     */
     public PageableDto<ShortOrderResponseDto> getAllByFilter(OrderFilterDto filterParametersDto, Pageable pageable) {
         var orders = orderRepository
             .findAllByFilterParameters(filterParametersDto, pageable);

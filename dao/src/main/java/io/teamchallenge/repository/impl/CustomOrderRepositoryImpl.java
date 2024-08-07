@@ -36,6 +36,11 @@ public class CustomOrderRepositoryImpl implements CustomOrderRepository {
     private final EntityManager em;
     private final CriteriaBuilder cb;
 
+    /**
+     * Constructor.
+     *
+     * @param em an entity manager
+     */
     @Autowired
     public CustomOrderRepositoryImpl(EntityManager em) {
         this.em = em;
@@ -145,10 +150,12 @@ public class CustomOrderRepositoryImpl implements CustomOrderRepository {
                                                OrderFilterDto filterParametersDto) {
         List<Predicate> predicates = new LinkedList<>();
         if (filterParametersDto.getTotalLess() != null) {
-            predicates.add(cb.le(cb.sum(cb.prod(oij.get(PRICE), oij.get(QUANTITY))), filterParametersDto.getTotalLess()));
+            predicates
+                .add(cb.le(cb.sum(cb.prod(oij.get(PRICE), oij.get(QUANTITY))), filterParametersDto.getTotalLess()));
         }
         if (filterParametersDto.getTotalMore() != null) {
-            predicates.add(cb.ge(cb.sum(cb.prod(oij.get(PRICE), oij.get(QUANTITY))), filterParametersDto.getTotalMore()));
+            predicates
+                .add(cb.ge(cb.sum(cb.prod(oij.get(PRICE), oij.get(QUANTITY))), filterParametersDto.getTotalMore()));
         }
         return predicates;
     }

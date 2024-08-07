@@ -60,10 +60,23 @@ public interface UserRepository extends JpaRepository<User, Long> {
            + "where u.id = :userId and o.deliveryStatus = 'COMPLETED' and oi.product.id = :productId")
     boolean existsByIdAndCompletedOrderWithProductId(Long userId, Long productId);
 
+    /**
+     * Finds a user view object (UserVO) by the given order ID.
+     *
+     * @param orderId the ID of the order associated with the user.
+     * @return an {@link Optional} containing the {@link UserVO} if a user is found, otherwise empty.
+     */
     @Query("select new io.teamchallenge.dto.user.UserVO(u.id, u.firstName, u.lastName, u.email, u.role) "
            + "from User u left join u.orders o where o.id = :orderId")
     Optional<UserVO> findVOByOrdersId(Long orderId);
 
+    /**
+     * Checks if a user has an order with the given order ID.
+     *
+     * @param userId the ID of the user.
+     * @param orderId the ID of the order.
+     * @return true if the user has the order, false otherwise.
+     */
     @Query("select count(u)> 0 "
            + "from User u "
            + "left join u.orders o "
