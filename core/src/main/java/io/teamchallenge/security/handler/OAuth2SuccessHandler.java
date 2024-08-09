@@ -29,8 +29,8 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
      * @param response the response
      * @param authentication the <tt>Authentication</tt> object which was created during
      * the authentication process.
-     * @throws IOException
-     * @throws ServletException
+     * @throws IOException exception
+     * @throws ServletException exception
      */
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
