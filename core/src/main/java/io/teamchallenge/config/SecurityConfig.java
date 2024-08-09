@@ -1,14 +1,19 @@
 package io.teamchallenge.config;
 
 import io.teamchallenge.security.filter.AccessTokenJwtAuthenticationFilter;
+import io.teamchallenge.security.handler.OAuth2SuccessHandler;
 import java.util.Collections;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,6 +23,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
@@ -33,25 +39,29 @@ import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
  */
 @Configuration
 @EnableWebSecurity
+@Slf4j
 @EnableGlobalAuthentication
 public class SecurityConfig {
     private final List<String> allowedOrigins;
     private final AuthenticationConfiguration authenticationConfiguration;
-
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final AccessTokenJwtAuthenticationFilter accessTokenJwtAuthenticationFilter;
 
     /**
      * Constructor for SecurityConfig.
      *
      * @param allowedOrigins              Array of allowed origins.
+     * @param oAuth2SuccessHandler        OAuth2 success handler.
      * @param authenticationConfiguration Authentication configuration
      */
     @Autowired
     public SecurityConfig(@Value("${ALLOWED_ORIGINS}") String[] allowedOrigins,
                           AuthenticationConfiguration authenticationConfiguration,
+                          OAuth2SuccessHandler oAuth2SuccessHandler,
                           AccessTokenJwtAuthenticationFilter accessTokenJwtAuthenticationFilter) {
         this.allowedOrigins = List.of(allowedOrigins);
         this.authenticationConfiguration = authenticationConfiguration;
+        this.oAuth2SuccessHandler = oAuth2SuccessHandler;
         this.accessTokenJwtAuthenticationFilter = accessTokenJwtAuthenticationFilter;
     }
 
@@ -76,6 +86,7 @@ public class SecurityConfig {
                     return config;
                 }))
             .csrf(AbstractHttpConfigurer::disable)
+            .oauth2Login(sc->sc.successHandler(oAuth2SuccessHandler))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterAfter(
                 accessTokenJwtAuthenticationFilter,
@@ -113,6 +124,7 @@ public class SecurityConfig {
                     API_V1 + "/attributes",
                     API_V1 + "/categories",
                     API_V1 + "/products/{id}",
+                    "/oauth2/authorization/**",
                     "/hello")
                 .permitAll()
                 .requestMatchers(HttpMethod.GET,
