@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AddReviewRequestDto {
     @NotBlank
-    @Size(max = 3000, message = "Message length must be no more than 3000 characters")
+    @Size(max = 500, message = "Message length must be no more than 500 characters")
     private String text;
 
     @NotNull
