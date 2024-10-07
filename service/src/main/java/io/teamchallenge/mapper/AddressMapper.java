@@ -18,7 +18,7 @@ import static io.teamchallenge.constant.ExceptionMessage.COUNTRY_NOT_FOUND_BY_NA
 @Component
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class AddressDtoToAddressMapper extends AbstractConverter<AddressDto, Address> {
+public class AddressMapper extends AbstractConverter<AddressDto, Address> {
     private final CountryRepository countryRepository;
 
     /**

@@ -1,6 +1,7 @@
 package io.teamchallenge.util;
 
 import io.teamchallenge.dto.ImageDto;
+import io.teamchallenge.dto.PostAddressDto;
 import io.teamchallenge.dto.address.AddressDto;
 import io.teamchallenge.dto.attributes.AttributeRequestDto;
 import io.teamchallenge.dto.attributes.AttributeRequestUpdateDto;
@@ -18,8 +19,12 @@ import io.teamchallenge.dto.category.CategoryRequestDto;
 import io.teamchallenge.dto.category.CategoryResponseDto;
 import io.teamchallenge.dto.filter.PriceFilter;
 import io.teamchallenge.dto.filter.ProductFilterDto;
+import io.teamchallenge.dto.order.OrderItemResponseDto;
 import io.teamchallenge.dto.order.OrderRequestDto;
+import io.teamchallenge.dto.order.OrderResponseDto;
+import io.teamchallenge.dto.order.ShortOrderResponseDto;
 import io.teamchallenge.dto.pageable.AdvancedPageableDto;
+import io.teamchallenge.dto.pageable.PageableDto;
 import io.teamchallenge.dto.product.ProductAttributeResponseDto;
 import io.teamchallenge.dto.product.ProductMinMaxPriceDto;
 import io.teamchallenge.dto.product.ProductRequestDto;
@@ -31,6 +36,7 @@ import io.teamchallenge.dto.security.SignInRequestDto;
 import io.teamchallenge.dto.security.SignUpRequestDto;
 import io.teamchallenge.dto.security.SignUpResponseDto;
 import io.teamchallenge.dto.user.ReviewerDto;
+import io.teamchallenge.dto.user.UserVO;
 import io.teamchallenge.entity.Address;
 import io.teamchallenge.entity.Brand;
 import io.teamchallenge.entity.Category;
@@ -285,6 +291,81 @@ public class Utils {
             .build();
     }
 
+    public static PageableDto<ShortOrderResponseDto> getShortOrderResponseDtoPageableDto() {
+        return PageableDto.<ShortOrderResponseDto>builder()
+            .page(List.of(getShortOrderResponseDto()))
+            .totalElements(1)
+            .currentPage(0)
+            .totalPages(1)
+            .build();
+    }
+
+    public static ShortOrderResponseDto getShortOrderResponseDto() {
+        return ShortOrderResponseDto.builder()
+            .id(1L)
+            .email("example@example.com")
+            .firstName("John")
+            .lastName("Doe")
+            .phoneNumber("1234567890")
+            .deliveryMethod(DeliveryMethod.COURIER)
+            .deliveryStatus(DeliveryStatus.CANCELED)
+            .address(getAddressDto())
+            .postAddress(getPostAddressDto())
+            .isPaid(true)
+            .createdAt(LocalDateTime.of(1, 1, 1, 1, 1))
+            .total(new BigDecimal("99.99"))
+            .build();
+    }
+
+    public static OrderResponseDto getOrderResponseDto() {
+        return OrderResponseDto.builder()
+            .id(1L)
+            .email("example@example.com")
+            .firstName("John")
+            .lastName("Doe")
+            .phoneNumber("1234567890")
+            .deliveryMethod(DeliveryMethod.COURIER)
+            .deliveryStatus(DeliveryStatus.CANCELED)
+            .address(getAddressDto())
+            .postAddress(getPostAddressDto())
+            .isPaid(true)
+            .createdAt(LocalDateTime.of(1, 1, 1, 1, 1))
+            .total(new BigDecimal("99.99"))
+            .orderItems(List.of(getOrderItemResponseDto()))
+            .build();
+    }
+
+    public static OrderItemResponseDto getOrderItemResponseDto() {
+        return OrderItemResponseDto.builder().price(new BigDecimal("99.99")).quantity(1)
+            .shortProductResponseDto(getShortProductResponseDto()).build();
+    }
+
+    public static PostAddressDto getPostAddressDto() {
+        return PostAddressDto.builder()
+            .city("Anytown")
+            .department("1")
+            .build();
+    }
+
+    public static AddressDto getAddressDto() {
+        return AddressDto.builder()
+            .city("Anytown")
+            .addressLine("some address")
+            .countryName("Ukraine")
+            .postalCode("1234")
+            .build();
+    }
+
+    public static UserVO getUserVO() {
+        return UserVO.builder()
+            .id(1L)
+            .email("test@mail.com")
+            .role(Role.ROLE_USER)
+            .firstName("firstName")
+            .lastName("lastName")
+            .build();
+    }
+
     public static User getNewUser() {
         User user = getUser();
         return User.builder()
@@ -374,6 +455,18 @@ public class Utils {
             .build();
     }
 
+    public static OrderItem getOrderItem() {
+        return OrderItem.builder()
+            .id(OrderItemId.builder()
+                .productId(1L)
+                .orderId(1L)
+                .build())
+            .quantity(2)
+            .price(BigDecimal.TEN)
+            .product(getProduct())
+            .build();
+    }
+
     public static Order getOrder() {
         return Order.builder()
             .id(1L)
@@ -387,7 +480,7 @@ public class Utils {
             .address(Utils.getAddress())
             .deliveryMethod(DeliveryMethod.COURIER)
             .deliveryStatus(DeliveryStatus.PROCESSING)
-            .orderItems(new ArrayList<>())
+            .orderItems(List.of(getOrderItem()))
             .isPaid(false)
             .build();
     }

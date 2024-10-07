@@ -1,7 +1,6 @@
 package io.teamchallenge.config;
 
 import io.teamchallenge.security.filter.AccessTokenJwtAuthenticationFilter;
-import io.teamchallenge.service.impl.JwtService;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +36,6 @@ import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 @EnableGlobalAuthentication
 public class SecurityConfig {
     private final List<String> allowedOrigins;
-    private final JwtService jwtService;
     private final AuthenticationConfiguration authenticationConfiguration;
 
     private final AccessTokenJwtAuthenticationFilter accessTokenJwtAuthenticationFilter;
@@ -46,15 +44,13 @@ public class SecurityConfig {
      * Constructor for SecurityConfig.
      *
      * @param allowedOrigins              Array of allowed origins.
-     * @param jwtService                  JWT service.
      * @param authenticationConfiguration Authentication configuration
      */
     @Autowired
-    public SecurityConfig(@Value("${ALLOWED_ORIGINS}") String[] allowedOrigins, JwtService jwtService,
+    public SecurityConfig(@Value("${ALLOWED_ORIGINS}") String[] allowedOrigins,
                           AuthenticationConfiguration authenticationConfiguration,
                           AccessTokenJwtAuthenticationFilter accessTokenJwtAuthenticationFilter) {
         this.allowedOrigins = List.of(allowedOrigins);
-        this.jwtService = jwtService;
         this.authenticationConfiguration = authenticationConfiguration;
         this.accessTokenJwtAuthenticationFilter = accessTokenJwtAuthenticationFilter;
     }
@@ -82,7 +78,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterAfter(
-                new AccessTokenJwtAuthenticationFilter(jwtService),
+                accessTokenJwtAuthenticationFilter,
                 BasicAuthenticationFilter.class)
             .exceptionHandling(exception -> exception
                 .authenticationEntryPoint((req, resp, exc) ->
@@ -94,8 +90,7 @@ public class SecurityConfig {
                     API_V1 + "/signUp",
                     API_V1 + "/signIn",
                     API_V1 + "/updateAccessToken",
-                    API_V1 + "/orders",
-                    API_V1 + "/reviews/{productId}"
+                    API_V1 + "/orders"
                 )
                 .permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**")
@@ -117,10 +112,14 @@ public class SecurityConfig {
                     API_V1 + "/attributes",
                     API_V1 + "/categories",
                     API_V1 + "/products/{id}",
-                    "/hello")
+                    "/hello",
+                    API_V1 + "/reviews/{productId}"
+                )
                 .permitAll()
                 .requestMatchers(HttpMethod.GET,
-                    API_V1 + "/cart-items")
+                    API_V1 + "/cart-items",
+                    API_V1 + "/orders/{order_id}"
+                )
                 .hasAnyRole(USER,ADMIN)
                 .requestMatchers(HttpMethod.POST,
                     API_V1 + "/cart-items/{product_id}",
@@ -128,15 +127,23 @@ public class SecurityConfig {
                 )
                 .hasAnyRole(USER,ADMIN)
                 .requestMatchers(HttpMethod.PATCH,
-                    API_V1 + "/cart-items/{product_id}")
+                    API_V1 + "/cart-items/{product_id}",
+                    API_V1 + "/orders/cancel/{orderId}"
+                )
                 .hasAnyRole(USER,ADMIN)
                 .requestMatchers(HttpMethod.DELETE,
-                    API_V1 + "/cart-items/{product_id}")
+                    API_V1 + "/cart-items/{product_id}",
+                    API_V1 + "/reviews/{productId}"
+                )
                 .hasAnyRole(USER,ADMIN)
                 .requestMatchers(HttpMethod.POST,
                     API_V1 + "/brands",
                     API_V1 + "/categories",
                     API_V1 + "/attributes")
+                .hasRole(ADMIN)
+                .requestMatchers(HttpMethod.DELETE,
+                    API_V1 + "/reviews/{productId}/{userId}"
+                )
                 .hasRole(ADMIN)
                 .anyRequest()
                 .hasAnyRole(ADMIN)
