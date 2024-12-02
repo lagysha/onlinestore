@@ -71,7 +71,7 @@ public class SecurityConfig {
                     config.setAllowedMethods(Collections.singletonList("*"));
                     config.setAllowedHeaders(List.of("Access-Control-Allow-Origin", "Access-Control-Allow-Headers",
                         "X-Requested-With", "Origin", "Content-Type", "Accept", "Authorization"));
-                    config.setAllowCredentials(true);
+                    config.setAllowCredentials(!List.of("*").equals(allowedOrigins));
                     config.setMaxAge(3600L);
                     return config;
                 }))
